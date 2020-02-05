@@ -1,5 +1,15 @@
 {
+    "name": "audio/audio-man",
+    "license": "MIT",
+    "authors": [
+        {
+            "name":  "Dr. Holger Maerz",
+            "email": "grrompf@gmal.com"
+        }
+    ],
+    "description": "The \"audioMan\" php console tool",
     "require": {
+        "php": ">=7.2",
         "symfony/console": "^5.0",
         "ext-fileinfo": "*"
     },

@@ -40,6 +40,7 @@ class Main extends AbstractBase
     // todo: find album root
     // todo: remove temporary files
     // todo: option for format
+    // todo: manifest for update
     private $subDirScanner;
 
     public function __construct()
