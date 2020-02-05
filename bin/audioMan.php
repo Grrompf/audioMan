@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-(new Application('audioMan', '0.7.0'))
+(new Application('audioMan', '@package_version@'))
     ->register('audioMan')
     ->addArgument('root', InputArgument::OPTIONAL, 'Directory to scan')
     ->addOption('normalize', 'N', InputOption::VALUE_NONE, 'Normalizing')

@@ -35,9 +35,11 @@ use audioMan\utils\SubDirFinder;
  */
 class Main extends AbstractBase
 {
-    // todo: git ...
-    // todo: version
-
+    // todo: clean console options
+    // todo: option for volumes
+    // todo: find album root
+    // todo: remove temporary files
+    // todo: option for format
     private $subDirScanner;
 
     public function __construct()
