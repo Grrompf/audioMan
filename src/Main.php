@@ -35,7 +35,7 @@ use audioMan\utils\SubDirFinder;
  */
 class Main extends AbstractBase
 {
-    // todo: git
+    // todo: git ...
     // todo: version
 
     private $subDirScanner;
