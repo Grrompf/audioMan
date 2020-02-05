@@ -1,0 +1,10 @@
+
+###> symfony/framework-bundle ###
+/vendor/
+###< symfony/framework-bundle ###
+
+###> project files ###
+/.idea/*
+*.phar
+###< project files ###
+
