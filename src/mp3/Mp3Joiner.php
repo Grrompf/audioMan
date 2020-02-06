@@ -46,9 +46,15 @@ class Mp3Joiner extends Messenger implements FileNameInterface
     final public function join(array $files): bool
     {
         $newFilename = self::CONCAT_FILE_NAME;
+
+        //remove eventually garbage files
+        if (($key = array_search(self::CONCAT_FILE_NAME, $files)) !== false) {
+            unset($files[$key]);
+        }
         if (empty($files)) {
             return false;
         }
+
 
         $msg = "Join <".count($files)." mp3 files> in <".basename(getcwd()).">";
         $this->comment($msg);
@@ -56,6 +62,12 @@ class Mp3Joiner extends Messenger implements FileNameInterface
 
         //concatenating mp3 files
         foreach ($files as $filePart) {
+
+            //just in case
+            if ($filePart === self::CONCAT_FILE_NAME || $filePart === self::CORRECTED_FILE_NAME) {
+                continue;
+            }
+            $this->debug($filePart);
             //filesize
             $size += filesize($filePart);
 
@@ -67,7 +79,7 @@ class Mp3Joiner extends Messenger implements FileNameInterface
             $cmd = "cat $file >> ".$newFilename.' 2> /dev/null';
             exec($cmd, $output, $retVal);
             if (0 !== $retVal) {
-                $this->error("Error while merging <".$file."> in <".getcwd().">".PHP_EOL."Details: ".$output);
+                $this->error("Error while merging <".$file."> in <".getcwd().">".PHP_EOL."Details: ".implode($output));
                 $msg = PHP_EOL."Exit".PHP_EOL;
                 die($msg);
             }

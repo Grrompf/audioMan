@@ -27,7 +27,7 @@ use audioMan\mp3\Mp3Processor;
 use audioMan\mp3\Mp3TagWriter;
 use audioMan\utils\Scanner;
 use audioMan\utils\SubDirFinder;
-use audioMan\utils\TmpFileRegistry;
+use audioMan\utils\TmpCleaner;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -38,7 +38,6 @@ class Main extends AbstractBase
 {
     // todo: option for volumes
     // todo: find album root
-    // todo: remove temporary files
     // todo: option for format
     // todo: manifest for update
     private $subDirScanner;
@@ -54,6 +53,10 @@ class Main extends AbstractBase
         $this->comment($msg);
 
         $actualPath = getCwd();
+
+        //path of the processed library
+        Registry::set(Registry::KEY_LIB_DIR, $actualPath);
+
         $finder = new SubDirFinder();
         $pathCollection = $finder->find($actualPath);
         $processor = new Mp3Processor($this->getScanner());
@@ -80,6 +83,9 @@ class Main extends AbstractBase
             $normalizer = new Mp3Normalizer($this->getScanner());
             $normalizer->handle();
         }
+
+        //remove tmp files
+        TmpCleaner::clean();
 
         $this->success("Finished <".basename($actualPath).">");
         $this->break();

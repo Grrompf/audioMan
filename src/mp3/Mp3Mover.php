@@ -24,6 +24,8 @@ namespace audioMan\mp3;
 
 use audioMan\interfaces\FileNameInterface;
 use audioMan\utils\Messenger;
+use audioMan\utils\TmpCleaner;
+
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
@@ -55,6 +57,7 @@ class Mp3Mover extends Messenger implements FileNameInterface
         } else {
             $this->info("Moving <".$oldFileName."> to parent directory <".basename($parentDir).">.".PHP_EOL."New file name is <".$newFilename.">");
         }
+        TmpCleaner::addFile($newFilePath);
 
         //removing kombiniert.mp3
         if (file_exists(self::CONCAT_FILE_NAME)) {

@@ -34,14 +34,14 @@ class Messenger
     {
         // debug
         if (Registry::get(Registry::KEY_VERBOSITY) > 2) {
-            print $this->writeln($message, null, 'fg=default;bg=blue');
+            print $this->writeln($message, null, 'fg=white;bg=blue');
         }
     }
 
     final public function info(string $message): void
     {
         // very verbose
-        if (Registry::get(Registry::KEY_VERBOSITY) > 2) {
+        if (Registry::get(Registry::KEY_VERBOSITY) >= 2) {
             print $this->writeln($message, null, 'fg=default;bg=default');
         }
     }
@@ -156,6 +156,8 @@ class Messenger
     private function findBgColor(string $style): string
     {
         switch ($style) {
+            case 'bg=blue':   $bgColor ='44';
+                break;
             case 'bg=green':  $bgColor ='42';
                 break;
             case 'bg=red':    $bgColor ='41';
