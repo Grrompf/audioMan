@@ -48,7 +48,7 @@ class Requirements extends Messenger
         }
 
         if (false === $this->isChecked) {
-            $msg = "Exit".PHP_EOL;
+            $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         }
     }

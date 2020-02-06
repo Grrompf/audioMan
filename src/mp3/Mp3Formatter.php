@@ -42,7 +42,7 @@ class Mp3Formatter extends AbstractBase
         //rescan after moving files
         if (false === $files = $this->getScanner()->scanFiles('mp3', true)) {
             $this->warning("No files found in <".basename(getcwd()).">!");
-            $msg = "Exit".PHP_EOL;
+            $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         }
 

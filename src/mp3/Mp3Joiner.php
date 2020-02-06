@@ -68,7 +68,7 @@ class Mp3Joiner extends Messenger implements FileNameInterface
             exec($cmd, $output, $retVal);
             if (0 !== $retVal) {
                 $this->error("Error while merging <".$file."> in <".getcwd().">".PHP_EOL."Details: ".$output);
-                $msg = "Exit".PHP_EOL;
+                $msg = PHP_EOL."Exit".PHP_EOL;
                 die($msg);
             }
 

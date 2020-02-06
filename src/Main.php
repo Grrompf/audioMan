@@ -27,6 +27,7 @@ use audioMan\mp3\Mp3Processor;
 use audioMan\mp3\Mp3TagWriter;
 use audioMan\utils\Scanner;
 use audioMan\utils\SubDirFinder;
+use audioMan\utils\TmpFileRegistry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License

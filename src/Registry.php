@@ -21,14 +21,57 @@ declare(strict_types=1);
 
 namespace audioMan;
 
-use audioMan\base\BaseRegistry;
-use Console\interfaces\ConsoleOptionInterface;
-
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Registry extends BaseRegistry implements ConsoleOptionInterface
+class Registry
 {
+    public const KEY_VERBOSITY = 'verbosity';
+    public const KEY_NORMALIZE = 'normalize';
+    public const KEY_ROOT_DIR  = 'rootDir';
+    public const KEY_TMP_FILES = 'tmpFiles';
+
+    protected static $instance = null;
+    protected $values = [];
+
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    public static function get(string $key)
+    {
+        if (isset(self::getInstance()->values[$key])) {
+            return self::getInstance()->values[$key];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     */
+    public static function set(string $key, $value): void
+    {
+        self::getInstance()->values[$key] = $value;
+    }
+
+    protected static function getInstance(): self
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    protected function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+    }
 }

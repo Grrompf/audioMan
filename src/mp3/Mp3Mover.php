@@ -50,21 +50,25 @@ class Mp3Mover extends Messenger implements FileNameInterface
         exec($moveCmd, $output, $retVal);
         if (0 !== $retVal) {
             $this->error("Error while moving <".$oldFileName."> in <".getcwd().">".PHP_EOL."Details: ".$output);
-            $msg = "Exit".PHP_EOL;
+            $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         } else {
             $this->info("Moving <".$oldFileName."> to parent directory <".basename($parentDir).">.".PHP_EOL."New file name is <".$newFilename.">");
         }
 
         //removing kombiniert.mp3
-        $removeCmd = 'rm '.self::CONCAT_FILE_NAME;
-        exec($removeCmd, $output, $retVal);
-        if (0 !== $retVal) {
-            $this->error("Error while removing <".self::CONCAT_FILE_NAME."> in <".getcwd().">".PHP_EOL."Details: ".$output);
-            $msg = "Exit".PHP_EOL;
-            die($msg);
-        } else {
-            $this->info("Removed <".self::CONCAT_FILE_NAME."> in <".basename(getcwd()).">.");
+        if (file_exists(self::CONCAT_FILE_NAME)) {
+            $removeCmd = 'rm '.self::CONCAT_FILE_NAME;
+            exec($removeCmd, $output, $retVal);
+            if (0 !== $retVal) {
+                $this->error(
+                    "Error while removing <".self::CONCAT_FILE_NAME."> in <".getcwd().">".PHP_EOL."Details: ".$output
+                );
+                $msg = PHP_EOL."Exit".PHP_EOL;
+                die($msg);
+            } else {
+                $this->info("Removed <".self::CONCAT_FILE_NAME."> in <".basename(getcwd()).">.");
+            }
         }
     }
 }

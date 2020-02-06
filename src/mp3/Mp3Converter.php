@@ -58,7 +58,7 @@ class Mp3Converter extends AbstractBase
         exec($cmd, $output, $retVal);
         if (0 !== $retVal) {
             $this->error("Error while converting ".$type." to mp3 in <".getcwd().">".PHP_EOL."Details: ".$output);
-            $msg = "Exit".PHP_EOL;
+            $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         }
 

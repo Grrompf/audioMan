@@ -53,20 +53,6 @@ class Scanner extends BaseScanner implements FileNameInterface
         $msg ="Scan for files in <".basename(getcwd()).">";
         $this->info($msg);
 
-        //remove temporary files
-        $this->cleanUp();
-
         return $this->search($type);
-    }
-
-    //remove temporary garbage
-    private function cleanUp(): void
-    {
-        if (file_exists(self::CONCAT_FILE_NAME)) {
-            shell_exec('rm '.self::CONCAT_FILE_NAME);
-        }
-        if (file_exists(self::CORRECTED_FILE_NAME)) {
-            shell_exec('rm '.self::CORRECTED_FILE_NAME);
-        }
     }
 }

@@ -43,7 +43,7 @@ class Mp3TagWriter extends AbstractBase
         //rescan after renaming for having new name as title
         if (false === $files = $this->getScanner()->scanFiles('mp3', true)) {
             $this->warning("No tags written. No files found in <".basename(getcwd()).">!");
-            $msg = "Exit".PHP_EOL;
+            $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         }
 
@@ -63,7 +63,7 @@ class Mp3TagWriter extends AbstractBase
             exec($cmd, $output, $retVal);
             if (0 !== $retVal) {
                 $this->error("Error while writing tags to <".$fileName."> in <".getcwd().">".PHP_EOL."Details: ".$output);
-                $msg = "Exit".PHP_EOL;
+                $msg = PHP_EOL."Exit".PHP_EOL;
                 die($msg);
             }
         }

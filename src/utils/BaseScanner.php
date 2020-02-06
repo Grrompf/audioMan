@@ -39,7 +39,7 @@ class BaseScanner extends Messenger
         $files = glob('*');
         if (false === $files) {
             $this->error("Unexpected error in scanning <".getcwd().">");
-            $msg = "Exit".PHP_EOL;
+            $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         }
 
