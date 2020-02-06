@@ -35,7 +35,6 @@ use audioMan\utils\SubDirFinder;
  */
 class Main extends AbstractBase
 {
-    // todo: clean console options
     // todo: option for volumes
     // todo: find album root
     // todo: remove temporary files

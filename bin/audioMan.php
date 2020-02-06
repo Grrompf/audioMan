@@ -6,9 +6,9 @@ require __DIR__.'/../vendor/autoload.php';
 
 use audioMan\command\DefaultCommand;
 use audioMan\command\UpdateCommand;
-use Symfony\Component\Console\Application;
+use audioMan\console\CustomApplication;
 
-$application = new Application('audioMan', '@package_version@');
+$application = new CustomApplication('audioMan', '@package_version@');
 $application->add(new DefaultCommand());
 $application->add(new UpdateCommand());
 $application->setDefaultCommand('audioMan');

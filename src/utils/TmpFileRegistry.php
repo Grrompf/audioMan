@@ -19,16 +19,16 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan;
+namespace audioMan\utils;
 
 use audioMan\base\BaseRegistry;
-use Console\interfaces\ConsoleOptionInterface;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Registry extends BaseRegistry implements ConsoleOptionInterface
+class TmpFileRegistry extends BaseRegistry
 {
+
 }
