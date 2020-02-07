@@ -78,7 +78,7 @@ class Main extends AbstractBase
         $tagger = new Mp3TagWriter($this->getScanner());
         $tagger->handle();
 
-        //OPTION: normalizing
+        //normalizing by default (OPTION)
         if (Registry::get(Registry::KEY_NORMALIZE)) {
             $normalizer = new Mp3Normalizer($this->getScanner());
             $normalizer->handle();

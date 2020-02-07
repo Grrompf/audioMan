@@ -43,7 +43,9 @@ class DefaultCommand extends Command
         $this
             ->setName('audioMan')
             ->addArgument('root', InputArgument::OPTIONAL, 'Directory to scan')
-            ->addOption('normalize', 'N', InputOption::VALUE_NONE, 'Normalizing file names')
+            ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
+            ->addOption('volumes', null, InputOption::VALUE_NONE, 'force volumes')
+            ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'custom file name format')
             ->setHelp('Find more information in README.md')
             ->setDescription("Merges multiple audio files. Suited for audio books and radio play.".PHP_EOL.
                 "  Time issue of merged files are corrected. File size of is checked, too.".PHP_EOL.
@@ -69,9 +71,9 @@ class DefaultCommand extends Command
         }
 
         //normalization
-        $normalize = false;
-        if (true === $input->hasParameterOption(['--normalize', '-N'], true)) {
-            $normalize = true;
+        $normalize = true;
+        if (true === $input->hasParameterOption(['--no-normalize', '-N'], true)) {
+            $normalize = false;
         }
 
         Registry::set(Registry::KEY_NORMALIZE, $normalize);

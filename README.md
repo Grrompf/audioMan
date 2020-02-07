@@ -6,6 +6,7 @@ Time issue of merged files are corrected. File size of is checked, too.
 Wma files are converted. If album art (cover) is found, it is tagged, next to title, album and genre.
 Files are renamed in format <# - title.mp3> and finally normalized.
 
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=flat-square)](https://php.net/)
 
 REQUIREMENTS
 ============
@@ -34,25 +35,60 @@ By default audioMan always scans recursive sub directories of the current direct
 It will not remove or alter existing files but will move processed files to root dir. Similar named files in root
 will be overwritten!      
 
-* audioMan -V  (shows the version)
-* audioMan -q  (Working without output messages)
-* audioMan     (Working with normal output on error and success)
-* audioMan -v  (Working verbose)
-* audioMan -vn  (Working very verbose)    
+* audioMan 
 
+Options
+-------
+* __--help__ | -h
+* __--version__ | -V
+* __--quite__ | -q
+* __--verbose__  | -v / -vv / -vvv
+* __--no-normalize__ | __-N__   
+* __--volumes__ 
+* __--format__ | __-f__ <#Your File Name Format#>  
 
-HINT
+Description
 ====
 
-Usually audio book files are ordered in sub dirs by chapter or CD. Multiple books of one topic will content multiple
+Usually audio book files are ordered in sub dirs by chapters or CDs. Multiple books of one topic will content multiple
 sub dirs containing multiple sub dirs by CDs.   
-AudioMan will scan all sub dirs and will start convert and joining files on the deepest directory level. After merging
-file size is checked and the resulting combined file is corrected (time issue). If album art (cover) is detected, it is
+AudioMan will scan all sub dirs and will start *convert and join files* on the deepest directory level. After merging
+file size is checked and the resulting combined file is corrected (time issue). If *album art (cover)* is detected, it is
 tagged on the mp3 file before moving to parent directory. Images are always checked of type (jpg, jpeg, png), dimension 
 (rather quadratic) and size (max 100 kB). If multiple images are found, best match is the filename (cover, folder, front).
 Merge and moving will stop on root level of the audio book directory. All merged files will be found there... 
-Finally files are renamed (format: # - title.mp3), title, album and genre are written into tags and the files are normalized.
+Finally files are *renamed (format: # - title.mp3)*, *title, album and genre are written into tags* and the files are *normalized*.
+***
+Normalisation is important for some older car mp3 players which cannot handle utf-8, special chars or white spaces.
+You can suppress normalization if you add the option --no-normalize. 
+***
+Audio books may consist of several chapters or CDs. Usually, audioMan will merge all files to one big file. This file
+may exceed convenient file size. Since most of the players cannot remember the file position if you stop, it is hard to 
+follow the story on breaks. Therefore, you can force by using the option --volumes to stop further merging after joining
+files on chapters or CDs. You will receive multiple files for the book, one for each CD or chapter __as long as the files are
+provided separated in directories__.
+***
+If you have a collection of radio plays or audio books to process, start audioMan on the directory containing the collection.
+AudioMan will automatically find the files to process. You will therefore receive all resulting files on the root directory 
+of each audio book. So you still will have some work to do for paste and copy.                          
+The original files are not altered, touched or removed.
+***
+The resulting file name is formatted by default (eg "01 - Your fine book.mp3"). This is even the title which is written to 
+the mp3 tag. If you want to force your custom title format by using the option --format or -f followed by a simplified
+regex pattern. Each pattern has to be surrounded by two #, a number is mandatory and identified by n, whitespaces are \s,
+a dot \. and a dash is -. The title is taken from the parent directory or above and is symbolized as TITLE.  
 
+__Example 1:__
+    #n\s-\sTITLE# (Default: "1 - My Book.mp3")  
+
+__Example 2:__
+    #n\.TITLE# ("1.My Book.mp3")  
+
+__Example 3:__
+    #TITLE\s\n# ("My Book 1.mp3")
+    
+Numbers are evaluated by the total amount of files, and therefore will have a leading 0 on books with more than 10 files.
+    
 
 FAQ
 ===
@@ -64,4 +100,9 @@ FAQ
    this level. THIS IS PROBABLY NOT THE RESULT YOU WANTED.
 * What happens if a have an extra sub dir with album arts only?
    Nothing. If you want the album art to be tagged, it has to be on same level as the merged files.
+   
+
+License
+=======
+[MIT](https://tldrlegal.com/license/mit-license)
         
