@@ -66,7 +66,7 @@ Audio books may consist of several chapters or CDs. Usually, audioMan will merge
 may exceed convenient file size. Since most of the players cannot remember the file position if you stop, it is hard to 
 follow the story on breaks. Therefore, you can force by using the option --volumes to stop further merging after joining
 files on chapters or CDs. You will receive multiple files for the book, one for each CD or chapter __as long as the files are
-provided separated in directories__.
+provided separated in directories__ which MUST contain a number.
 ***
 If you have a collection of radio plays or audio books to process, start audioMan on the directory containing the collection.
 AudioMan will automatically find the files to process. You will therefore receive all resulting files on the root directory 

@@ -28,6 +28,7 @@ use audioMan\mp3\Mp3TagWriter;
 use audioMan\utils\Scanner;
 use audioMan\utils\SubDirFinder;
 use audioMan\utils\TmpCleaner;
+use audioMan\volume\VolumeProcessing;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -36,7 +37,6 @@ use audioMan\utils\TmpCleaner;
  */
 class Main extends AbstractBase
 {
-    // todo: option for volumes
     // todo: find album root
     // todo: option for format
     // todo: manifest for update
@@ -59,13 +59,19 @@ class Main extends AbstractBase
 
         $finder = new SubDirFinder();
         $pathCollection = $finder->find($actualPath);
+        $isVolumeSuitable = $pathCollection->isVolumeSuitable();
         $processor = new Mp3Processor($this->getScanner());
 
         //processing files bringing them to root level
         for ($i=$pathCollection->getMaxLevel(); $i>0; $i--) {
             $subDirs = $pathCollection->findByLevel($i);
+            $isVolumeLevel = $pathCollection->isVolumeLevel($i);
             foreach($subDirs as $path) {
                 chdir($path);
+                if (Registry::get(Registry::KEY_VOLUMES) && $isVolumeLevel && $isVolumeSuitable) {
+                    (new VolumeProcessing($this->getScanner()))->handle();
+                    continue;
+                }
                 $processor->handle();
             }
         }

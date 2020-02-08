@@ -76,8 +76,21 @@ class DefaultCommand extends Command
             $normalize = false;
         }
 
+        //volumes
+        $volumes = false;
+        if (true === $input->hasParameterOption('--volumes', true)) {
+            $volumes = true;
+        }
+
+        //format
+        if (true === $input->hasParameterOption(['--format', '-f'], false)) {
+            //VALIDATE!!!!
+            Registry::set(Registry::KEY_FORMAT, $input->getOption('format'));
+        }
+        Registry::set(Registry::KEY_VOLUMES, $volumes);
         Registry::set(Registry::KEY_NORMALIZE, $normalize);
         Registry::set(Registry::KEY_VERBOSITY, $verbosity);
+
         (new Requirements())->check();
         (new Main())->handle();
 

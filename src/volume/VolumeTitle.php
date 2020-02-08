@@ -19,10 +19,8 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\mp3;
+namespace audioMan\volume;
 
-
-use audioMan\interfaces\FileNameInterface;
 use audioMan\utils\Messenger;
 
 /**
@@ -30,42 +28,33 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mp3AlbumCover extends Messenger implements FileNameInterface
+class VolumeTitle extends Messenger
 {
-    final public function import(string $cover, string $fileName=self::CORRECTED_FILE_NAME): void
+    final public function findTitle(string $fileName, string $title): string
     {
-        //expecting a well-known file name
-        if (false === file_exists($fileName)) {
-            $this->error("Expected file <".$fileName."> not found in <".basename(getcwd()).">");
-        }
-
-        //list tags cmd (tags are listed as an array)
-        $cmd =sprintf("mid3v2 -l %s",  escapeshellarg($fileName));
-
-        //mid3v2
-        exec($cmd, $output, $retVal);
-        if (0 !== $retVal) {
-            $this->error("Error while listing all tags to <".$fileName."> in <".getcwd().">".PHP_EOL."Details: ".$output);
+        //volume number
+        $pattern = '#\D*(\d+)\D*\.mp3#i';
+        if (1 === preg_match($pattern, $fileName, $matches)) {
+            $volume = $matches[1];
+        } else {
+            $this->error("Expected number not found in <".$fileName.">");
             $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         }
-        //has album cover
-        if (strpos(implode($output),"APIC") > 0) {
-            $this->warning("Album cover found.");
-            return;
-        }
 
-        //import cmd
-        $cmd =sprintf("mid3v2 -p %s %s", escapeshellarg($cover), escapeshellarg($fileName));
-
-        //mid3v2
-        exec($cmd, $output, $retVal);
-        if (0 !== $retVal) {
-            $details = implode(" | ", $output);
-            $this->error("Error while import album cover <".$cover."> to <".$fileName."> in <".getcwd().">".PHP_EOL."Details: ".$details);
-            $msg = PHP_EOL."Exit".PHP_EOL;
-            die($msg);
+        $pattern = '#^(\d+)(.*)$#';
+        if (1 === preg_match($pattern, $title, $matches)) {
+            //if number found in the beginning insert volume eg 2-1 myFile.mp3
+            $newTitle = $matches[1].'-'.$volume.$matches[2];
+            $this->info("Volume number inserted in <".$title.">");
+        } else {
+            //append volume
+            $newTitle = $title.' '.$volume;
+            $this->info("Volume number appended to <".$title.">");
         }
-        $this->success("Album cover <".$cover."> imported.");
+        $this->comment("New volume title: <".$newTitle.">");
+
+        return $newTitle.'.mp3';
     }
+
 }

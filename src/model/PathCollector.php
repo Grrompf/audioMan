@@ -74,4 +74,30 @@ class PathCollector
     {
         return $this->maxLevel;
     }
+
+    final public function isVolumeLevel(int $actualLevel): bool
+    {
+        return $this->maxLevel - $actualLevel === 1;
+    }
+
+    /**
+     * True if volume dir contains a number
+     */
+    final public function isVolumeSuitable(): bool
+    {
+        $volumeLevel = $this->maxLevel - 1;
+        if ($volumeLevel < 1) {
+            return false;
+        }
+
+        $dirs = $this->findByLevel($volumeLevel);
+        foreach ($dirs as $volumeDir) {
+            $pattern = '#\D*(\d+)\D*#';
+            if (1 !== preg_match($pattern, $volumeDir)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
