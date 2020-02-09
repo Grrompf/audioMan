@@ -23,6 +23,7 @@ namespace audioMan\volume;
 
 use audioMan\AbstractBase;
 use audioMan\mp3\Mp3AlbumCover;
+use audioMan\Registry;
 use audioMan\utils\CoverFinder;
 use audioMan\utils\Scanner;
 
@@ -36,9 +37,9 @@ class VolumeProcessing extends AbstractBase
     private $coverFinder;
     private $volumeTitle;
 
-    public function __construct(Scanner $scanner)
+    public function __construct()
     {
-        parent::__construct($scanner);
+        parent::__construct();
         $this->coverFinder = new CoverFinder();
         $this->volumeTitle = new VolumeTitle();
 
@@ -66,7 +67,7 @@ class VolumeProcessing extends AbstractBase
             }
             //compose volume title
             $volumeTitle = $this->volumeTitle->findTitle($volumeFile, $title);
-            $rootDir = $this->getScanner()->getRootDir();
+            $rootDir = Registry::get(Registry::KEY_LIB_DIR);
 
             //move file to root dir
             $move  = $rootDir.'/'.$volumeTitle;

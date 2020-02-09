@@ -23,6 +23,7 @@ namespace audioMan\mp3;
 
 
 use audioMan\AbstractBase;
+use audioMan\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -37,7 +38,7 @@ class Mp3TagWriter extends AbstractBase
     final public function handle(): void
     {
         //change to root dir
-        chdir($this->getScanner()->getRootDir());
+        chdir(Registry::get(Registry::KEY_LIB_DIR));
         $this->comment("Tag writing!");
 
         //rescan after renaming for having new name as title
@@ -70,7 +71,7 @@ class Mp3TagWriter extends AbstractBase
 
         //success
         if (count($files) > 0) {
-            $msg = "Tags written to <".count($files). " files> in <".basename($this->getScanner()->getRootDir()).">";
+            $msg = "Tags written to <".count($files). " files> in <".basename(Registry::get(Registry::KEY_LIB_DIR)).">";
             $this->comment($msg);
         } else {
             $this->comment("No tags written.");

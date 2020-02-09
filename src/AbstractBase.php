@@ -34,9 +34,9 @@ abstract class AbstractBase extends Messenger implements HandleInterface
 {
     private $scanner;
 
-    public function __construct(Scanner $scanner)
+    public function __construct()
     {
-        $this->scanner = $scanner;
+        $this->scanner = new Scanner();
     }
 
     final public function getScanner(): Scanner

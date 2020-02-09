@@ -19,59 +19,63 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\mp3;
-
-
-use audioMan\AbstractBase;
-use audioMan\utils\CoverFinder;
-use audioMan\utils\Scanner;
+namespace audioMan\album;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mp3Processor extends AbstractBase
+class AlbumTree
 {
-    private $converter;
-    private $joiner;
-    private $mover;
-    private $coverFinder;
+    public $tree = [];
+    protected static $instance = null;
 
-    public function __construct()
+    public static function add(array $albumModel)
     {
-        parent::__construct();
-        $this->converter = new Mp3Converter();
-        $this->coverFinder = new CoverFinder();
-        $this->joiner = new Mp3Joiner();
-        $this->mover = new Mp3Mover();
+        self::getInstance()->tree[] = $albumModel;
     }
 
-    /**
-     * Join multiple mp3 files to a single file, correcting time length and moves the processed mp3 file to parent dir.
-     */
-    final public function handle(): void
+    public static function createTree(array &$list, $parent): array
     {
-        //convert wma or other audio format files
-        $this->converter->handle();
 
-        //no mp3 files found? => break processing
-        if (false === $files = $this->getScanner()->scanFiles('mp3')) {
-            return;
+        $tree = array();
+        foreach ($parent as $k=>$l){
+            if(isset($list[$l['level']])){
+                $l['children'] = self::getInstance()::createTree($list, $list[$l['level']]);
+            }
+            $tree[] = $l;
+        }
+        return $tree;
+    }
+
+    public static function getAll(): array
+    {
+        $new = array();
+        foreach (self::getInstance()->tree as $model){
+            $new[$model['parentLevel']][] = $model;
         }
 
-        //merge files
-        $this->joiner->join($files);
+        $tree = self::createTree($new, [self::getInstance()->tree[0]]);
+        var_dump($new);die;
+        return $new;
+        return self::getInstance()::createTree(self::getInstance()->tree, self::getInstance()->tree[0]);
+    }
 
-        //cover finder IMPORTANT: after join but before moving
-        $cover = $this->coverFinder->find();
-        if ($cover) {
-            (new Mp3AlbumCover())->import($cover);
+    protected static function getInstance(): self
+    {
+        if (null === self::$instance) {
+            self::$instance = new self();
         }
 
-        //move merged file
-        $this->mover->move();
+        return self::$instance;
+    }
 
+    protected function __construct()
+    {
+    }
 
+    private function __clone()
+    {
     }
 }

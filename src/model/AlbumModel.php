@@ -19,26 +19,25 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan;
+namespace audioMan\model;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Worker
+class AlbumModel
 {
-    final public function process(array $subDirs, int $baseLevel)
-    {
-        $level = 0;
-        foreach ($subDirs as $path) {
-            $subDirs = explode('/', $path);
+    public $path;
+    public $parentDir;
+    public $noSubDir;
+    public $noAudioFiles;
 
-            $noSubDirs = count($subDirs) - $baseLevel;
-            if($noSubDirs>$level) {
-               $level = $noSubDirs;
-            }
-        }
-        return $level;
+    public function __construct(string $path, int $noSubDir, int $noAudioFiles)
+    {
+        $this->parentDir = dirname($path, 1);
+        $this->path = $path;
+        $this->noSubDir = $noSubDir;
+        $this->noAudioFiles = $noAudioFiles;
     }
 }

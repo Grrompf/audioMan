@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace audioMan\mp3;
 
 use audioMan\AbstractBase;
+use audioMan\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -36,7 +37,7 @@ class Mp3Formatter extends AbstractBase
     final public function handle(): void
     {
         //change to root dir
-        chdir($this->getScanner()->getRootDir());
+        chdir(Registry::get(Registry::KEY_LIB_DIR));
         $this->comment("Name formatting!");
 
         //rescan after moving files

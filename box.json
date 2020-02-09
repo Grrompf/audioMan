@@ -4,7 +4,8 @@
     "src"
   ],
   "files": [
-    "LICENSE"
+    "LICENSE",
+    "README.md"
   ],
   "finder": [
     {

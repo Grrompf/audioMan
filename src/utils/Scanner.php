@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace audioMan\utils;
 
 use audioMan\interfaces\FileNameInterface;
+use audioMan\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -30,24 +31,12 @@ use audioMan\interfaces\FileNameInterface;
  */
 class Scanner extends BaseScanner implements FileNameInterface
 {
-    private $rootDir;
-
-    public function __construct()
-    {
-        $this->rootDir = getcwd();
-    }
-
-    final public function getRootDir(): string
-    {
-        return $this->rootDir;
-    }
-
     /**
      * @return array|bool|false
      */
     final public function scanFiles(string $type = 'mp3', bool $scanRoot = false)
     {
-        if (!$scanRoot && getcwd() === $this->rootDir) {
+        if (!$scanRoot && getcwd() === Registry::get(Registry::KEY_LIB_DIR)) {
             return false;
         }
         $msg ="Scan for files in <".basename(getcwd()).">";

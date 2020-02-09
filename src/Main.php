@@ -21,14 +21,9 @@ declare(strict_types=1);
 
 namespace audioMan;
 
-use audioMan\mp3\Mp3Formatter;
-use audioMan\mp3\Mp3Normalizer;
-use audioMan\mp3\Mp3Processor;
-use audioMan\mp3\Mp3TagWriter;
-use audioMan\utils\Scanner;
-use audioMan\utils\SubDirFinder;
-use audioMan\utils\TmpCleaner;
-use audioMan\volume\VolumeProcessing;
+use audioMan\album\AlbumWorker;
+use audioMan\model\AlbumTree;;
+use audioMan\utils\AlbumFinder;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -40,138 +35,23 @@ class Main extends AbstractBase
     // todo: find album root
     // todo: option for format
     // todo: manifest for update
-    private $subDirScanner;
-
-    public function __construct()
-    {
-        parent::__construct(new Scanner());
-    }
 
     final public function handle(): void
     {
-        $msg = "Start assembling audio files!".PHP_EOL."Investigating <".basename($this->getScanner()->getRootDir()).">";
+        $msg = "Start assembling audio files!".PHP_EOL."Investigating <".basename(getcwd()).">";
         $this->comment($msg);
 
         $actualPath = getCwd();
+        //starting dir is root dir
+        Registry::set(Registry::KEY_ROOT_DIR, $actualPath);
 
-        //path of the processed library
+        //path of the processed album
         Registry::set(Registry::KEY_LIB_DIR, $actualPath);
 
-        $finder = new SubDirFinder();
-        $pathCollection = $finder->find($actualPath);
-        $isVolumeSuitable = $pathCollection->isVolumeSuitable();
-        $processor = new Mp3Processor($this->getScanner());
-
-        //processing files bringing them to root level
-        for ($i=$pathCollection->getMaxLevel(); $i>0; $i--) {
-            $subDirs = $pathCollection->findByLevel($i);
-            $isVolumeLevel = $pathCollection->isVolumeLevel($i);
-            foreach($subDirs as $path) {
-                chdir($path);
-                if (Registry::get(Registry::KEY_VOLUMES) && $isVolumeLevel && $isVolumeSuitable) {
-                    (new VolumeProcessing($this->getScanner()))->handle();
-                    continue;
-                }
-                $processor->handle();
-            }
-        }
-
-        //renaming files
-        $formatter = new Mp3Formatter($this->getScanner());
-        $formatter->handle();
-
-        //tagging
-        $tagger = new Mp3TagWriter($this->getScanner());
-        $tagger->handle();
-
-        //normalizing by default (OPTION)
-        if (Registry::get(Registry::KEY_NORMALIZE)) {
-            $normalizer = new Mp3Normalizer($this->getScanner());
-            $normalizer->handle();
-        }
-
-        //remove tmp files
-        TmpCleaner::clean();
-
-        $this->success("Finished <".basename($actualPath).">");
-        $this->break();
-
-        return;
-
-        $worker = new Worker();
-        $noSubDirs = count(explode('/', $actualPath));
-        echo $worker->process($dirs, $noSubDirs);
-
-        return;
-
-        $directory = new \RecursiveDirectoryIterator($actualPath);
-        $iterator = new \RecursiveIteratorIterator($directory);
-        $dirs = [];
-
-        /** @var \SplFileInfo $fileInfo */
-        foreach ($iterator as $fileInfo)
-        {
-            if ($fileInfo->isDir() && $fileInfo->getPath() !== $actualPath)
-            {
-                $dirs[] = ($fileInfo->getPath());
-            }
-        }
-        var_dump(array_unique($dirs));
-        return;
-
-        $iterator = new \DirectoryIterator($this->getScanner()->getRootDir());
-        foreach ($iterator as $fileInfo) {
-            if ($fileInfo->isDot()) {
-                continue;
-            }
-            if ($fileInfo->isDir()) {
-                chdir($fileInfo->getRealPath());
-//                $msg = "Sub directory found: <".basename(getcwd()).">. Investigating ...";
-//                $this->comment($msg);
-
-                $this->subDirScanner->handle();
-                //chdir($fileInfo->getRealPath());
-            }
-//            echo 'DIR: '.getcwd()."\n";
-//            $this->processor->handle();
-        }
-    }
-
-    private function scanSubDir(string $path): void
-    {
-        $actualPath = getCwd();
-        $msg = "Scan for sub directories in <".$actualPath.">";
-        $this->info($msg);
-
-        $iterator = new \DirectoryIterator($path);
-        foreach ($iterator as $fileInfo) {
-            if ($fileInfo->isDot() || $fileInfo->isFile()) {
-                continue;
-            }
-            if ($fileInfo->isDir()) {
-                chdir($fileInfo->getRealPath());
-                $subDirectory = getcwd();
-                $msg = "Sub directory found: <".$subDirectory.">. Change to dir...";
-                $this->comment($msg);
-
-                if (!$this->getScanner()->scanFiles('mp3')) {
-                    $this->scanSubDir($subDirectory);
-                }
-                $processor = new Processor($this->getScanner());
-
-                while ($processor->isProcessing()) {
-
-                    chdir('..');
-                    //break if root dir is reached
-                    if (getcwd() === $subDirectory) {
-                        $msg = "Start directory reached. <".$subDirectory.">. Break.";
-                        $this->comment($msg);
-                        break;
-                    }
-                    $msg = "Changed to parent directory: <".getcwd().">.";
-                    $this->info($msg);
-                }
-            }
-        }
+        $worker = new AlbumWorker($actualPath);
+        $worker->handle();
+//        (new AlbumFinder())->find($actualPath);
+//        var_dump(array_keys(AlbumTree::getAll()));
+//        return;
     }
 }

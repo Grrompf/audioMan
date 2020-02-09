@@ -23,6 +23,7 @@ namespace audioMan\mp3;
 
 
 use audioMan\AbstractBase;
+use audioMan\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -37,7 +38,7 @@ class Mp3Normalizer  extends AbstractBase
     final public function handle(): void
     {
         //change to root dir
-        chdir($this->getScanner()->getRootDir());
+        chdir(Registry::get(Registry::KEY_LIB_DIR));
         $this->comment("Normalizing mp3 files!");
 
         //rescan
@@ -61,7 +62,7 @@ class Mp3Normalizer  extends AbstractBase
             }
         }
         if ($noChanges > 0) {
-            $msg = "<".count($files). " files> normalized in <".basename($this->getScanner()->getRootDir()).">";
+            $msg = "<".count($files). " files> normalized in <".basename(Registry::get(Registry::KEY_LIB_DIR)).">";
             $this->comment($msg);
         } else {
             $this->info("No files normalized.");
