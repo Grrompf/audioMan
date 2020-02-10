@@ -22,8 +22,7 @@ declare(strict_types=1);
 namespace audioMan;
 
 use audioMan\album\AlbumWorker;
-use audioMan\model\AlbumTree;;
-use audioMan\utils\AlbumFinder;
+use audioMan\util\LevelCheck;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -32,26 +31,51 @@ use audioMan\utils\AlbumFinder;
  */
 class Main extends AbstractBase
 {
-    // todo: find album root
+    // todo: argument for saving
     // todo: option for format
     // todo: manifest for update
 
     final public function handle(): void
     {
-        $msg = "Start assembling audio files!".PHP_EOL."Investigating <".basename(getcwd()).">";
-        $this->comment($msg);
-
         $actualPath = getCwd();
         //starting dir is root dir
         Registry::set(Registry::KEY_ROOT_DIR, $actualPath);
-
-        //path of the processed album
         Registry::set(Registry::KEY_LIB_DIR, $actualPath);
+        $levelCheck = new LevelCheck();
 
+        //multiple books
+        if (Registry::get(Registry::KEY_MULTIPLE)) {
+            $msg = "Looking for multiple audio books in <".basename(getcwd()).">";
+            $this->comment($msg);
+
+            $iterator = new \DirectoryIterator($actualPath);
+            foreach ($iterator as $fileInfo) {
+                if ($fileInfo->isDot() || $fileInfo->isFile()) {
+                    continue;
+                }
+                if ($fileInfo->isDir()) {
+                    //path of the processed album
+                    Registry::set(Registry::KEY_LIB_DIR, $fileInfo->getRealPath());
+                    if (!$levelCheck->check($fileInfo->getRealPath())) {
+                        $this->warning("Skip path <".$fileInfo->getRealPath().">".PHP_EOL."Use option --force to process.");
+                        continue;
+                    }
+
+                    $worker = new AlbumWorker($fileInfo->getRealPath());
+                    $worker->handle();
+                }
+            }
+            return;
+        }
+
+        //check
+        if (!$levelCheck->check($actualPath)) {
+            $this->warning("Skip path <".$actualPath.">".PHP_EOL."Use option --force to process.");
+            return;
+        }
+
+        //single book
         $worker = new AlbumWorker($actualPath);
         $worker->handle();
-//        (new AlbumFinder())->find($actualPath);
-//        var_dump(array_keys(AlbumTree::getAll()));
-//        return;
     }
 }

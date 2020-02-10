@@ -43,9 +43,10 @@ class DefaultCommand extends Command
         $this
             ->setName('audioMan')
             ->addArgument('root', InputArgument::OPTIONAL, 'Directory to scan')
+            ->addOption('multiple', 'm', InputOption::VALUE_NONE, 'multiple audio books')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
-            ->addOption('volumes', null, InputOption::VALUE_NONE, 'force volumes')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'custom file name format')
+            ->addOption('volumes', null, InputOption::VALUE_NONE, 'force volumes')
             ->setHelp('Find more information in README.md')
             ->setDescription("Merges multiple audio files. Suited for audio books and radio play.".PHP_EOL.
                 "  Time issue of merged files are corrected. File size of is checked, too.".PHP_EOL.
@@ -82,6 +83,12 @@ class DefaultCommand extends Command
             $volumes = true;
         }
 
+        //multiple
+        $multiple = false;
+        if (true === $input->hasParameterOption(['--multiple', '-m'], true)) {
+            $multiple = true;
+        }
+
         //format
         if (true === $input->hasParameterOption(['--format', '-f'], false)) {
             //VALIDATE!!!!
@@ -90,6 +97,7 @@ class DefaultCommand extends Command
         Registry::set(Registry::KEY_VOLUMES, $volumes);
         Registry::set(Registry::KEY_NORMALIZE, $normalize);
         Registry::set(Registry::KEY_VERBOSITY, $verbosity);
+        Registry::set(Registry::KEY_MULTIPLE, $multiple);
 
         (new Requirements())->check();
         (new Main())->handle();

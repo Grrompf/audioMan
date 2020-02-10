@@ -30,6 +30,7 @@ class Registry
 {
     public const KEY_VERBOSITY = 'verbosity';
     public const KEY_NORMALIZE = 'normalize';
+    public const KEY_MULTIPLE  = 'multiple';
     public const KEY_VOLUMES   = 'volumes';
     public const KEY_FORMAT    = 'format';
     public const KEY_ROOT_DIR  = 'rootDir'; //start dir

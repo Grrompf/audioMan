@@ -19,25 +19,44 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\model;
+namespace audioMan\util;
+
+
+use audioMan\album\AlbumFinder;
+use audioMan\album\AlbumTree;
+use audioMan\Registry;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumModel
+class LevelCheck extends Messenger
 {
-    public $path;
-    public $noSubDir;
-    public $noAudioFiles;
-    public $level;
+    private $albumFinder;
 
-    public function __construct(string $path, int $noSubDir, int $noAudioFiles, int $level)
+    public function __construct()
     {
-        $this->path = $path;
-        $this->noSubDir = $noSubDir;
-        $this->noAudioFiles = $noAudioFiles;
-        $this->level = $level;
+        $this->albumFinder = new AlbumFinder();
+    }
+
+    final public function check(string $actualPath): bool
+    {
+        $this->albumFinder->find($actualPath);
+        $maxLevel = AlbumTree::getMaxLevel();
+        $errorMsg = 'Path <'.$actualPath.'> is not suited for correct joining audio book files.';
+
+        if (Registry::get(Registry::KEY_MULTIPLE) && $maxLevel > 3) {
+            $this->error($errorMsg);
+            return false;
+        }
+
+        if ($maxLevel > 2) {
+            $this->error($errorMsg);
+            return false;
+        }
+
+        return true;
     }
 }

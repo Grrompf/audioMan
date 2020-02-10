@@ -28,7 +28,7 @@ namespace audioMan\utils;
  */
 class ImgCheck
 {
-    public const MAX_FILE_SIZE = 100;
+    public const MAX_FILE_SIZE = 150; //150 kB
 
     /**
      * Checking if file is an image type, in detail jpg, jpeg or png

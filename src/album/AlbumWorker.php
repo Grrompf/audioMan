@@ -48,6 +48,9 @@ class AlbumWorker extends AbstractBase
 
     final public function handle(): void
     {
+        $msg = "Start assembling audio files!".PHP_EOL."Investigating <".basename(getcwd()).">";
+        $this->comment($msg);
+
         $finder = new SubDirFinder();
         $pathCollection = $finder->find($this->actualPath);
         $isVolumeSuitable = $pathCollection->isVolumeSuitable();

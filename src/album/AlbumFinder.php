@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan\album;
 
+use audioMan\interfaces\AudioTypeInterface;
 use audioMan\model\AlbumModel;
 use audioMan\Registry;
 use audioMan\utils\Messenger;
@@ -30,66 +31,57 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumFinder extends Messenger
+class AlbumFinder extends Messenger implements AudioTypeInterface
 {
     /**
      * Scans all sub dirs starting from actual. Find audio file level. 
      */
     final public function find(string $actualPath): void
     {
-        $iterator = new \DirectoryIterator($actualPath);
         $noSubDir = 0;
         $noAudioFile = 0;
+        $level = $this->calcLevel($actualPath);
 
-        $level = count(explode('/', $actualPath)) - count(explode('/', Registry::get(Registry::KEY_ROOT_DIR)));
-
+        $iterator = new \DirectoryIterator($actualPath);
         foreach ($iterator as $fileInfo) {
             if ($fileInfo->isDot()) {
                 continue;
             }
             if ($fileInfo->isDir()) {
                 $noSubDir++;
-              //  echo $fileInfo->getRealPath()." ($noSubDir)".PHP_EOL;
                 $this->find($fileInfo->getRealPath());
-
-                $this->warning($fileInfo->getFilename());
             }
             if ($fileInfo->isFile()) {
-                $audioFiles = ['mp3', 'wma'];
                 $extension = strtolower($fileInfo->getExtension());
-                if (in_array($extension, $audioFiles)) {
+                if (in_array($extension, self::AUDIO_TYPES) || $extension === 'mp3') {
                     $noAudioFile++;
                 }
             }
         }
 
-
         //LOGIC
-        $album = new AlbumModel($actualPath, $noSubDir, $noAudioFile);
-
-        // parentDir (for rootDir parentDir is null)
-        $parentDir = null;
-        if (Registry::get(Registry::KEY_ROOT_DIR) !== $actualPath ) {
-            $parentDir = dirname($actualPath, 1);
-        }
-
-        //SONDERFALL
-        //ignore dir if no subDirs and no audioFiles
+       //ignore dir if no subDirs and no audioFiles
         if ($noSubDir === 0 && $noAudioFile === 0) {
-            //todo: ignore
-            //todo: get parent Dir to remove dir as subDir
-            //todo: reevaluate parent Dir with less subDirs
+            return;
         }
 
         //AUDIO FILE DIR
         if ($noSubDir === 0 && $noAudioFile > 0) {
             //isAudioFileDir
-            //todo: get parent Dir to remove dir as subDir
-            //todo: reevaluate parent Dir with less subDirs
+            $album = new AlbumModel($actualPath, $noSubDir, $noAudioFile, $level);
+            AlbumTree::add($album);
         }
 
-        $test = ['path' => $actualPath, 'level' => $level, 'parentDir' => $level-1, 'noSubDir' => $noSubDir, 'noAudioFile' => $noAudioFile];
-        AlbumTree::add($test);
+
     }
+
+    private function calcLevel(string $actualPath): int
+    {
+        $rootLevel =  count(explode('/', Registry::get(Registry::KEY_ROOT_DIR)));
+        $actualLevel =  count(explode('/', $actualPath));
+
+        return $actualLevel - $rootLevel;
+    }
+
 
 }

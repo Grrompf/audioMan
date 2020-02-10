@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace audioMan\album;
 
+use audioMan\model\AlbumModel;
+use audioMan\Registry;
+
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
@@ -31,35 +34,16 @@ class AlbumTree
     public $tree = [];
     protected static $instance = null;
 
-    public static function add(array $albumModel)
+    public static function add(AlbumModel $albumModel)
     {
-        self::getInstance()->tree[] = $albumModel;
+        $level = $albumModel->level;
+        self::getInstance()->tree[$level][] = $albumModel;
     }
 
-    public static function createTree(array &$list, $parent): array
+    public static function getMaxLevel(): int
     {
-
-        $tree = array();
-        foreach ($parent as $k=>$l){
-            if(isset($list[$l['level']])){
-                $l['children'] = self::getInstance()::createTree($list, $list[$l['level']]);
-            }
-            $tree[] = $l;
-        }
-        return $tree;
-    }
-
-    public static function getAll(): array
-    {
-        $new = array();
-        foreach (self::getInstance()->tree as $model){
-            $new[$model['parentLevel']][] = $model;
-        }
-
-        $tree = self::createTree($new, [self::getInstance()->tree[0]]);
-        var_dump($new);die;
-        return $new;
-        return self::getInstance()::createTree(self::getInstance()->tree, self::getInstance()->tree[0]);
+        $minLevel = min(array_keys(self::getInstance()->tree));
+        return max(array_keys(self::getInstance()->tree));
     }
 
     protected static function getInstance(): self
