@@ -107,8 +107,19 @@ class DefaultCommand extends Command
 
         //output
         if (true === $input->hasParameterOption(['--out', '-o'], false)) {
-            //todo check VALIDATE!!!!
-            Registry::set(Registry::KEY_OUTPUT, $input->getOption('out'));
+
+            $outDir = $input->getOption('out');
+            var_dump($outDir);
+            var_dump(realpath($outDir));
+            var_dump(file_exists($outDir));
+            if ( !file_exists($outDir) && !is_dir($outDir) ) {
+                var_dump('anlegen');
+                if (!mkdir( $outDir, 0755, true )) {
+                    die(PHP_EOL."Cannot create output dir <".$outDir.">".PHP_EOL."Check your rights!".PHP_EOL."Exit".PHP_EOL);
+                }
+            }
+            die();
+            Registry::set(Registry::KEY_OUTPUT, $outDir);
         }
 
         Registry::set(Registry::KEY_FORCE, $force);
