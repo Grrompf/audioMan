@@ -59,7 +59,12 @@ class DefaultCommand extends Command
 
     final protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        //todo: root directory as argument
+        if ($input->hasArgument('root')) {
+            $rootDir = $input->getArgument('root');
+            //important to resolve home directory
+            $rootDir = str_replace('~', getenv('HOME'), $rootDir);
+        }
+
         //verbose level
         $verbosity = 0;
         if (true === $input->hasParameterOption(['--quiet', '-q'], true)) {

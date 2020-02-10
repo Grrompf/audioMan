@@ -51,7 +51,7 @@ class Mp3AlbumCover extends Messenger implements FileNameInterface
         }
         //has album cover
         if (strpos(implode($output),"APIC") > 0) {
-            $this->warning("Album cover found.");
+            $this->comment("Album cover found.");
             return;
         }
 

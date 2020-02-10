@@ -50,12 +50,12 @@ class CoverFinder extends BaseScanner
         //single image
         if (1 === $noImg) {
             $cover = $imgFiles[0];
-            $this->warning("Album cover <".$cover.">found in <".basename(getcwd()).">");
+            $this->comment("Album cover <".$cover.">found in <".basename(getcwd()).">");
             return $cover;
         }
         //multiple images but best match found
         if ($noImg > 1 && ($cover = $this->findBestMatch($imgFiles))) {
-            $this->warning("Album cover <".$cover.">found in <".basename(getcwd()).">");
+            $this->comment("Album cover <".$cover.">found in <".basename(getcwd()).">");
             return $cover;
         }
         //multiple images left
