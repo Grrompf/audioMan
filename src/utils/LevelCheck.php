@@ -23,7 +23,6 @@ namespace audioMan\util;
 
 
 use audioMan\album\AlbumFinder;
-use audioMan\album\AlbumTree;
 use audioMan\Registry;
 use audioMan\utils\Messenger;
 
@@ -43,10 +42,20 @@ class LevelCheck extends Messenger
 
     final public function check(string $actualPath): bool
     {
-        $this->albumFinder->find($actualPath);
-        $maxLevel = AlbumTree::getMaxLevel();
-        $errorMsg = 'Path <'.$actualPath.'> is not suited for correct joining audio book files.';
+        $tree = $this->albumFinder->find($actualPath);
 
+        //set copy flag if files on album level
+        $copy = $tree->getMinLevel() === 1;
+        Registry::set(Registry::KEY_COPY, $copy);
+
+        $maxLevel = $tree ? $tree->getMaxLevel() : 0;
+
+        if (Registry::get(Registry::KEY_FORCE)) {
+            $this->warning('File merge is forced!');
+            return true;
+        }
+
+        $errorMsg = 'Path <'.$actualPath.'> is not suited for correct joining audio book files.';
         if (Registry::get(Registry::KEY_MULTIPLE) && $maxLevel > 3) {
             $this->error($errorMsg);
             return false;

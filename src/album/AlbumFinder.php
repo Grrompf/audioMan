@@ -36,11 +36,12 @@ class AlbumFinder extends Messenger implements AudioTypeInterface
     /**
      * Scans all sub dirs starting from actual. Find audio file level. 
      */
-    final public function find(string $actualPath): void
+    final public function find(string $actualPath): ?AlbumTree
     {
         $noSubDir = 0;
         $noAudioFile = 0;
         $level = $this->calcLevel($actualPath);
+        $albumTree = new AlbumTree();
 
         $iterator = new \DirectoryIterator($actualPath);
         foreach ($iterator as $fileInfo) {
@@ -62,17 +63,17 @@ class AlbumFinder extends Messenger implements AudioTypeInterface
         //LOGIC
        //ignore dir if no subDirs and no audioFiles
         if ($noSubDir === 0 && $noAudioFile === 0) {
-            return;
+            return null;
         }
 
         //AUDIO FILE DIR
         if ($noSubDir === 0 && $noAudioFile > 0) {
             //isAudioFileDir
             $album = new AlbumModel($actualPath, $noSubDir, $noAudioFile, $level);
-            AlbumTree::add($album);
+            $albumTree->add($album);
         }
 
-
+        return $albumTree;
     }
 
     private function calcLevel(string $actualPath): int

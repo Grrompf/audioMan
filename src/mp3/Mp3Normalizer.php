@@ -32,13 +32,21 @@ use audioMan\Registry;
  */
 class Mp3Normalizer  extends AbstractBase
 {
+    private $path;
+
+    public function __construct(string $path)
+    {
+        parent::__construct();
+        $this->path = $path;
+    }
+
     /**
      * Rewriting title and album of the mp3 file
      */
     final public function handle(): void
     {
         //change to root dir
-        chdir(Registry::get(Registry::KEY_LIB_DIR));
+        chdir($this->path);
         $this->comment("Normalizing mp3 files!");
 
         //rescan

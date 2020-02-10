@@ -45,7 +45,9 @@ class DefaultCommand extends Command
             ->addArgument('root', InputArgument::OPTIONAL, 'Directory to scan')
             ->addOption('multiple', 'm', InputOption::VALUE_NONE, 'multiple audio books')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'force processing on deep directory structures')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'custom file name format')
+            ->addOption('out', 'o', InputOption::VALUE_REQUIRED, 'custom output directory')
             ->addOption('volumes', null, InputOption::VALUE_NONE, 'force volumes')
             ->setHelp('Find more information in README.md')
             ->setDescription("Merges multiple audio files. Suited for audio books and radio play.".PHP_EOL.
@@ -57,6 +59,8 @@ class DefaultCommand extends Command
 
     final protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        //todo: root directory as argument
+        //todo: option as save directory (move if album directory has no files, otherwise cp)
         //verbose level
         $verbosity = 0;
         if (true === $input->hasParameterOption(['--quiet', '-q'], true)) {
@@ -83,6 +87,12 @@ class DefaultCommand extends Command
             $volumes = true;
         }
 
+        //force
+        $force = false;
+        if (true === $input->hasParameterOption('--force', true)) {
+            $force = true;
+        }
+
         //multiple
         $multiple = false;
         if (true === $input->hasParameterOption(['--multiple', '-m'], true)) {
@@ -91,9 +101,17 @@ class DefaultCommand extends Command
 
         //format
         if (true === $input->hasParameterOption(['--format', '-f'], false)) {
-            //VALIDATE!!!!
+            //todo check VALIDATE!!!!
             Registry::set(Registry::KEY_FORMAT, $input->getOption('format'));
         }
+
+        //output
+        if (true === $input->hasParameterOption(['--out', '-o'], false)) {
+            //todo check VALIDATE!!!!
+            Registry::set(Registry::KEY_OUTPUT, $input->getOption('out'));
+        }
+
+        Registry::set(Registry::KEY_FORCE, $force);
         Registry::set(Registry::KEY_VOLUMES, $volumes);
         Registry::set(Registry::KEY_NORMALIZE, $normalize);
         Registry::set(Registry::KEY_VERBOSITY, $verbosity);

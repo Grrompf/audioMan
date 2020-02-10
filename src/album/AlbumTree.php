@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace audioMan\album;
 
 use audioMan\model\AlbumModel;
-use audioMan\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -32,34 +31,30 @@ use audioMan\Registry;
 class AlbumTree
 {
     public $tree = [];
-    protected static $instance = null;
 
-    public static function add(AlbumModel $albumModel)
+    final public function add(AlbumModel $albumModel): void
     {
         $level = $albumModel->level;
-        self::getInstance()->tree[$level][] = $albumModel;
+        $this->tree[$level][] = $albumModel;
     }
 
-    public static function getMaxLevel(): int
+    /**
+     * Determine the depth of directory structure. For a single album,
+     * we expect the files on next sub dir (lvl 1) or on volumes on level 2.
+     * For multiple, we expect more than one book on root level. Therefore,
+     * the level is one higher.
+     */
+    final public function getMaxLevel(): int
     {
-        $minLevel = min(array_keys(self::getInstance()->tree));
-        return max(array_keys(self::getInstance()->tree));
+        return max(array_keys($this->tree));
     }
 
-    protected static function getInstance(): self
+    /**
+     * If level is 1, the audio files are directly on album level. Therefore,
+     * the files are copied to an optional save dir instead of being moved.
+     */
+    final public function getMinLevel(): int
     {
-        if (null === self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    protected function __construct()
-    {
-    }
-
-    private function __clone()
-    {
+        return min(array_keys($this->tree));
     }
 }

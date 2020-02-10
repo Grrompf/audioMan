@@ -31,13 +31,21 @@ use audioMan\Registry;
  */
 class Mp3Formatter extends AbstractBase
 {
+    private $path;
+
+    public function __construct(string $path)
+    {
+        parent::__construct();
+        $this->path = $path;
+    }
+
     /**
      * Reformat mp3 fileName
      */
     final public function handle(): void
     {
-        //change to root dir
-        chdir(Registry::get(Registry::KEY_LIB_DIR));
+        //change to working dir
+        chdir($this->path);
         $this->comment("Name formatting!");
 
         //rescan after moving files

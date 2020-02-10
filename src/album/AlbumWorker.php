@@ -70,17 +70,24 @@ class AlbumWorker extends AbstractBase
             }
         }
 
+        //option output
+        if (Registry::get(Registry::KEY_OUTPUT)) {
+            $isCopy = Registry::get(Registry::KEY_COPY);
+            //todo: move or copy
+            //todo: get path to working dir
+        }
+
         //renaming files
-        $formatter = new Mp3Formatter();
+        $formatter = new Mp3Formatter($path);
         $formatter->handle();
 
         //tagging
-        $tagger = new Mp3TagWriter();
+        $tagger = new Mp3TagWriter($path);
         $tagger->handle();
 
         //normalizing by default (OPTION)
         if (Registry::get(Registry::KEY_NORMALIZE)) {
-            $normalizer = new Mp3Normalizer();
+            $normalizer = new Mp3Normalizer($path);
             $normalizer->handle();
         }
 
