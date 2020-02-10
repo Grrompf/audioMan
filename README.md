@@ -6,7 +6,9 @@ Time issue of merged files are corrected. File size of is checked, too.
 Wma files are converted. If album art (cover) is found, it is tagged, next to title, album and genre.
 Files are renamed in format <# - title.mp3> and finally normalized.
 
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=flat-square)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=plastic)](https://php.net/)
+![GitHub](https://img.shields.io/github/license/grrompf/audioMan?style=plastic)
+![GitHub last commit](https://img.shields.io/github/last-commit/grrompf/audioMan?style=plastic)
 
 REQUIREMENTS
 ============
@@ -44,7 +46,9 @@ Options
 * __--quite__ | -q
 * __--verbose__  | -v / -vv / -vvv
 * __--no-normalize__ | __-N__   
-* __--volumes__ 
+* __--volumes__
+* __--force__
+* __--multiple__ | -m 
 * __--format__ | __-f__ <#Your File Name Format#>  
 
 Description
@@ -59,6 +63,24 @@ tagged on the mp3 file before moving to parent directory. Images are always chec
 Merge and moving will stop on root level of the audio book directory. All merged files will be found there... 
 Finally files are *renamed (format: # - title.mp3)*, *title, album and genre are written into tags* and the files are *normalized*.
 ***
+__IMPORTANT!__
+Change to the directory, you want to process. __AudioMan__ will always start processing on the actual directory. If you
+want to process a single book or radio play series, change to the parent directory of the episodes.
+
+__Example:__ Directory "The X-Files" contains all episodes in many sub dirs. Change to "The X-Files". 
+
+If you have multiple audio books to process, change to the parent dir and use the option --multiple: This increases 
+the sub dir level search by one. Otherwise, all your books will be merged to one.
+Since the original files are always kept, it is not a big problem but the result is probably not what you are looking for. 
+
+__Example:__ Directory "AudioBooks" contain all books in many sub dirs. Change to "AudioBooks".
+             audioMan --multiple. 
+
+Since the level depth is checked, some directories are probably skipped. This behavior happens if you have additional sub dirs
+just for ordering. You can force to process these using the option --force. But be careful since the result is probably not 
+what you are looking for.
+It is better to move the sub dirs manually to album level. Empty dirs are ignored anyway.     
+***
 Normalisation is important for some older car mp3 players which cannot handle utf-8, special chars or white spaces.
 You can suppress normalization if you add the option --no-normalize. 
 ***
@@ -67,11 +89,20 @@ may exceed convenient file size. Since most of the players cannot remember the f
 follow the story on breaks. Therefore, you can force by using the option --volumes to stop further merging after joining
 files on chapters or CDs. You will receive multiple files for the book, one for each CD or chapter __as long as the files are
 provided separated in directories__ which MUST contain a number.
+
+__Example:__
+    audioMan --volumes
+    
 ***
 If you have a collection of radio plays or audio books to process, start audioMan on the directory containing the collection.
 AudioMan will automatically find the files to process. You will therefore receive all resulting files on the root directory 
 of each audio book. So you still will have some work to do for paste and copy.                          
-The original files are not altered, touched or removed.
+If you use the option -o <DIRECTORY TO MOVE MERGED FILES>, the processed files are moved or copied to the given dir.   
+With this option, the original files are not altered, touched or removed.
+
+__Example:__
+    audioMan -o <DIR> 
+    
 ***
 The resulting file name is formatted by default (eg "01 - Your fine book.mp3"). This is even the title which is written to 
 the mp3 tag. If you want to force your custom title format by using the option --format or -f followed by a simplified
@@ -93,8 +124,8 @@ Numbers are evaluated by the total amount of files, and therefore will have a le
 FAQ
 ===
 
-* What happens if I have sub dirs and mp3 files on root dir?
-   Only sub dirs are scanned and processed. It will result on additional mp3 files on root dir.
+* What happens if I have sub dirs and mp3 files on album dir?
+   Only sub dirs are scanned and processed. It will result on additional mp3 files on album dir.
 * What happens if I have sub dirs and mp3 files in a sub dir?
    Sub dirs are scanned and processed. After moving the merged file to parent dir, it will merge all the files found on
    this level. THIS IS PROBABLY NOT THE RESULT YOU WANTED.

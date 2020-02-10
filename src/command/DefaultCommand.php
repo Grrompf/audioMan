@@ -42,7 +42,6 @@ class DefaultCommand extends Command
     {
         $this
             ->setName('audioMan')
-            ->addArgument('root', InputArgument::OPTIONAL, 'Directory to scan')
             ->addOption('multiple', 'm', InputOption::VALUE_NONE, 'multiple audio books')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
             ->addOption('force', null, InputOption::VALUE_NONE, 'force processing on deep directory structures')
@@ -59,12 +58,6 @@ class DefaultCommand extends Command
 
     final protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($input->hasArgument('root')) {
-            $rootDir = $input->getArgument('root');
-            //important to resolve home directory
-            $rootDir = str_replace('~', getenv('HOME'), $rootDir);
-        }
-
         //verbose level
         $verbosity = 0;
         if (true === $input->hasParameterOption(['--quiet', '-q'], true)) {
