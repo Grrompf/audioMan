@@ -31,7 +31,8 @@ use audioMan\util\LevelCheck;
  */
 class Main extends AbstractBase
 {
-    // todo: argument for saving
+    // todo: root directory as argument
+    // todo: edit Readme
     // todo: option for format
     // todo: manifest for update
 

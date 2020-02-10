@@ -40,6 +40,9 @@ class LevelCheck extends Messenger
         $this->albumFinder = new AlbumFinder();
     }
 
+    /**
+     * Sets copy flag and skip or force merge on deep dir level
+     */
     final public function check(string $actualPath): bool
     {
         $tree = $this->albumFinder->find($actualPath);

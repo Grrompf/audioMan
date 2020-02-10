@@ -24,6 +24,7 @@ namespace audioMan\command;
 use audioMan\Main;
 use audioMan\Registry;
 use audioMan\Requirements;
+use audioMan\utils\Tools;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +40,6 @@ class DefaultCommand extends Command
 {
     final protected function configure(): void
     {
-        // ->register('audioMan') //todo: was ist das?
         $this
             ->setName('audioMan')
             ->addArgument('root', InputArgument::OPTIONAL, 'Directory to scan')
@@ -60,7 +60,6 @@ class DefaultCommand extends Command
     final protected function execute(InputInterface $input, OutputInterface $output): int
     {
         //todo: root directory as argument
-        //todo: option as save directory (move if album directory has no files, otherwise cp)
         //verbose level
         $verbosity = 0;
         if (true === $input->hasParameterOption(['--quiet', '-q'], true)) {
@@ -109,16 +108,9 @@ class DefaultCommand extends Command
         if (true === $input->hasParameterOption(['--out', '-o'], false)) {
 
             $outDir = $input->getOption('out');
-            var_dump($outDir);
-            var_dump(realpath($outDir));
-            var_dump(file_exists($outDir));
-            if ( !file_exists($outDir) && !is_dir($outDir) ) {
-                var_dump('anlegen');
-                if (!mkdir( $outDir, 0755, true )) {
-                    die(PHP_EOL."Cannot create output dir <".$outDir.">".PHP_EOL."Check your rights!".PHP_EOL."Exit".PHP_EOL);
-                }
-            }
-            die();
+            //important to resolve home directory
+            $outDir = str_replace('~', getenv('HOME'), $outDir);
+            Tools::createDir($outDir);
             Registry::set(Registry::KEY_OUTPUT, $outDir);
         }
 

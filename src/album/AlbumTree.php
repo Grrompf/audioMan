@@ -34,7 +34,7 @@ class AlbumTree
 
     final public function add(AlbumModel $albumModel): void
     {
-        $level = $albumModel->level;
+        $level = (int) $albumModel->level;
         $this->tree[$level][] = $albumModel;
     }
 
@@ -46,6 +46,9 @@ class AlbumTree
      */
     final public function getMaxLevel(): int
     {
+        if (empty($tree)) {
+            return 0;
+        }
         return max(array_keys($this->tree));
     }
 
@@ -55,6 +58,9 @@ class AlbumTree
      */
     final public function getMinLevel(): int
     {
+        if (empty($tree)) {
+            return 0;
+        }
         return min(array_keys($this->tree));
     }
 }

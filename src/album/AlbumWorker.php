@@ -27,6 +27,7 @@ use audioMan\mp3\Mp3Normalizer;
 use audioMan\mp3\Mp3Processor;
 use audioMan\mp3\Mp3TagWriter;
 use audioMan\Registry;
+use audioMan\utils\OutPut;
 use audioMan\utils\SubDirFinder;
 use audioMan\utils\TmpCleaner;
 use audioMan\volume\VolumeProcessing;
@@ -70,24 +71,28 @@ class AlbumWorker extends AbstractBase
             }
         }
 
+        $workingDir = $this->actualPath;
+
         //option output
         if (Registry::get(Registry::KEY_OUTPUT)) {
-            $isCopy = Registry::get(Registry::KEY_COPY);
-            //todo: move or copy
-            //todo: get path to working dir
+            $out = new OutPut($workingDir, $this->isCopy());
+            $out->handle();
+
+            //set new working dir
+            $workingDir = $out->getWorkingDir();
         }
 
         //renaming files
-        $formatter = new Mp3Formatter($path);
+        $formatter = new Mp3Formatter($workingDir);
         $formatter->handle();
 
         //tagging
-        $tagger = new Mp3TagWriter($path);
+        $tagger = new Mp3TagWriter($workingDir);
         $tagger->handle();
 
         //normalizing by default (OPTION)
         if (Registry::get(Registry::KEY_NORMALIZE)) {
-            $normalizer = new Mp3Normalizer($path);
+            $normalizer = new Mp3Normalizer($workingDir);
             $normalizer->handle();
         }
 
@@ -96,5 +101,16 @@ class AlbumWorker extends AbstractBase
 
         $this->success("Finished <".basename($this->actualPath).">");
         $this->break();
+    }
+
+    private function isCopy(): bool
+    {
+        $isCopy = false; //default
+        if (Registry::get(Registry::KEY_COPY))
+        {
+            $isCopy = (bool) Registry::get(Registry::KEY_COPY);
+        }
+
+        return $isCopy;
     }
 }

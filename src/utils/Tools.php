@@ -46,4 +46,16 @@ class Tools
     {
         return round($size/1000000, 1);
     }
+
+    /**
+     * Create directory recursive
+     */
+    public static function createDir(string $path): void
+    {
+        if ( !file_exists($path) && !is_dir($path) ) {
+            if (!mkdir( $path, 0755, true )) {
+                die(PHP_EOL."Cannot create output dir <".$path.">".PHP_EOL."Check your rights!".PHP_EOL."Exit".PHP_EOL);
+            }
+        }
+    }
 }
