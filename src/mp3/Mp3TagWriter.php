@@ -71,7 +71,7 @@ class Mp3TagWriter extends AbstractBase
             //mid3v2
             exec($cmd, $output, $retVal);
             if (0 !== $retVal) {
-                $this->error("Error while writing tags to <".$fileName."> in <".getcwd().">".PHP_EOL."Details: ".$output);
+                $this->error("Error while writing tags to <".$fileName."> in <".getcwd().">".PHP_EOL."Details: ".implode($output));
                 $msg = PHP_EOL."Exit".PHP_EOL;
                 die($msg);
             }

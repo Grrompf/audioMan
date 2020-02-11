@@ -51,7 +51,7 @@ class Mp3Mover extends Messenger implements FileNameInterface
         $moveCmd = 'mv '.$oldFileName." $move";
         exec($moveCmd, $output, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while moving <".$oldFileName."> in <".getcwd().">".PHP_EOL."Details: ".$output);
+            $this->error("Error while moving <".$oldFileName."> in <".getcwd().">".PHP_EOL."Details: ".implode($output));
             $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         } else {
@@ -65,7 +65,7 @@ class Mp3Mover extends Messenger implements FileNameInterface
             exec($removeCmd, $output, $retVal);
             if (0 !== $retVal) {
                 $this->error(
-                    "Error while removing <".self::CONCAT_FILE_NAME."> in <".getcwd().">".PHP_EOL."Details: ".$output
+                    "Error while removing <".self::CONCAT_FILE_NAME."> in <".getcwd().">".PHP_EOL."Details: ".implode($output)
                 );
                 $msg = PHP_EOL."Exit".PHP_EOL;
                 die($msg);

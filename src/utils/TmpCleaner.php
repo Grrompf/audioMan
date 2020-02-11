@@ -69,7 +69,7 @@ class TmpCleaner extends Messenger
                     exec($removeCmd, $output, $retVal);
                     if (0 !== $retVal) {
                         self::getInstance()->error(
-                            "Error while removing <".$fileToRemove.">".PHP_EOL."Details: ".$output
+                            "Error while removing <".$fileToRemove.">".PHP_EOL."Details: ".implode($output)
                         );
                         $msg = PHP_EOL."Exit".PHP_EOL;
                         die($msg);

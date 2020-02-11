@@ -74,7 +74,7 @@ class VolumeProcessing extends AbstractBase
             $moveCmd = 'mv '.escapeshellarg($volumeFile)." ".escapeshellarg($move);
             exec($moveCmd, $output, $retVal);
             if (0 !== $retVal) {
-                $this->error("Error while moving <".$volumeFile."> in <".basename(getcwd()).">".PHP_EOL."Details: ".$output);
+                $this->error("Error while moving <".$volumeFile."> in <".basename(getcwd()).">".PHP_EOL."Details: ".implode($output));
                 $msg = PHP_EOL."Exit".PHP_EOL;
                 die($msg);
             } else {

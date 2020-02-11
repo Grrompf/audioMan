@@ -57,7 +57,7 @@ class Mp3Converter extends AbstractBase implements AudioTypeInterface
         $cmd = 'find '.getcwd()."/ -iname \*.".$type." -exec ffmpeg -i {} -ab 160k {}.mp3 \; -exec rename 's/\.".$type."\.mp3$/.mp3/' {}.mp3 \\";
         exec($cmd, $output, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while converting ".$type." to mp3 in <".getcwd().">".PHP_EOL."Details: ".$output);
+            $this->error("Error while converting ".$type." to mp3 in <".getcwd().">".PHP_EOL."Details: ".implode($output));
             $msg = PHP_EOL."Exit".PHP_EOL;
             die($msg);
         }
