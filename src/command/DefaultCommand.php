@@ -24,9 +24,9 @@ namespace audioMan\command;
 use audioMan\Main;
 use audioMan\Registry;
 use audioMan\Requirements;
+use audioMan\utils\SimplifiedRegex;
 use audioMan\utils\Tools;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -98,8 +98,9 @@ class DefaultCommand extends Command
 
         //format
         if (true === $input->hasParameterOption(['--format', '-f'], false)) {
-            //todo check VALIDATE!!!!
-            Registry::set(Registry::KEY_FORMAT, $input->getOption('format'));
+            $simplifiedRegex = $input->getOption('format');
+            $pattern = (new SimplifiedRegex())->compose($simplifiedRegex);
+            Registry::set(Registry::KEY_FORMAT, $pattern);
         }
 
         //output

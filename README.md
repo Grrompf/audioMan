@@ -106,17 +106,25 @@ __Example:__
 ***
 The resulting file name is formatted by default (eg "01 - Your fine book.mp3"). This is even the title which is written to 
 the mp3 tag. If you want to force your custom title format by using the option --format or -f followed by a simplified
-regex pattern. Each pattern has to be surrounded by two #, a number is mandatory and identified by n, whitespaces are \s,
-a dot \. and a dash is -. The title is taken from the parent directory or above and is symbolized as TITLE.  
+regex pattern. Allowed expressions:
+
+* n _number_
+* TITLE   
+* . _dot_
+* \- _dash_
+* _space_
+
+A number is mandatory and identified by n, whitespaces are as they are, dot . and dash -. 
+The title is taken from the parent directory or above and is symbolized as TITLE.  
 
 __Example 1:__
-    #n\s-\sTITLE# (Default: "1 - My Book.mp3")  
+    "n - TITLE" (Default: "1 - My Book.mp3")  
 
 __Example 2:__
-    #n\.TITLE# ("1.My Book.mp3")  
+    "n.TITLE" ("1.My Book.mp3")  
 
 __Example 3:__
-    #TITLE\s\n# ("My Book 1.mp3")
+    "TITLE n" ("My Book 1.mp3")
     
 Numbers are evaluated by the total amount of files, and therefore will have a leading 0 on books with more than 10 files.
     

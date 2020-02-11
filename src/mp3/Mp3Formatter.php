@@ -31,6 +31,8 @@ use audioMan\Registry;
  */
 class Mp3Formatter extends AbstractBase
 {
+    const DEFAULT_PATTERN = '#^\d+\s\-\s(.*)$#';
+
     private $path;
 
     public function __construct(string $path)
@@ -137,7 +139,12 @@ class Mp3Formatter extends AbstractBase
     private function isPerfect(string $fileName): bool
     {
         //wanted 01 - playMe for fun.mp3
-        $pattern = '#^\d+\s\-\s(.*)$#';
+        $pattern = self::DEFAULT_PATTERN;
+
+        //custom format
+        if ($custom = Registry::get(Registry::KEY_FORMAT)) {
+            $pattern = $custom;
+        }
 
         return 1 === preg_match($pattern, $fileName, $matches);
     }
