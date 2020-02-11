@@ -31,7 +31,6 @@ use audioMan\Registry;
  */
 class Mp3Formatter extends AbstractBase
 {
-    const DEFAULT_PATTERN   = '#^\d+\s\-\s(.*)$#';
     const DEFAULT_SEPARATOR = ' - ';
 
     private $path;
@@ -85,14 +84,18 @@ class Mp3Formatter extends AbstractBase
     {
         $fileName = pathinfo($basename, PATHINFO_FILENAME);
 
+        //skip on normalized files eg 01_-_file_for_you.mp3
+        if (false === strpos($fileName, ' ') && false !== strpos($fileName, '_')) {
+            return $basename;
+        };
+
         //remove whitespaces
         $fileName = trim($fileName);
 
         //default: '1. file', '01 - file', '(07).file', '07 file', '07-file', '(07).file',
         $pattern = '#([A-z].*)$#';;
         if (1 !== preg_match($pattern, $fileName, $matches)) {
-            $this->cleanTitle($fileName);
-            return $fileName.'.mp3';
+            return $basename;
         }
         $title = $matches[1];
 
@@ -100,8 +103,7 @@ class Mp3Formatter extends AbstractBase
         $extract = str_replace($title, '', $fileName);
         $numberPattern = '#(\d+).*$#';
         if (1 !== preg_match($numberPattern, $extract, $matches)) {
-            $this->cleanTitle($fileName);
-            return $fileName.'.mp3';
+            return $basename;
         }
         $number = $matches[1];
 
@@ -111,8 +113,7 @@ class Mp3Formatter extends AbstractBase
             if (1 === preg_match($frontingPattern, $fileName, $matches)) {
                 $title  = $matches[1];
             } else {
-                $this->cleanTitle($fileName);
-                return $fileName.'.mp3';
+                return $basename;
             }
         }
 
@@ -135,7 +136,6 @@ class Mp3Formatter extends AbstractBase
     private function cleanTitle(string &$title): void
     {
         $title = str_replace('--', '-', $title);
-        $title = str_replace(' - ', '-', $title);
     }
 
     private function isAppending(): bool
