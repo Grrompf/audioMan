@@ -81,73 +81,61 @@ class Mp3Formatter extends AbstractBase
     /**
      * Replacing dots for a dash resulting in file format "01 - File.mp3".
      */
-    private function makeFileName(string $fileName): string
+    private function makeFileName(string $basename): string
     {
-        if ($this->isPerfect($fileName)) {
-            return $fileName;
-        }
+        $fileName = pathinfo($basename, PATHINFO_FILENAME);
 
-        //remove brackets (07).get me.mp3
-        $pattern = '#^[\\(|\\[|\\{]?(\d+)[\\)|\\]|\\}]?(.*)$#';
-        if (1 === preg_match($pattern, $fileName, $matches)) {
-            $fileName = $matches[1].$matches[2];
-            if ($this->isPerfect($fileName)) {
-                return $fileName;
+        //remove whitespaces
+        $fileName = trim($fileName);
+
+        //default: '1. file', '01 - file', '(07).file', '07 file', '07-file', '(07).file',
+        $pattern = '#([A-z].*)$#';;
+        if (1 !== preg_match($pattern, $fileName, $matches)) {
+            $this->cleanTitle($fileName);
+            return $fileName.'.mp3';
+        }
+        $title = $matches[1];
+
+        //no number!
+        $extract = str_replace($title, '', $fileName);
+        $numberPattern = '#(\d+).*$#';
+        if (1 !== preg_match($numberPattern, $extract, $matches)) {
+            $this->cleanTitle($fileName);
+            return $fileName.'.mp3';
+        }
+        $number = $matches[1];
+
+        //bad format: fronting eg AFD 07 - get me.mp3
+        if (strlen($title) === strlen($fileName)) {
+            $frontingPattern = '#^[A-z]+[-\.\s]*[0-9]+[-\.\s]*(.*)$#';
+            if (1 === preg_match($frontingPattern, $fileName, $matches)) {
+                $title  = $matches[1];
+            } else {
+                $this->cleanTitle($fileName);
+                return $fileName.'.mp3';
             }
         }
 
-        //find dash with spaces inside the filename eg file 07 - get - me.mp3
-        $pattern = '#(([^\d]+)\s+\-\s+(\w+))#';
-        if (1 === preg_match($pattern, $fileName, $matches)) {
-            $replace = str_replace(' ', '', $matches[1]);
-            $fileName = str_replace($matches[1], $replace, $fileName);
-            if ($this->isPerfect($fileName)) {
-                return $fileName;
-            }
+        //always leading number on single digits
+        if (strlen($number) == 1) {
+            $number = '0'.$number;
         }
 
-        //remove point, dash or space eg 07.get me.mp3 | 07 get me.mp3 | 07-get me.mp3
-        $pattern = '#^(\d+)(\.|\s|-)\s?(.*)$#';
-        if (1 === preg_match($pattern, $fileName, $matches)) {
-            $fileName = $matches[1].'-'.$matches[3];
-            if ($this->isPerfect($fileName)) {
-                return $fileName;
-            }
-        }
-
-        //leading letters and spaces AFD 07 - get me.mp3
-        $pattern = '#^(\w+\s+)?(\d+)(.*)$#';
-        if (1 === preg_match($pattern, $fileName, $matches)) {
-            $fileName = $matches[2].$matches[3];
-            if ($this->isPerfect($fileName)) {
-                return $fileName;
-            }
-        }
-
-        //file number without spaces AFD 07-get me.mp3
-        $pattern = '#^(\d+\-\w+).*$#';
-        if (1 === preg_match($pattern, $fileName, $matches)) {
-            $replace = str_replace('-', ' - ', $matches[1]);
-            $fileName = str_replace($matches[1], $replace, $fileName);
-            if ($this->isPerfect($fileName)) {
-                return $fileName;
-            }
-        }
-
-        return $fileName;
-    }
-
-    private function isPerfect(string $fileName): bool
-    {
-        //wanted 01 - playMe for fun.mp3
-        $pattern = self::DEFAULT_PATTERN;
+        $this->cleanTitle($title);
+        $fileName = $number.$this->getSeparator().$title;
 
         //custom format
-        if ($custom = Registry::get(Registry::KEY_FORMAT)) {
-            $pattern = $custom;
+        if ($this->isAppending()) {
+            $fileName = $title.$this->getSeparator().$number;
         }
 
-        return 1 === preg_match($pattern, $fileName, $matches);
+        return $fileName.'.mp3';
+    }
+
+    private function cleanTitle(string &$title): void
+    {
+        $title = str_replace('--', '-', $title);
+        $title = str_replace(' - ', '-', $title);
     }
 
     private function isAppending(): bool
