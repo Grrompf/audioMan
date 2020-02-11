@@ -114,7 +114,7 @@ regex pattern. Allowed expressions:
 * \- _dash_
 * _space_
 
-A number is mandatory and identified by n, whitespaces are as they are, dot . and dash -. 
+A number is mandatory and identified by n, separators are whitespaces, a dot . or a dash -. 
 The title is taken from the parent directory or above and is symbolized as TITLE.  
 
 __Example 1:__

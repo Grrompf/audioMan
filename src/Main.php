@@ -31,7 +31,6 @@ use audioMan\util\LevelCheck;
  */
 class Main extends AbstractBase
 {
-    //todo: test formatter regex
     //todo: regex
     //todo: output implode
     //todo: manifest for update

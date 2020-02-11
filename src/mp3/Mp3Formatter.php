@@ -31,7 +31,8 @@ use audioMan\Registry;
  */
 class Mp3Formatter extends AbstractBase
 {
-    const DEFAULT_PATTERN = '#^\d+\s\-\s(.*)$#';
+    const DEFAULT_PATTERN   = '#^\d+\s\-\s(.*)$#';
+    const DEFAULT_SEPARATOR = ' - ';
 
     private $path;
 
@@ -147,5 +148,25 @@ class Mp3Formatter extends AbstractBase
         }
 
         return 1 === preg_match($pattern, $fileName, $matches);
+    }
+
+    private function isAppending(): bool
+    {
+        //custom format
+        if (Registry::get(Registry::KEY_FORMAT)) {
+            return (bool) Registry::get(Registry::KEY_APPEND);
+        }
+
+        return false;
+    }
+
+    private function getSeparator(): string
+    {
+        //custom format
+        if (Registry::get(Registry::KEY_FORMAT)) {
+            return (string) Registry::get(Registry::KEY_SEPARATOR);
+        }
+
+        return self::DEFAULT_SEPARATOR;
     }
 }

@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace audioMan\utils;
 
+use audioMan\Registry;
+
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
@@ -28,11 +30,15 @@ namespace audioMan\utils;
  */
 class SimplifiedRegex extends Messenger
 {
-    const REGEX_TITLE  = "TITLE";
-    const REGEX_NUMBER = "n";
-    const REGEX_DOT    = ".";
-    const REGEX_DASH   = "-";
-    const REGEX_SPACE  = " ";
+    const REGEX_TITLE   = "TITLE";
+    const REGEX_NUMBER  = "n";
+    const TXT_SEPARATOR = "Separator";
+    const TXT_SPACE     = "Space";
+    const REGEX_DOT     = ".";
+    const REGEX_DASH    = "-";
+    const REGEX_SPACE   = " ";
+    const PATTERN_DEFAULT = '#n(\s?[.-/\s]\s?)TITLE$#';
+    const PATTERN_APPEND = '#TITLE(\s?[.-/\s]\s?)n$#';
 
     /**
      * Validates user input and composes the format pattern.
@@ -42,6 +48,20 @@ class SimplifiedRegex extends Messenger
     {
         $this->validate($simplifiedRegex);
 
+        //position
+        $isAppend = (1 === preg_match(self::PATTERN_APPEND, $simplifiedRegex));
+        Registry::set(Registry::KEY_APPEND, $isAppend);
+
+        //separators
+        if (1 === preg_match(self::PATTERN_DEFAULT, $simplifiedRegex, $matches)) {
+            $separator = $matches[1];
+        }
+        if (1 === preg_match(self::PATTERN_APPEND, $simplifiedRegex, $matches)) {
+            $separator = $matches[1];
+        }
+        Registry::set(Registry::KEY_SEPARATOR, $separator);
+
+        //regex
         $pattern = str_replace(self::REGEX_TITLE, '(.*)', $simplifiedRegex);
         $pattern = str_replace(self::REGEX_NUMBER, '\d+', $pattern);
         $pattern = str_replace(self::REGEX_SPACE, '\s', $pattern);
@@ -53,37 +73,48 @@ class SimplifiedRegex extends Messenger
 
     private function validate(string $simplifiedRegex): void
     {
-        //mandatory
-        if (false === stripos($simplifiedRegex, self::REGEX_TITLE)) {
+        //MANDATORY
+        //title
+        if (false === strpos($simplifiedRegex, self::REGEX_TITLE)) {
             $this->mandatoryErrorMsg(self::REGEX_TITLE, $simplifiedRegex);
         }
 
-        if (false === stripos($simplifiedRegex, self::REGEX_NUMBER)) {
+        //number
+        if (false === strpos($simplifiedRegex, self::REGEX_NUMBER)) {
             $this->mandatoryErrorMsg(self::REGEX_NUMBER, $simplifiedRegex);
         }
 
-        //single amount
+        //separators
+        if (false === strpos($simplifiedRegex, self::REGEX_DOT) &&
+            false === strpos($simplifiedRegex, self::REGEX_DASH) &&
+            false === strpos($simplifiedRegex, self::REGEX_SPACE)) {
+            $this->mandatoryErrorMsg(self::TXT_SEPARATOR, $simplifiedRegex);
+        }
+
+        //AMOUNTS
+        //title
         if (1 !== substr_count($simplifiedRegex, self::REGEX_TITLE)) {
             $this->amountErrorMsg(self::REGEX_TITLE, $simplifiedRegex);
         }
 
+        //number
         if (1 !== substr_count($simplifiedRegex, self::REGEX_NUMBER)) {
             $this->amountErrorMsg(self::REGEX_NUMBER, $simplifiedRegex);
         }
 
-        //Dots
-        if (false !== stripos($simplifiedRegex, self::REGEX_DOT) && 1 !== substr_count($simplifiedRegex, self::REGEX_DOT)) {
+        //dots
+        if (substr_count($simplifiedRegex, self::REGEX_DOT) > 1) {
             $this->amountErrorMsg(self::REGEX_DOT, $simplifiedRegex);
         }
 
         //dash
-        if (false !== stripos($simplifiedRegex, self::REGEX_DASH) && 1 !== substr_count($simplifiedRegex, self::REGEX_DASH)) {
+        if (substr_count($simplifiedRegex, self::REGEX_DASH) > 1) {
             $this->amountErrorMsg(self::REGEX_DASH, $simplifiedRegex);
         }
 
         //space
-        if (false !== stripos($simplifiedRegex, self::REGEX_SPACE) && substr_count($simplifiedRegex, self::REGEX_SPACE > 2)) {
-            $this->amountErrorMsg(self::REGEX_SPACE, $simplifiedRegex);
+        if (substr_count($simplifiedRegex, self::REGEX_SPACE) > 2) {
+            $this->amountErrorMsg(self::TXT_SPACE, $simplifiedRegex);
         }
 
         //other signs not allowed
@@ -95,6 +126,14 @@ class SimplifiedRegex extends Messenger
 
         if (strlen($test) > 0) {
             $this->error("Found not allowed letters <".$test.">");
+            die(PHP_EOL."Exit.".PHP_EOL);
+        }
+
+        //POSITION
+        if (1 !== preg_match(self::PATTERN_DEFAULT, $simplifiedRegex) &&
+            1 !== preg_match(self::PATTERN_APPEND, $simplifiedRegex))
+        {
+            $this->error("Position not allowed <".$simplifiedRegex.". Title and number should be separated.");
             die(PHP_EOL."Exit.".PHP_EOL);
         }
     }

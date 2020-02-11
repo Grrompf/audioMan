@@ -100,6 +100,8 @@ class DefaultCommand extends Command
         if (true === $input->hasParameterOption(['--format', '-f'], false)) {
             $simplifiedRegex = $input->getOption('format');
             $pattern = (new SimplifiedRegex())->compose($simplifiedRegex);
+
+            die($pattern);
             Registry::set(Registry::KEY_FORMAT, $pattern);
         }
 
