@@ -46,6 +46,9 @@ class LevelCheck extends Messenger
     final public function check(string $actualPath): bool
     {
         $tree = $this->albumFinder->find($actualPath);
+        if (!$tree) {
+            return false;
+        }
 
         //set copy flag if files on album level
         $copy = $tree->getMinLevel() === 1;

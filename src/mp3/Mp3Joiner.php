@@ -68,18 +68,13 @@ class Mp3Joiner extends Messenger implements FileNameInterface
                 continue;
             }
             $this->debug($filePart);
-            //filesize
+            //file size
             $size += filesize($filePart);
 
-            //todo: use escapeshellarg
-            $file = str_replace(' ', '\ ', $filePart);
-            $file = str_replace('(', '\(', $file);
-            $file = str_replace(')', '\)', $file);
-
-            $cmd = "cat $file >> ".$newFilename.' 2> /dev/null';
+            $cmd = "cat ".escapeshellarg($filePart)." >> ".$newFilename.' 2> /dev/null';
             exec($cmd, $output, $retVal);
             if (0 !== $retVal) {
-                $this->error("Error while merging <".$file."> in <".getcwd().">".PHP_EOL."Details: ".implode($output));
+                $this->error("Error while merging <".$filePart."> in <".getcwd().">".PHP_EOL."Details: ".implode($output));
                 $msg = PHP_EOL."Exit".PHP_EOL;
                 die($msg);
             }
