@@ -32,8 +32,6 @@ use audioMan\util\LevelCheck;
 class Main extends AbstractBase
 {
     //todo: manifest for update
-    
-
     final public function handle(): void
     {
         $actualPath = getCwd();
