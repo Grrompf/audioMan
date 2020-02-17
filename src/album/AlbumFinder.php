@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace audioMan\album;
 
 use audioMan\interfaces\AudioTypeInterface;
-use audioMan\model\AlbumModel;
+use audioMan\model\AudioBookModel;
 use audioMan\Registry;
 use audioMan\utils\Messenger;
 
@@ -69,7 +69,7 @@ class AlbumFinder extends Messenger implements AudioTypeInterface
         //AUDIO FILE DIR
         if ($noSubDir === 0 && $noAudioFile > 0) {
             //isAudioFileDir
-            $album = new AlbumModel($actualPath, $noSubDir, $noAudioFile, $level);
+            $album = new AudioBookModel($actualPath, $noSubDir, $noAudioFile, $level);
             $albumTree->add($album);
         }
 

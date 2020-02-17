@@ -51,9 +51,8 @@ class Mp3Normalizer  extends AbstractBase
 
         //rescan
         if (false === $files = $this->getScanner()->scanFiles('mp3', true)) {
-            $this->warning("No files normalized. No files found in <".basename(getcwd()).">!");
-            $msg = PHP_EOL."Exit".PHP_EOL;
-            die($msg);
+            $this->warning("No files normalized. No files found in <".basename(getcwd()).">!".PHP_EOL."Skip normalizing.");
+            return;
         }
 
         $noChanges = 0;

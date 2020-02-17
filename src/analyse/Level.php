@@ -19,48 +19,50 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\album;
+namespace audioMan\analyse;
 
-use audioMan\model\AudioBookModel;
+
+use audioMan\analyse\level\DirType;
+use audioMan\analyse\level\Volume;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumTree
+class Level extends Messenger
 {
-    public $tree = [];
+    private $dirType;
 
-    final public function add(AudioBookModel $albumModel): void
+    public function __construct()
     {
-        $level = (int) $albumModel->level;
-        $this->tree[$level][] = $albumModel;
+        $this->dirType = new DirType();
     }
 
-    /**
-     * Determine the depth of directory structure. For a single album,
-     * we expect the files on next sub dir (lvl 1) or on volumes on level 2.
-     * For multiple, we expect more than one book on root level. Therefore,
-     * the level is one higher.
-     */
-    final public function getMaxLevel(): int
+    final public function check(array $nesting): int
     {
-        if (empty($tree)) {
-            return 0;
-        }
-        return max(array_keys($this->tree));
-    }
+        $lvl = min(array_keys($nesting));
 
-    /**
-     * If level is 1, the audio files are directly on album level. Therefore,
-     * the files are copied to an optional save dir instead of being moved.
-     */
-    final public function getMinLevel(): int
-    {
-        if (empty($tree)) {
+        if ($lvl === 0) {
+            $this->success('Album and title identified...');
+
+            //actual dir is album level
             return 0;
         }
-        return min(array_keys($this->tree));
+        if ($lvl > 0) {
+            $fileNames = $nesting[$lvl];
+            $this->debug("Nesting level is <".$lvl.">");
+            $type = $this->dirType->check($fileNames);
+            if (Volume::TYPE_TITLE === $type) {
+                return $lvl;
+            };
+            if (Volume::TYPE_VOLUME === $type) {
+                $albumLevel = $lvl-2;
+            };
+
+        }
+
+        return $albumLevel;
     }
 }

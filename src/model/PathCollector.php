@@ -43,7 +43,7 @@ class PathCollector
      */
     final public function add(string $path): void
     {
-        $level = Tools::getLevel($path, $this->rootPath);
+        $level = Tools::getLevel($path, (string) $this->rootPath);
         if ($level > $this->maxLevel) {
             $this->maxLevel = $level;
         }

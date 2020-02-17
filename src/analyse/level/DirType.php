@@ -19,48 +19,49 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\album;
+namespace audioMan\analyse\level;
 
-use audioMan\model\AudioBookModel;
+use audioMan\interfaces\DirTypeInterface;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumTree
+class DirType extends Messenger implements DirTypeInterface
 {
-    public $tree = [];
-
-    final public function add(AudioBookModel $albumModel): void
+    /**
+     * Determines directory names and its diversity
+     */
+    final public function check(array $files): int
     {
-        $level = (int) $albumModel->level;
-        $this->tree[$level][] = $albumModel;
+        $dirNames = $this->assembleDirNames($files);
+        $noDirNames = count($dirNames);
+
+        if ($noDirNames > 1) {
+            $this->comment("Multiple sub directories found. Probably episodes or volumes");
+            return (new Volume)->check($dirNames);
+        }
+        $type = self::TYPE_TITLE;
+        $msg  = "Album with just one title <".array_shift($dirCollector)."> found.".PHP_EOL;
+        $msg .= "If this is not correct use --level[number] to manually set the album level.";
+        $this->warning($msg);
+
+        return $type;
     }
 
-    /**
-     * Determine the depth of directory structure. For a single album,
-     * we expect the files on next sub dir (lvl 1) or on volumes on level 2.
-     * For multiple, we expect more than one book on root level. Therefore,
-     * the level is one higher.
-     */
-    final public function getMaxLevel(): int
+    private function assembleDirNames(array $fileNames): array
     {
-        if (empty($tree)) {
-            return 0;
+        $dirCollector = [];
+        foreach ($fileNames as $fileName) {
+            $dir = pathinfo($fileName, PATHINFO_DIRNAME);
+            $dirName = basename($dir);
+            if (!in_array($dirName, $dirCollector)) {
+                $dirCollector[] = $dirName;
+            };
         }
-        return max(array_keys($this->tree));
-    }
 
-    /**
-     * If level is 1, the audio files are directly on album level. Therefore,
-     * the files are copied to an optional save dir instead of being moved.
-     */
-    final public function getMinLevel(): int
-    {
-        if (empty($tree)) {
-            return 0;
-        }
-        return min(array_keys($this->tree));
+        return $dirCollector;
     }
 }

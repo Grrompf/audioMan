@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace audioMan\utils;
 
+use audioMan\Registry;
+
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
@@ -57,5 +59,13 @@ class Tools
                 die(PHP_EOL."Cannot create output dir <".$path.">".PHP_EOL."Check your rights!".PHP_EOL."Exit".PHP_EOL);
             }
         }
+    }
+
+    /**
+     * Create directory recursive
+     */
+    public static function getNestLevel(string $filePath): int
+    {
+        return substr_count(realpath($filePath),Registry::get(Registry::KEY_PATH_SEPARATOR));
     }
 }

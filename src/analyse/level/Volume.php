@@ -19,48 +19,57 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\album;
+namespace audioMan\analyse\level;
 
-use audioMan\model\AudioBookModel;
+use audioMan\interfaces\DirTypeInterface;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumTree
+class Volume extends Messenger implements DirTypeInterface
 {
-    public $tree = [];
-
-    final public function add(AudioBookModel $albumModel): void
+    /**
+     * Check names of current dir after removing numbers. If many different, these are titles.
+     * If just one, its a volume!
+     * Unknown is not expected.
+     */
+    final public function check(array $dirNames): int
     {
-        $level = (int) $albumModel->level;
-        $this->tree[$level][] = $albumModel;
+        $this->info("Investigating volumes...");
+        $uniqueNames = $this->assembleUniqueNames($dirNames);
+        if (count($dirNames) === count($uniqueNames)) {
+            $this->success("Episodes found.");
+
+            return self::TYPE_TITLE;
+        }
+        if (1 === count($uniqueNames)) {
+            $this->success("Volumes found.");
+
+            return self::TYPE_VOLUME;
+        }
+
+        $this->warning("Evaluation ambiguous. Best guess are titles.");
+        return self::TYPE_TITLE;
     }
 
-    /**
-     * Determine the depth of directory structure. For a single album,
-     * we expect the files on next sub dir (lvl 1) or on volumes on level 2.
-     * For multiple, we expect more than one book on root level. Therefore,
-     * the level is one higher.
-     */
-    final public function getMaxLevel(): int
+    private function assembleUniqueNames(array $dirNames): array
     {
-        if (empty($tree)) {
-            return 0;
+        $volumes=[];
+        foreach ($dirNames as $dirName) {
+            $dirName = trim($this->removeNumbers($dirName));
+            if (!in_array($dirName, $volumes)) {
+                $volumes[] = $dirName;
+            };
         }
-        return max(array_keys($this->tree));
+
+        return $volumes;
     }
 
-    /**
-     * If level is 1, the audio files are directly on album level. Therefore,
-     * the files are copied to an optional save dir instead of being moved.
-     */
-    final public function getMinLevel(): int
+    private function removeNumbers(string $dirName): string
     {
-        if (empty($tree)) {
-            return 0;
-        }
-        return min(array_keys($this->tree));
+        return preg_replace('#[0-9]+#', '', $dirName);
     }
 }

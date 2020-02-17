@@ -19,48 +19,28 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\album;
-
-use audioMan\model\AudioBookModel;
+namespace audioMan\model;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumTree
+class AudioBookModel
 {
-    public $tree = [];
+    public $albumPath;
+    public $album;
+    public $files;
 
-    final public function add(AudioBookModel $albumModel): void
+    public function __construct(string $albumPath, array $allFiles)
     {
-        $level = (int) $albumModel->level;
-        $this->tree[$level][] = $albumModel;
-    }
+        $this->albumPath = $albumPath;
+        $this->album     = basename($albumPath);
 
-    /**
-     * Determine the depth of directory structure. For a single album,
-     * we expect the files on next sub dir (lvl 1) or on volumes on level 2.
-     * For multiple, we expect more than one book on root level. Therefore,
-     * the level is one higher.
-     */
-    final public function getMaxLevel(): int
-    {
-        if (empty($tree)) {
-            return 0;
+        foreach ($allFiles as $file) {
+            if (false !== strpos($file, $albumPath)) {
+                $this->files[] = $file;
+            }
         }
-        return max(array_keys($this->tree));
-    }
-
-    /**
-     * If level is 1, the audio files are directly on album level. Therefore,
-     * the files are copied to an optional save dir instead of being moved.
-     */
-    final public function getMinLevel(): int
-    {
-        if (empty($tree)) {
-            return 0;
-        }
-        return min(array_keys($this->tree));
     }
 }

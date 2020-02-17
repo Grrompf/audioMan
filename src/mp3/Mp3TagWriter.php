@@ -51,9 +51,8 @@ class Mp3TagWriter extends AbstractBase
 
         //rescan after renaming for having new name as title
         if (false === $files = $this->getScanner()->scanFiles('mp3', true)) {
-            $this->warning("No tags written. No files found in <".basename(getcwd()).">!");
-            $msg = PHP_EOL."Exit".PHP_EOL;
-            die($msg);
+            $this->warning("No tags written. No files found in <".basename(getcwd()).">!".PHP_EOL."Skip tagging.");
+            return;
         }
 
         foreach ($files as $fileName) {

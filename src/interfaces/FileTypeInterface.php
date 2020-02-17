@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @license MIT License <https://opensource.org/licenses/MIT>
  *
@@ -19,25 +18,17 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\model;
+namespace audioMan\interfaces;
+
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
- * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
+ * @copyright   Copyright (C) - 2019 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumModel
+interface FileTypeInterface
 {
-    public $path;
-    public $noSubDir;
-    public $noAudioFiles;
-    public $level;
-
-    public function __construct(string $path, int $noSubDir, int $noAudioFiles, int $level)
-    {
-        $this->path = $path;
-        $this->noSubDir = $noSubDir;
-        $this->noAudioFiles = $noAudioFiles;
-        $this->level = $level;
-    }
+    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'wma', 'wav', 'ogg'];
+    const CONVERT_TYPES = ['ac3', 'acc', 'wma', 'wav', 'ogg'];
+    const IMAGE_TYPES   = ['jpg', 'jpeg', 'png'];
 }

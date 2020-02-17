@@ -23,6 +23,7 @@ namespace audioMan;
 
 use audioMan\album\AlbumWorker;
 use audioMan\util\LevelCheck;
+use audioMan\analyse\Checker;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -35,6 +36,9 @@ class Main extends AbstractBase
     final public function handle(): void
     {
         $actualPath = getCwd();
+        (new Checker())->check($actualPath);
+        die();
+
         //starting dir is root dir
         Registry::set(Registry::KEY_ROOT_DIR, $actualPath);
         Registry::set(Registry::KEY_LIB_DIR, $actualPath);

@@ -47,11 +47,14 @@ class LevelCheck extends Messenger
     {
         $tree = $this->albumFinder->find($actualPath);
         if (!$tree) {
+            $this->warning("Empty folder found <".basename($actualPath).">. Skipping...");
             return false;
         }
 
         //set copy flag if files on album level
-        $copy = $tree->getMinLevel() === 1;
+        $copy = $tree->getMinLevel() <= 1;
+        $this->debug("Min level is <".$tree->getMinLevel().">");
+        $this->info("Files in <".basename($actualPath)."> are ".($copy?'COPIED':'MOVED'));
         Registry::set(Registry::KEY_COPY, $copy);
 
         $maxLevel = $tree ? $tree->getMaxLevel() : 0;

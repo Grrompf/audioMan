@@ -47,13 +47,13 @@ class OutPut extends AbstractBase
         $output = rtrim(Registry::get(Registry::KEY_OUTPUT), '/');
         $outDir = $output.'/'.$parentDir;
         Tools::createDir($outDir); //create album dir
+        $this->info("Start moving files from<".basename(getcwd())."> to <".$outDir.">.");
 
         chdir($this->workingDir);
         //rescan
         if (false === $files = $this->getScanner()->scanFiles('mp3', true)) {
-            $this->warning("No files found in <".basename(getcwd()).">!");
-            $msg = PHP_EOL."Exit".PHP_EOL;
-            die($msg);
+            $this->warning("No files found in <".basename(getcwd()).">!".PHP_EOL.'Skip moving files.');
+            return;
         }
 
         foreach ($files as $fileName) {

@@ -56,19 +56,35 @@ class AlbumWorker extends AbstractBase
         $pathCollection = $finder->find($this->actualPath);
         $isVolumeSuitable = $pathCollection->isVolumeSuitable();
         $processor = new Mp3Processor();
-
+        die('HE:'.$pathCollection->getMaxLevel());
         //processing files bringing them to root level
         for ($i=$pathCollection->getMaxLevel(); $i>0; $i--) {
             $subDirs = $pathCollection->findByLevel($i);
             $isVolumeLevel = $pathCollection->isVolumeLevel($i);
+            //handle sub dirs
             foreach($subDirs as $path) {
                 chdir($path);
+                //handle volumes
                 if (Registry::get(Registry::KEY_VOLUMES) && $isVolumeLevel && $isVolumeSuitable) {
+                    //process volume files
                     (new VolumeProcessing())->handle();
                     continue;
                 }
+                //process audio files
                 $processor->handle();
             }
+        }
+        //max level is album level, no sub dirs!
+        if ($pathCollection->getMaxLevel() === 0) {
+            echo "HUCH ALBUM root!".PHP_EOL;
+            //are there any  files?
+            //no sub dirs... so they are subject to merge?
+            //todo:convert
+            //todo: merge
+            //todo: ffmpeg
+            //todo: remove converted multiple files
+
+            //todo: rename
         }
 
         $workingDir = $this->actualPath;

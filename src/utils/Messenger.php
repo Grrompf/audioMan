@@ -38,34 +38,42 @@ class Messenger
         }
     }
 
-    final public function info(string $message): void
+    final public function chat(string $message): void
     {
         // very verbose
         if (Registry::get(Registry::KEY_VERBOSITY) >= 2) {
-            print $this->writeln($message, null, 'fg=default;bg=default');
+            print $this->writeln($message, null, 'fg=green;bg=default');
         }
     }
 
     final public function comment(string $message): void
     {
-        // very verbose
-        if (Registry::get(Registry::KEY_VERBOSITY) > 1) {
+        // verbose
+        if (Registry::get(Registry::KEY_VERBOSITY) >= 1) {
             print $this->writeln($message, null, 'fg=blue;bg=default');
+        }
+    }
+
+    final public function info(string $message): void
+    {
+        // verbose normal
+        if (Registry::get(Registry::KEY_VERBOSITY) >= 0) {
+            print $this->writeln($message, null, 'fg=black;bg=default');
         }
     }
 
     final public function caution(string $message): void
     {
-        // verbose
-        if (Registry::get(Registry::KEY_VERBOSITY) >= 1) {
+        // verbose normal
+        if (Registry::get(Registry::KEY_VERBOSITY) >= 0) {
             print $this->writeln($message, 'CAUTION', 'fg=red;bg=default');
         }
     }
 
     final public function warning(string $message): void
     {
-        // verbose
-        if (Registry::get(Registry::KEY_VERBOSITY) >= 1) {
+        // verbose normal
+        if (Registry::get(Registry::KEY_VERBOSITY) >= 0) {
             print $this->writeln($message, 'WARNING', 'fg=black;bg=yellow');
         }
     }
@@ -106,8 +114,8 @@ class Messenger
         }
         $color = $this->getColor($style);
 
-        $text = explode("\n", $message);
-        $textLines = PHP_EOL.$type.array_shift($text).PHP_EOL;
+        $text = explode(PHP_EOL, $message);
+        $textLines = $type.array_shift($text).PHP_EOL;
 
         $lastLine ="";
         if (!empty($text)) {

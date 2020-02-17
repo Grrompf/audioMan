@@ -19,48 +19,54 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\album;
+namespace audioMan\analyse;
 
-use audioMan\model\AudioBookModel;
+use audioMan\interfaces\FileTypeInterface;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumTree
+class Filter implements FileTypeInterface
 {
-    public $tree = [];
+    private $allowedTypes;
+    private $dirIterator;
 
-    final public function add(AudioBookModel $albumModel): void
+    public function __construct(\RecursiveDirectoryIterator $dirIterator)
     {
-        $level = (int) $albumModel->level;
-        $this->tree[$level][] = $albumModel;
+        $this->dirIterator = $dirIterator;
+
+        // all allowed audio and image types
+        $this->allowedTypes = array_merge(self::AUDIO_TYPES, self::IMAGE_TYPES);
     }
 
-    /**
-     * Determine the depth of directory structure. For a single album,
-     * we expect the files on next sub dir (lvl 1) or on volumes on level 2.
-     * For multiple, we expect more than one book on root level. Therefore,
-     * the level is one higher.
-     */
-    final public function getMaxLevel(): int
+    final public function filter(): \RecursiveCallbackFilterIterator
     {
-        if (empty($tree)) {
-            return 0;
-        }
-        return max(array_keys($this->tree));
-    }
+        //filter
+        return new \RecursiveCallbackFilterIterator(
+            //callback is not documented yet. All params are of mixed type
+            $this->dirIterator, function ($current, $key, $iterator) {
 
-    /**
-     * If level is 1, the audio files are directly on album level. Therefore,
-     * the files are copied to an optional save dir instead of being moved.
-     */
-    final public function getMinLevel(): int
-    {
-        if (empty($tree)) {
-            return 0;
-        }
-        return min(array_keys($this->tree));
+                // Allow recursion
+                assert($iterator instanceof \RecursiveDirectoryIterator);
+                if ($iterator->hasChildren()) {
+                    return true;
+                }
+
+                assert($current instanceof \SplFileInfo);
+                // skip hidden files
+                if ($current->getBasename()[0] === '.') {
+                    return false;
+                }
+
+                // Check for audio and cover files
+                if ($current->isFile() && in_array(strtolower($current->getExtension()), $this->allowedTypes)) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
     }
 }

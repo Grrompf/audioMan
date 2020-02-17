@@ -36,8 +36,9 @@ class Registry
     public const KEY_MULTIPLE  = 'multiple';
     public const KEY_NORMALIZE = 'normalize';
     public const KEY_OUTPUT    = 'output';
+    public const KEY_PATH_SEPARATOR = 'path_separator'; //depending on OS
     public const KEY_ROOT_DIR  = 'rootDir'; //start dir
-    public const KEY_SEPARATOR = 'separator';
+    public const KEY_SEPARATOR = 'separator';//format in title
     public const KEY_TMP_FILES = 'tmpFiles';
     public const KEY_VERBOSITY = 'verbosity';
     public const KEY_VOLUMES   = 'volumes';
@@ -71,6 +72,12 @@ class Registry
     {
         if (null === self::$instance) {
             self::$instance = new self();
+
+            //dir separator of the OS
+            self::$instance::set(self::KEY_PATH_SEPARATOR, '/');
+            if (stripos(PHP_OS, 'WIN') === 0) {
+                self::$instance::set(self::KEY_PATH_SEPARATOR, '\\');
+            }
         }
 
         return self::$instance;
