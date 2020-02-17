@@ -23,6 +23,7 @@ namespace audioMan\analyse\level;
 
 use audioMan\interfaces\DirTypeInterface;
 use audioMan\utils\Messenger;
+use audioMan\utils\Tools;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -36,7 +37,7 @@ class DirType extends Messenger implements DirTypeInterface
      */
     final public function check(array $files): int
     {
-        $dirNames = $this->assembleDirNames($files);
+        $dirNames = Tools::assembleDirNames($files);
         $noDirNames = count($dirNames);
 
         if ($noDirNames > 1) {
@@ -49,19 +50,5 @@ class DirType extends Messenger implements DirTypeInterface
         $this->warning($msg);
 
         return $type;
-    }
-
-    private function assembleDirNames(array $fileNames): array
-    {
-        $dirCollector = [];
-        foreach ($fileNames as $fileName) {
-            $dir = pathinfo($fileName, PATHINFO_DIRNAME);
-            $dirName = basename($dir);
-            if (!in_array($dirName, $dirCollector)) {
-                $dirCollector[] = $dirName;
-            };
-        }
-
-        return $dirCollector;
     }
 }

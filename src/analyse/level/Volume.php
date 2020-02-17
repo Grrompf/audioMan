@@ -23,6 +23,7 @@ namespace audioMan\analyse\level;
 
 use audioMan\interfaces\DirTypeInterface;
 use audioMan\utils\Messenger;
+use audioMan\utils\Tools;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -39,7 +40,7 @@ class Volume extends Messenger implements DirTypeInterface
     final public function check(array $dirNames): int
     {
         $this->info("Investigating volumes...");
-        $uniqueNames = $this->assembleUniqueNames($dirNames);
+        $uniqueNames = Tools::assembleDirNamesNoNumber($dirNames);
         if (count($dirNames) === count($uniqueNames)) {
             $this->success("Episodes found.");
 
@@ -53,23 +54,5 @@ class Volume extends Messenger implements DirTypeInterface
 
         $this->warning("Evaluation ambiguous. Best guess are titles.");
         return self::TYPE_TITLE;
-    }
-
-    private function assembleUniqueNames(array $dirNames): array
-    {
-        $volumes=[];
-        foreach ($dirNames as $dirName) {
-            $dirName = trim($this->removeNumbers($dirName));
-            if (!in_array($dirName, $volumes)) {
-                $volumes[] = $dirName;
-            };
-        }
-
-        return $volumes;
-    }
-
-    private function removeNumbers(string $dirName): string
-    {
-        return preg_replace('#[0-9]+#', '', $dirName);
     }
 }

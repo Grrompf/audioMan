@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
+use audioMan\analyse\level\Volume;
+use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
@@ -30,7 +32,7 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Album extends Messenger
+class Album extends Messenger implements FileTypeInterface
 {
     private $files;
     private $rootLevel;
@@ -65,10 +67,12 @@ class Album extends Messenger
 
             //create album model
             $albumFiles = $this->getAudioBookFiles($allFiles, $albumPath);
-            $tree = $this->makeTree($albumPath, $albumFiles);
+            $episodes = (new Episodes())->create($albumPath, $albumFiles);
+
+            var_dump($episodes);
+            die;
 
             $model = new AudioBookModel($albumPath, $albumFiles);
-
             $albums[$albumPath]=$model;
         }
 
@@ -84,7 +88,14 @@ class Album extends Messenger
     {
         $tree =[];
         foreach ($albumFiles as $file) {
-            $lvl = abs(Tools::getNestLevel($albumPath) - Tools::getNestLevel($file));
+            $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            //skip img
+            if (in_array($ext, self::IMAGE_TYPES)) {
+                continue;
+            }
+
+            $fileDir = pathinfo($file, PATHINFO_DIRNAME);
+            $lvl = abs(Tools::getNestLevel($albumPath) - Tools::getNestLevel($fileDir));
             $tree[$lvl][]=$file;
         }
 

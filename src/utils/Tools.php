@@ -68,4 +68,44 @@ class Tools
     {
         return substr_count(realpath($filePath),Registry::get(Registry::KEY_PATH_SEPARATOR));
     }
+
+    /**
+     * Create array of directory names on deepest level. Used for volumes or episodes check
+     */
+    public static function assembleDirNames(array $fileNames): array
+    {
+        $dirCollector = [];
+        foreach ($fileNames as $fileName) {
+            $dir = pathinfo($fileName, PATHINFO_DIRNAME);
+            $dirName = basename($dir);
+            if (!in_array($dirName, $dirCollector)) {
+                $dirCollector[] = $dirName;
+            };
+        }
+
+        return $dirCollector;
+    }
+
+    /**
+     * Remove tailing numbers from dir names and assemble it. Array contains unique
+     * names only. If there is just one element left, it is for sure a volume, otherwise
+     * it is an episode.
+     */
+    public static function assembleDirNamesNoNumber(array $dirNames): array
+    {
+        $volumes=[];
+        foreach ($dirNames as $dirName) {
+
+            $dirName = trim($dirName);
+            $edited = preg_replace('#([0-9]+)$#', '', $dirName);
+            $edited = trim($edited);
+            $edited = strtolower($edited);
+
+            if (!in_array($edited, $volumes)) {
+                $volumes[] = $edited;
+            };
+        }
+
+        return $volumes;
+    }
 }

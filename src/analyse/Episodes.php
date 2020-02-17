@@ -21,47 +21,49 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
+
+use audioMan\analyse\level\Volume;
 use audioMan\interfaces\FileTypeInterface;
-use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
 
-/**
- * @license http://www.opensource.org/licenses/mit-license.html  MIT License
- * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
- * @author Dr. H.Maerz <holger@nakade.de>
- */
-class Nesting extends Messenger implements FileTypeInterface
+class Episodes implements FileTypeInterface
 {
-    private $rootLevel;
-
-    public function __construct(string $actualDir)
+    public function create(string $albumPath, array $albumFiles)
     {
-        $this->rootLevel = Tools::getNestLevel($actualDir);
+        $tree = $this->makeTree($albumPath, $albumFiles);
+
+        $maxLevel = max(array_keys($tree));
+        $episodes=[];
+        if ($maxLevel === 0) {
+            $files = $tree[$maxLevel];
+            foreach ($files as $file) {
+                $episodes[] = pathinfo($file, PATHINFO_FILENAME);
+            }
+        } else {
+            //check for volumes
+            $names = [];
+            foreach($tree[$maxLevel] as $path) {
+                $names[] = basename(dirname($path));
+            }
+            var_dump((new Volume())->check($names));
+        }
     }
 
-    /**
-     * Arranges files according to their nesting level compared to working (actual) dir.
-     */
-    final public function arrange(array $allFiles): array
+    private function makeTree(string $albumPath, array $albumFiles): array
     {
-        //get nesting levels
-        $nesting = [];
-        foreach ($allFiles as $file) {
-
-            $path = pathinfo($file, PATHINFO_DIRNAME);
+        $tree =[];
+        foreach ($albumFiles as $file) {
             $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
             //skip img
             if (in_array($ext, self::IMAGE_TYPES)) {
                 continue;
             }
 
-            $nestLevel = abs($this->rootLevel - Tools::getNestLevel($path));
-            $nesting[$nestLevel][] = $file;
+            $fileDir = pathinfo($file, PATHINFO_DIRNAME);
+            $lvl = abs(Tools::getNestLevel($albumPath) - Tools::getNestLevel($fileDir));
+            $tree[$lvl][]=$file;
         }
 
-        $msg = count($nesting) > 1? 'Multiple nesting level found. This makes analysing easier!':'Just one nesting level found. Probably just one album?!';
-        $this->comment($msg);
-
-        return $nesting;
+        return $tree;
     }
 }
