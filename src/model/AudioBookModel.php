@@ -30,17 +30,14 @@ class AudioBookModel
 {
     public $albumPath;
     public $album;
-    public $files;
+    public $episodes;
+    public $albumFiles;
+    public $albumImages;
 
-    public function __construct(string $albumPath, array $allFiles)
+    public function __construct(string $albumPath, array $albumFiles)
     {
         $this->albumPath = $albumPath;
-        $this->album     = basename($albumPath);
-
-        foreach ($allFiles as $file) {
-            if (false !== strpos($file, $albumPath)) {
-                $this->files[] = $file;
-            }
-        }
+        $this->album = basename($albumPath);
+        $this->albumFiles = $albumFiles;
     }
 }

@@ -19,8 +19,12 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\album;
+namespace audioMan\episode;
 
+
+use audioMan\analyse\level\Volume;
+use audioMan\analyse\TreeMaker;
+use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 
 /**
@@ -28,39 +32,37 @@ use audioMan\model\AudioBookModel;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumTree
+class EpisodeFinder implements FileTypeInterface
 {
-    public $tree = [];
+    private $treeMaker;
+    private $assignment;
 
-    final public function add(AudioBookModel $albumModel): void
+    public function __construct()
     {
-        $level = (int) $albumModel->level;
-        $this->tree[$level][] = $albumModel;
+        $this->treeMaker  = new TreeMaker();
+        $this->assignment = new EpisodeAssignment();
     }
 
-    /**
-     * Determine the depth of directory structure. For a single album,
-     * we expect the files on next sub dir (lvl 1) or on volumes on level 2.
-     * For multiple, we expect more than one book on root level. Therefore,
-     * the level is one higher.
-     */
-    final public function getMaxLevel(): int
+    final public function assign(AudioBookModel $album): void
     {
-        if (empty($tree)) {
-            return 0;
+        //todo: complete other cases
+        //todo: origin path (deeper nested album) or by album correction
+        $tree = $this->treeMaker->makeAlbumTree($album);
+        $maxLevel = max(array_keys($tree));
+
+        //todo: what if there are also files on deeper levels
+        if ($maxLevel === 0) {
+            //files on album root
+            $files = $tree[$maxLevel];
+            $album->episodes = $this->assignment->assign($files);
+        } else {
+            //check for volumes
+            $names = [];
+            foreach($tree[$maxLevel] as $path) {
+                $names[] = basename(dirname($path));
+            }
+            var_dump((new Volume())->check($names));
         }
-        return max(array_keys($this->tree));
     }
-
-    /**
-     * If level is 1, the audio files are directly on album level. Therefore,
-     * the files are copied to an optional save dir instead of being moved.
-     */
-    final public function getMinLevel(): int
-    {
-        if (empty($tree)) {
-            return 0;
-        }
-        return min(array_keys($this->tree));
-    }
+    //todo: cover Finder
 }

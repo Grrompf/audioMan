@@ -23,6 +23,7 @@ namespace audioMan\command;
 
 use audioMan\Main;
 use audioMan\Registry;
+use audioMan\registry\Separator;
 use audioMan\Requirements;
 use audioMan\utils\SimplifiedRegex;
 use audioMan\utils\Tools;
@@ -99,10 +100,7 @@ class DefaultCommand extends Command
         //format
         if (true === $input->hasParameterOption(['--format', '-f'], false)) {
             $simplifiedRegex = $input->getOption('format');
-            $pattern = (new SimplifiedRegex())->compose($simplifiedRegex);
-
-            die($pattern);
-            Registry::set(Registry::KEY_FORMAT, $pattern);
+            (new Separator())->setCustomSeparator($simplifiedRegex);
         }
 
         //output

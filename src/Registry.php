@@ -38,10 +38,11 @@ class Registry
     public const KEY_OUTPUT    = 'output';
     public const KEY_PATH_SEPARATOR = 'path_separator'; //depending on OS
     public const KEY_ROOT_DIR  = 'rootDir'; //start dir
-    public const KEY_SEPARATOR = 'separator';//format in title
+    public const KEY_SEPARATOR = 'separator'; //format in title
     public const KEY_TMP_FILES = 'tmpFiles';
     public const KEY_VERBOSITY = 'verbosity';
     public const KEY_VOLUMES   = 'volumes';
+    public const DEFAULT_SEPARATOR = ' - ';
 
     protected static $instance = null;
     protected $values = [];
@@ -78,6 +79,8 @@ class Registry
             if (stripos(PHP_OS, 'WIN') === 0) {
                 self::$instance::set(self::KEY_PATH_SEPARATOR, '\\');
             }
+            //format default: title separator
+            self::$instance::set(self::KEY_SEPARATOR, self::DEFAULT_SEPARATOR);
         }
 
         return self::$instance;

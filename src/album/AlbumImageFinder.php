@@ -22,48 +22,29 @@ declare(strict_types=1);
 namespace audioMan\analyse;
 
 
-use audioMan\analyse\level\Volume;
 use audioMan\interfaces\FileTypeInterface;
-use audioMan\utils\Tools;
+use audioMan\model\AudioBookModel;
 
-class Episodes implements FileTypeInterface
+/**
+ * @license http://www.opensource.org/licenses/mit-license.html  MIT License
+ * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
+ * @author Dr. H.Maerz <holger@nakade.de>
+ */
+class AlbumImageFinder implements FileTypeInterface
 {
-    public function create(string $albumPath, array $albumFiles)
+    public function assign(AudioBookModel $album): void
     {
-        $tree = $this->makeTree($albumPath, $albumFiles);
+        $albumImages = [];
+        foreach ($album->albumFiles as $file) {
 
-        $maxLevel = max(array_keys($tree));
-        $episodes=[];
-        if ($maxLevel === 0) {
-            $files = $tree[$maxLevel];
-            foreach ($files as $file) {
-                $episodes[] = pathinfo($file, PATHINFO_FILENAME);
-            }
-        } else {
-            //check for volumes
-            $names = [];
-            foreach($tree[$maxLevel] as $path) {
-                $names[] = basename(dirname($path));
-            }
-            var_dump((new Volume())->check($names));
-        }
-    }
-
-    private function makeTree(string $albumPath, array $albumFiles): array
-    {
-        $tree =[];
-        foreach ($albumFiles as $file) {
-            $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            //skip img
-            if (in_array($ext, self::IMAGE_TYPES)) {
+            //skip audio files
+            $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
+            if (!in_array($fileExtension, self::IMAGE_TYPES)) {
                 continue;
-            }
-
-            $fileDir = pathinfo($file, PATHINFO_DIRNAME);
-            $lvl = abs(Tools::getNestLevel($albumPath) - Tools::getNestLevel($fileDir));
-            $tree[$lvl][]=$file;
+            };
+            $albumImages[] = $file;
         }
 
-        return $tree;
+        $album->albumImages = $albumImages;
     }
 }

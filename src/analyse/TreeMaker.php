@@ -19,10 +19,11 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\album;
+namespace audioMan\analyse;
+
 
 use audioMan\interfaces\FileTypeInterface;
-use audioMan\utils\Messenger;
+use audioMan\model\AudioBookModel;
 use audioMan\utils\Tools;
 
 /**
@@ -30,56 +31,55 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumFinder extends Messenger implements FileTypeInterface
+class TreeMaker implements FileTypeInterface
 {
-    private $files;
-    private $rootLevel;
-    private $albumCreator;
-
-    public function __construct(array $files, string $actualPath)
+    /**
+     * Tree of the working dir. Sub dir level is the key.
+     * Images are skipped.
+     */
+    final public function makeAlbumTree(AudioBookModel $album): array
     {
-        $this->files = $files;
-        $this->rootLevel = Tools::getNestLevel($actualPath);
-        $this->albumCreator = new AlbumCreator();
-    }
+        $tree =[];
+        foreach ($album->albumFiles as $file) {
 
-    final public function check(int $albumLevel): array
-    {
-        $this->info("Assemble files for albums ...");
-        $totalLevel = $albumLevel + $this->rootLevel;
-        $albums=[];
-
-        //elements of this copy will be removed on each loop
-        $allFiles = $this->files;
-
-        foreach ($this->files as $file) {
-
-            //get album path
-            $albumPath = pathinfo($file, PATHINFO_DIRNAME);
-            $level = abs(Tools::getNestLevel($albumPath) - $totalLevel);
-            if ($level > 0) {
-                $albumPath = dirname($albumPath, $level);
-            }
-
-            //skip if album already added
-            if (array_key_exists($albumPath, $albums)) {
+            //skip image files
+            $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if (in_array($ext, self::IMAGE_TYPES)) {
                 continue;
             }
-            $this->comment("Working on album <".basename($albumPath).">");
 
-            $album = $this->albumCreator->create($allFiles, $albumPath);
-
-            var_dump($album);
-            die;
-
-            $albums[$albumPath]=$model;
+            $lvl = $this->calcLevel($file, $album->albumPath);
+            $tree[$lvl][]=$file;
         }
 
-        //this is not expected to happen!
-        if (count($allFiles) > 0) {
-            $this->warning("Some files <".count($allFiles)."> were not assigned");
+        return $tree;
+    }
+
+    /**
+     * Tree of the working dir. Sub dir level is the key.
+     * Audio files are skipped.
+     */
+    final public function makeImageTree(AudioBookModel $album): array
+    {
+        $tree =[];
+        foreach ($album->albumFiles as $file) {
+
+            //skip image files
+            $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if (in_array($ext, self::AUDIO_TYPES)) {
+                continue;
+            }
+
+            $lvl = $this->calcLevel($file, $album->albumPath);
+            $tree[$lvl][]=$file;
         }
 
-        return $albums;
+        return $tree;
+    }
+
+    private function calcLevel(string $fileName, string $rootDir): int
+    {
+        $filePath = pathinfo($fileName, PATHINFO_DIRNAME);
+        return abs(Tools::getNestLevel($rootDir) - Tools::getNestLevel($filePath));
     }
 }

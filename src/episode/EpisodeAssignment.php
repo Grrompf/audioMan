@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @license MIT License <https://opensource.org/licenses/MIT>
  *
@@ -18,22 +19,47 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\interfaces;
-
+namespace audioMan\episode;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
- * @copyright   Copyright (C) - 2019 Dr. Holger Maerz
+ * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-interface FileTypeInterface
+class EpisodeAssignment
 {
-    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'wma', 'wav', 'ogg'];
-    const CONVERT_TYPES = ['ac3', 'acc', 'wma', 'wav', 'ogg'];
-    const IMAGE_TYPES   = ['jpg', 'jpeg', 'png'];
-    const DEFAULT_EXT   = '.mp3';
+    private $episodeCreator;
 
-    //temporary filenames for merge and correction
-    const CONCAT_FILE_NAME    = 'kombiniert.mp3';
-    const CORRECTED_FILE_NAME = 'korrigiert.mp3';
+    public function __construct()
+    {
+        $this->episodeCreator = new EpisodeCreator();
+    }
+
+    public function assign(array $files): array
+    {
+        $albumEpisodes=[];
+        $episodeFiles = $this->assignEpisodeFiles($files);
+
+        //transform date array to into array of models
+        $allTitles = array_keys($episodeFiles);
+        foreach ($allTitles as $originalTitle) {
+            //audio files of episode
+            $files = $episodeFiles[$originalTitle];
+            $albumEpisodes[] = $this->episodeCreator->create($originalTitle, $files);
+        }
+
+        return $albumEpisodes;
+    }
+
+    private function assignEpisodeFiles(array $files): array
+    {
+        $rawEpisodes = [];
+        //array of files with key as title.
+        foreach ($files as $file) {
+            $title = pathinfo($file, PATHINFO_FILENAME);
+            $rawEpisodes[$title][] = $file;
+        }
+
+        return $rawEpisodes;
+    }
 }

@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
-use audioMan\Registry;
+use audioMan\album\AlbumFinder;
 use audioMan\utils\Messenger;
-use audioMan\utils\Tools;
+
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -76,7 +76,7 @@ class Checker extends Messenger
         $this->info("Evaluated album level is <".$albumLevel.">");
 
         //albums
-        $albums = (new Album($files, $actualPath))->check($albumLevel);
+        $albums = (new AlbumFinder($files, $actualPath))->check($albumLevel);
 
         $this->caution("Number of albums <".count($albums).">");
     }
