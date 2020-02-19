@@ -41,10 +41,10 @@ class Mp3Processor extends AbstractBase
     public function __construct()
     {
         parent::__construct();
-        $this->converter = new Mp3Converter();
+        $this->converter = new Converter();
         $this->coverFinder = new CoverFinder();
         $this->joiner = new Joiner();
-        $this->mover = new Mp3Mover();
+        $this->mover = new Mover();
     }
 
     /**

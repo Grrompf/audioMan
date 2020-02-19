@@ -21,46 +21,36 @@ declare(strict_types=1);
 
 namespace audioMan\mp3;
 
-use audioMan\AbstractBase;
-use audioMan\interfaces\AudioTypeInterface;
+
+use audioMan\interfaces\FileTypeInterface;
+use audioMan\utils\GarbageCollector;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mp3Converter extends AbstractBase implements AudioTypeInterface
+class Mover extends Messenger implements FileTypeInterface
 {
     /**
-     * Converts other audio files to mp3 files. Works for wma.
+     * Rename joined mp3 file after correction to upper dir. New file name is the name of the parent dir.
      */
-    final public function handle(): void
+    final public function move(string $oldFileName, string $newFileName): bool
     {
-        foreach (self::AUDIO_TYPES as $type) {
-            if (false !== $files = $this->getScanner()->scanFiles($type)) {
-                $noFiles = count($files);
-                $msg = "<".$noFiles." ".$type." files> found in <".getcwd().">!".PHP_EOL."Start to convert...";
-                $this->warning($msg);
 
-                $this->convert($files, $type);
-            }
-        }
-    }
+        $msg = "Moving file <".$oldFileName."> to <".$newFileName.">.";
+        $this->debug($msg);
 
-    private function convert(array $files, string $type): bool
-    {
-        if (empty($files)) {
+        //moving not copying!
+        $cmd = sprintf("mv %s %s" , escapeshellarg($oldFileName), escapeshellarg($newFileName));
+        exec($cmd, $details, $retVal);
+        if (0 !== $retVal) {
+            $this->error("Error while moving <".$oldFileName."> to <".$newFileName.">. Details: ".implode($details));
+
             return false;
         }
-        $this->comment("Convert <".count($files)." ".$type." files> to mp3.");
-
-        $cmd = 'find '.getcwd()."/ -iname \*.".$type." -exec ffmpeg -i {} -ab 160k {}.mp3 \; -exec rename 's/\.".$type."\.mp3$/.mp3/' {}.mp3 \\";
-        exec($cmd, $output, $retVal);
-        if (0 !== $retVal) {
-            $this->error("Error while converting ".$type." to mp3 in <".getcwd().">".PHP_EOL."Details: ".implode($output));
-            $msg = PHP_EOL."Exit".PHP_EOL;
-            die($msg);
-        }
+        GarbageCollector::add($newFileName);
 
         return true;
     }
