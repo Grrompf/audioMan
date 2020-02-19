@@ -24,14 +24,17 @@ namespace audioMan;
 use audioMan\album\AlbumWorker;
 use audioMan\util\LevelCheck;
 use audioMan\analyse\Checker;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Main extends AbstractBase
+class Main extends Messenger
 {
+    //todo: collect skipped files
+    //todo: empty files
     //todo: manifest for update
     final public function handle(): void
     {

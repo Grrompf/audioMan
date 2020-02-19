@@ -25,6 +25,7 @@ namespace audioMan\analyse;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\utils\ImgCheck;
 use audioMan\utils\Messenger;
+use audioMan\utils\SkipCollector;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -58,6 +59,8 @@ class Scanner extends Messenger implements FileTypeInterface
                 $msg = "File <".$file->getPathname()."> has no content. File skipped!";
                 $this->warning($msg);
                 $noSkippedFiles++;
+                SkipCollector::add($file->getPathname(), SkipCollector::TYPE_EMPTY_FILE);
+
                 continue;
             }
             //skip no mime typed image
@@ -66,6 +69,8 @@ class Scanner extends Messenger implements FileTypeInterface
                 $msg = "Image file <".$file->getPathname()."> is not an image!!! File skipped!";
                 $this->caution($msg);
                 $noSkippedFiles++;
+                SkipCollector::add($file->getPathname(), SkipCollector::TYPE_NOT_IMAGE);
+
                 continue;
             }
             //skip over sized images

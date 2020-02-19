@@ -23,7 +23,9 @@ namespace audioMan\mp3;
 
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\Registry;
+use audioMan\utils\GarbageCollector;
 use audioMan\utils\Messenger;
+use audioMan\utils\SkipCollector;
 use audioMan\utils\Tools;
 
 /**
@@ -47,6 +49,7 @@ class Joiner extends Messenger implements FileTypeInterface
     {
         //todo: path
         $newFilename = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CONCAT_FILE_NAME;
+        GarbageCollector::add($newFilename);
 
 
         $msg = "Join <".count($audioFiles)."> mp3 files.";
@@ -56,14 +59,20 @@ class Joiner extends Messenger implements FileTypeInterface
         //concatenating mp3 files
         foreach ($audioFiles as $file) {
 
-            //todo: file exist
+            if (!file_exists($file)) {
+                $this->error("File not found <".$file.">. Skipping whole episode!");
+                SkipCollector::add($file, SkipCollector::TYPE_EPISODE);
+
+                return false;
+            }
+
             //file size in kB
             $size += filesize($file)/1000;
 
             $cmd = "cat ".escapeshellarg($file)." >> ".escapeshellarg($newFilename).' 2> /dev/null';
-            exec($cmd, $output, $retVal);
+            exec($cmd, $details, $retVal);
             if (0 !== $retVal) {
-                $this->error("Error while merging <".$file.">. Details: ".implode($output));
+                $this->error("Error while merging <".$file.">. Details: ".implode($details));
 
                 return false;
             }
@@ -87,25 +96,22 @@ class Joiner extends Messenger implements FileTypeInterface
         }
 
         //fixing time issue
-        $this->mp3Fixer->fix();
-
-        return true;
+        return $this->fixMp3Length($newFilename);
     }
 
-    private function fixMp3Length(string $newFileName): bool
+    private function fixMp3Length(string $mergedFile): bool
     {
-        //todo: move file? no
-        //todo: collect file names
-        $path = pathinfo($newFileName, PATHINFO_DIRNAME);
-        $out = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CORRECTED_FILE_NAME;
+        $path = pathinfo($mergedFile, PATHINFO_DIRNAME);
+        $fixedFile = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CORRECTED_FILE_NAME;
+        GarbageCollector::add($fixedFile);
 
         //correcting using ffmpeg
         $this->comment("Correcting mp3 file time using ffmpeg library.");
-        $cmd = sprintf('ffmpeg -loglevel quiet -y -i %s -acodec copy %s', $newFileName, $out);
+        $cmd = sprintf('ffmpeg -loglevel quiet -y -i %s -acodec copy %s', $mergedFile, $fixedFile);
 
-        exec($cmd, $output, $retVal);
+        exec($cmd, $details, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while fixing file time. Details: ".implode($output));
+            $this->error("Error while fixing file time. Details: ".implode($details));
 
             return false;
         }

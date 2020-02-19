@@ -25,6 +25,7 @@ use audioMan\interfaces\FileTypeInterface;
 use audioMan\Registry;
 use audioMan\utils\GarbageCollector;
 use audioMan\utils\Messenger;
+use audioMan\utils\SkipCollector;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -55,7 +56,7 @@ class Converter extends Messenger implements FileTypeInterface
 
             if (!file_exists($fileToConvert)) {
                 $this->error("File not found <".$fileToConvert.">. Skipping whole episode!");
-
+                SkipCollector::add($fileToConvert, SkipCollector::TYPE_EPISODE);
                 return [];
             };
 
@@ -68,7 +69,7 @@ class Converter extends Messenger implements FileTypeInterface
                 $converted[] = $newFile;
             } else {
                 $this->error("Failed to convert <".$fileName.">. Skipping whole episode!");
-                //todo: collector of skipped files
+                SkipCollector::add($fileToConvert, SkipCollector::TYPE_EPISODE);
                 return [];
             }
         }

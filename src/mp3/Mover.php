@@ -34,7 +34,7 @@ use audioMan\utils\Messenger;
 class Mover extends Messenger implements FileTypeInterface
 {
     /**
-     * Rename joined mp3 file after correction to upper dir. New file name is the name of the parent dir.
+     * Rename joined mp3 file after correction to normalized.
      */
     final public function move(string $oldFileName, string $newFileName): bool
     {
@@ -47,10 +47,10 @@ class Mover extends Messenger implements FileTypeInterface
         exec($cmd, $details, $retVal);
         if (0 !== $retVal) {
             $this->error("Error while moving <".$oldFileName."> to <".$newFileName.">. Details: ".implode($details));
+            GarbageCollector::add($newFileName);
 
             return false;
         }
-        GarbageCollector::add($newFileName);
 
         return true;
     }

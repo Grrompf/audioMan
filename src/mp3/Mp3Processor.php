@@ -22,16 +22,16 @@ declare(strict_types=1);
 namespace audioMan\mp3;
 
 
-use audioMan\AbstractBase;
+
 use audioMan\utils\CoverFinder;
-use audioMan\utils\Scanner;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mp3Processor extends AbstractBase
+class Mp3Processor extends Messenger
 {
     private $converter;
     private $joiner;

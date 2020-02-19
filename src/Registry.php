@@ -28,20 +28,21 @@ namespace audioMan;
  */
 class Registry
 {
-    public const KEY_APPEND    = 'append';
-    public const KEY_COPY      = 'copy';
-    public const KEY_FORCE     = 'force';
-    public const KEY_FORMAT    = 'format';
-    public const KEY_LIB_DIR   = 'libDir'; //album dir
-    public const KEY_MULTIPLE  = 'multiple';
-    public const KEY_NORMALIZE = 'normalize';
-    public const KEY_OUTPUT    = 'output';
+    public const KEY_APPEND     = 'append';
+    public const KEY_COPY       = 'copy';
+    public const KEY_FORCE      = 'force';
+    public const KEY_FORMAT     = 'format';
+    public const KEY_LIB_DIR    = 'libDir'; //album dir
+    public const KEY_MULTIPLE   = 'multiple';
+    public const KEY_NORMALIZE  = 'normalize';
+    public const KEY_OUTPUT     = 'output';
     public const KEY_PATH_SEPARATOR = 'path_separator'; //depending on OS
-    public const KEY_ROOT_DIR  = 'rootDir'; //start dir
-    public const KEY_SEPARATOR = 'separator'; //format in title
-    public const KEY_TMP_FILES = 'tmpFiles';
-    public const KEY_VERBOSITY = 'verbosity';
-    public const KEY_VOLUMES   = 'volumes';
+    public const KEY_ROOT_DIR   = 'rootDir'; //start dir
+    public const KEY_SEPARATOR  = 'separator'; //format in title
+    public const KEY_TMP_FILES  = 'tmpFiles'; //garbage for temporary files
+    public const KEY_SKIP_FILES = 'skipFiles'; //garbage for skipped files
+    public const KEY_VERBOSITY  = 'verbosity';
+    public const KEY_VOLUMES    = 'volumes';
     public const DEFAULT_SEPARATOR = ' - ';
 
     protected static $instance = null;

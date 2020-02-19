@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\mp3;
 
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\utils\Messenger;
 
 /**
@@ -29,42 +28,67 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mp3AlbumCover extends Messenger implements FileTypeInterface
+class TagWriter extends Messenger
 {
-    final public function import(string $cover, string $fileName=self::CORRECTED_FILE_NAME): void
+    /**
+     * Rewriting title and album of the mp3 file
+     */
+    final public function write(string $fileName, string $album, string $title, string $cover=null): bool
     {
-        //expecting a well-known file name
         if (false === file_exists($fileName)) {
-            $this->error("Expected file <".$fileName."> not found in <".basename(getcwd()).">");
+            $this->error("Expected file <".$fileName."> not found.");
+
+            return false;
         }
 
+        $this->comment("Write tag to <".$fileName.">");
+
+        //cover
+        $coverCmd='';
+        if ($cover && !$this->hasCover($fileName)) {
+            //import cmd
+            $coverCmd =sprintf("-p %s", escapeshellarg($cover));
+        }
+
+        //mid3v2 command
+        $cmd = sprintf("mid3v2 -q -t %s -A %s -g Other %s %s",
+            escapeshellarg($title),
+            escapeshellarg($album),
+            $coverCmd,
+            escapeshellarg($fileName)
+        );
+
+        //mid3v2
+        exec($cmd, $details, $retVal);
+        if (0 !== $retVal) {
+            $this->error("Error while writing tags to <".$fileName.">. Details: ".implode($details));
+
+            return false;
+        }
+        //success
+        $this->comment("Tag written to <".$fileName. ">.");
+
+        return true;
+    }
+
+    private function hasCover(string $fileName): bool
+    {
         //list tags cmd (tags are listed as an array)
         $cmd =sprintf("mid3v2 -l %s",  escapeshellarg($fileName));
 
         //mid3v2
-        exec($cmd, $output, $retVal);
+        exec($cmd, $details, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while listing all tags to <".$fileName."> in <".getcwd().">".PHP_EOL."Details: ".implode($output));
-            $msg = PHP_EOL."Exit".PHP_EOL;
-            die($msg);
+            $this->error("Error while listing all tags of <".$fileName.">. Details: ".implode($details));
+
+            return false;
         }
-        //has album cover
-        if (strpos(implode($output),"APIC") > 0) {
+
+        //album cover found?
+        if ($coverFound = strpos(implode($details),"APIC") > 0) {
             $this->comment("Album cover found.");
-            return;
         }
 
-        //import cmd
-        $cmd =sprintf("mid3v2 -p %s %s", escapeshellarg($cover), escapeshellarg($fileName));
-
-        //mid3v2
-        exec($cmd, $output, $retVal);
-        if (0 !== $retVal) {
-            $details = implode(" | ", $output);
-            $this->error("Error while import album cover <".$cover."> to <".$fileName."> in <".getcwd().">".PHP_EOL."Details: ".$details);
-            $msg = PHP_EOL."Exit".PHP_EOL;
-            die($msg);
-        }
-        $this->success("Album cover <".$cover."> imported.");
+        return $coverFound;
     }
 }

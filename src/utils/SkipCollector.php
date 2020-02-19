@@ -19,21 +19,60 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\model;
+namespace audioMan\utils;
+
+use audioMan\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class PathModel
+class SkipCollector extends Messenger
 {
-    public $level;
-    public $subDir;
+    public const TYPE_EPISODE    = 10;
+    public const TYPE_EMPTY_FILE = 20;
+    public const TYPE_NOT_IMAGE  = 30;
 
-    public function __construct(int $level, string $subDir)
+    protected static $instance = null;
+
+    /**
+     * Add skipped files
+     */
+    public static function add(string $file, int $type=self::TYPE_EPISODE): void
     {
-        $this->level  = $level;
-        $this->subDir = $subDir;
+        $skipFiles = [];
+
+        //get the array of temporary files
+        if (Registry::get(Registry::KEY_SKIP_FILES)) {
+            $skipFiles = Registry::get(Registry::KEY_SKIP_FILES);
+        };
+
+        //make new entry
+        if (!in_array($file, $skipFiles)) {
+            $skipFiles[$type] = $file;
+        }
+
+        //set to registry
+        Registry::set(Registry::KEY_SKIP_FILES, $skipFiles);
+
+        self::getInstance()->debug("Skipped file <".$file."> added.");
+    }
+
+    protected static function getInstance(): self
+    {
+        if (null === self::$instance) {
+            self::$instance = new SkipCollector();
+        }
+
+        return self::$instance;
+    }
+
+    protected function __construct()
+    {
+    }
+
+    private function __clone()
+    {
     }
 }
