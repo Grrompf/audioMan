@@ -68,15 +68,5 @@ class Main extends AbstractBase
             }
             return;
         }
-
-        //check
-        if (!$levelCheck->check($actualPath)) {
-            $this->warning("Skip path <".$actualPath.">".PHP_EOL."Use option --force to process.");
-            return;
-        }
-
-        //single book
-        $worker = new AlbumWorker($actualPath);
-        $worker->handle();
     }
 }

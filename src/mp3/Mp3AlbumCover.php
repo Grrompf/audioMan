@@ -21,8 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan\mp3;
 
-
-use audioMan\interfaces\FileNameInterface;
+use audioMan\interfaces\FileTypeInterface;
 use audioMan\utils\Messenger;
 
 /**
@@ -30,7 +29,7 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mp3AlbumCover extends Messenger implements FileNameInterface
+class Mp3AlbumCover extends Messenger implements FileTypeInterface
 {
     final public function import(string $cover, string $fileName=self::CORRECTED_FILE_NAME): void
     {

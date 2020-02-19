@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace audioMan\mp3;
 
 
-use audioMan\interfaces\FileNameInterface;
+use audioMan\interfaces\FileTypeInterface;
 use audioMan\utils\Messenger;
 use audioMan\utils\TmpCleaner;
 
@@ -31,7 +31,7 @@ use audioMan\utils\TmpCleaner;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mp3Mover extends Messenger implements FileNameInterface
+class Mp3Mover extends Messenger implements FileTypeInterface
 {
     /**
      * Rename joined mp3 file after correction to upper dir. New file name is the name of the parent dir.

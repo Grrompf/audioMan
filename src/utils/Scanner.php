@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan\utils;
 
-use audioMan\interfaces\FileNameInterface;
+use audioMan\interfaces\FileTypeInterface;
 use audioMan\Registry;
 
 /**
@@ -29,7 +29,7 @@ use audioMan\Registry;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Scanner extends BaseScanner implements FileNameInterface
+class Scanner extends BaseScanner implements FileTypeInterface
 {
     /**
      * @return array|bool|false
