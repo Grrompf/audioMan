@@ -29,15 +29,15 @@ namespace audioMan\model;
 class AudioBookModel
 {
     public $albumPath;
-    public $album;
-    public $episodes;
+    public $albumTitle;
+    public $episodes = [];
     public $albumFiles;
     public $albumImages;
 
     public function __construct(string $albumPath, array $albumFiles)
     {
         $this->albumPath = $albumPath;
-        $this->album = basename($albumPath);
+        $this->albumTitle = basename($albumPath);
         $this->albumFiles = $albumFiles;
     }
 }

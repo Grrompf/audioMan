@@ -48,6 +48,10 @@ class EpisodeFinder implements FileTypeInterface
         //todo: complete other cases
         //todo: origin path (deeper nested album) or by album correction
         $tree = $this->treeMaker->makeAlbumTree($album);
+        if (empty($tree)) {
+            //todo: look for Radio Krimis NEU !!!
+            return;
+        }
         $maxLevel = max(array_keys($tree));
 
         //todo: what if there are also files on deeper levels
@@ -61,8 +65,7 @@ class EpisodeFinder implements FileTypeInterface
             foreach($tree[$maxLevel] as $path) {
                 $names[] = basename(dirname($path));
             }
-            var_dump((new Volume())->check($names));
+            //var_dump((new Volume())->check($names));
         }
     }
-    //todo: cover Finder
 }

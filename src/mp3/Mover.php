@@ -36,17 +36,16 @@ class Mover extends Messenger implements FileTypeInterface
     /**
      * Rename joined mp3 file after correction to normalized.
      */
-    final public function move(string $oldFileName, string $newFileName): bool
+    final public function copy(string $oldFileName, string $newFileName): bool
     {
-
-        $msg = "Moving file <".$oldFileName."> to <".$newFileName.">.";
+        $msg = "Copy file <".$oldFileName."> to <".$newFileName.">.";
         $this->debug($msg);
 
         //moving not copying!
-        $cmd = sprintf("mv %s %s" , escapeshellarg($oldFileName), escapeshellarg($newFileName));
+        $cmd = sprintf("cp %s %s" , escapeshellarg($oldFileName), escapeshellarg($newFileName));
         exec($cmd, $details, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while moving <".$oldFileName."> to <".$newFileName.">. Details: ".implode($details));
+            $this->error("Error while copying  <".$oldFileName."> to <".$newFileName.">. Details: ".implode($details));
             GarbageCollector::add($newFileName);
 
             return false;

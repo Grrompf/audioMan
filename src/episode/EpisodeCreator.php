@@ -21,10 +21,9 @@ declare(strict_types=1);
 
 namespace audioMan\episode;
 
-use audioMan\analyse\Normalizer;
-use audioMan\analyse\TitleMaker;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\EpisodeModel;
+use audioMan\utils\SkipCollector;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -46,6 +45,9 @@ class EpisodeCreator implements FileTypeInterface
     {
         $episode = new EpisodeModel($originalTitle, $audioFiles);
 
+        //skip if emtpy files are found
+        $episode->isSkipped = $this->hasEmptyFiles($audioFiles);
+
         //path to episode
         $episode->path = pathinfo($audioFiles[0], PATHINFO_DIRNAME);
 
@@ -57,5 +59,13 @@ class EpisodeCreator implements FileTypeInterface
         $episode->normalizedFileName = $this->normalizer->normalizeUtf8($title).self::DEFAULT_EXT;
 
         return $episode;
+    }
+
+
+    private function hasEmptyFiles(array $files): bool
+    {
+        $found = array_intersect(SkipCollector::get(SkipCollector::TYPE_EMPTY_FILE), $files);
+
+        return !empty($found);
     }
 }

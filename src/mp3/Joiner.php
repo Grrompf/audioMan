@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace audioMan\mp3;
 
 use audioMan\interfaces\FileTypeInterface;
-use audioMan\Registry;
 use audioMan\utils\GarbageCollector;
 use audioMan\utils\Messenger;
 use audioMan\utils\SkipCollector;
@@ -35,22 +34,12 @@ use audioMan\utils\Tools;
  */
 class Joiner extends Messenger implements FileTypeInterface
 {
-    private $mp3Fixer;
-
-    public function __construct()
-    {
-        $this->mp3Fixer = new Mp3Fixer();
-    }
-
     /**
      * Merges all mp3 files to one. Merged file is given a temporary name.
      */
-    final public function join(array $audioFiles, string $path =''): bool
+    final public function merge(array $audioFiles, string $combinedFileName, string $newFileName): bool
     {
-        //todo: path
-        $newFilename = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CONCAT_FILE_NAME;
-        GarbageCollector::add($newFilename);
-
+        GarbageCollector::add($combinedFileName);
 
         $msg = "Join <".count($audioFiles)."> mp3 files.";
         $this->comment($msg);
@@ -60,7 +49,7 @@ class Joiner extends Messenger implements FileTypeInterface
         foreach ($audioFiles as $file) {
 
             if (!file_exists($file)) {
-                $this->error("File not found <".$file.">. Skipping whole episode!");
+                $this->error("File not found <".$file.">.");
                 SkipCollector::add($file, SkipCollector::TYPE_EPISODE);
 
                 return false;
@@ -69,7 +58,8 @@ class Joiner extends Messenger implements FileTypeInterface
             //file size in kB
             $size += filesize($file)/1000;
 
-            $cmd = "cat ".escapeshellarg($file)." >> ".escapeshellarg($newFilename).' 2> /dev/null';
+            //merge cmd
+            $cmd = "cat ".escapeshellarg($file)." >> ".escapeshellarg($combinedFileName).' 2> /dev/null';
             exec($cmd, $details, $retVal);
             if (0 !== $retVal) {
                 $this->error("Error while merging <".$file.">. Details: ".implode($details));
@@ -81,7 +71,7 @@ class Joiner extends Messenger implements FileTypeInterface
         $this->comment("Merged <".count($audioFiles)."> mp3 files.");
 
         // size of merged product in kB
-        $mergedSize     = filesize($newFilename)/1000;
+        $mergedSize     = filesize($combinedFileName)/1000;
         $mergedSizeMB   = Tools::getMB($mergedSize);
         $expectedSizeMB = Tools::getMB($size);
 
@@ -96,18 +86,14 @@ class Joiner extends Messenger implements FileTypeInterface
         }
 
         //fixing time issue
-        return $this->fixMp3Length($newFilename);
+        return $this->fixMp3Length($combinedFileName, $newFileName);
     }
 
-    private function fixMp3Length(string $mergedFile): bool
+    private function fixMp3Length(string $mergedFile, string $newFileName): bool
     {
-        $path = pathinfo($mergedFile, PATHINFO_DIRNAME);
-        $fixedFile = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CORRECTED_FILE_NAME;
-        GarbageCollector::add($fixedFile);
-
         //correcting using ffmpeg
         $this->comment("Correcting mp3 file time using ffmpeg library.");
-        $cmd = sprintf('ffmpeg -loglevel quiet -y -i %s -acodec copy %s', $mergedFile, $fixedFile);
+        $cmd = sprintf('ffmpeg -loglevel quiet -y -i %s -acodec copy %s', $mergedFile, $newFileName);
 
         exec($cmd, $details, $retVal);
         if (0 !== $retVal) {

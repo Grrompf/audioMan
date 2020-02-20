@@ -41,6 +41,9 @@ class Filter implements FileTypeInterface
         $this->allowedTypes = array_merge(self::AUDIO_TYPES, self::IMAGE_TYPES);
     }
 
+    /**
+     * Filter for audio and image files
+     */
     final public function filter(): \RecursiveCallbackFilterIterator
     {
         //filter

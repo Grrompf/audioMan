@@ -21,8 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan;
 
-use audioMan\album\AlbumWorker;
-use audioMan\util\LevelCheck;
+use audioMan\album\AlbumProcessor;
 use audioMan\analyse\Checker;
 use audioMan\utils\Messenger;
 
@@ -33,43 +32,17 @@ use audioMan\utils\Messenger;
  */
 class Main extends Messenger
 {
-    //todo: collect skipped files
-    //todo: empty files
     //todo: manifest for update
     final public function handle(): void
     {
         $actualPath = getCwd();
-        (new Checker())->check($actualPath);
-        die();
+        $albums = (new Checker())->check($actualPath);
 
-        //starting dir is root dir
-        Registry::set(Registry::KEY_ROOT_DIR, $actualPath);
-        Registry::set(Registry::KEY_LIB_DIR, $actualPath);
-        $levelCheck = new LevelCheck();
-
-        //multiple books
-        if (Registry::get(Registry::KEY_MULTIPLE)) {
-            $msg = "Looking for multiple audio books in <".basename(getcwd()).">";
-            $this->comment($msg);
-
-            $iterator = new \DirectoryIterator($actualPath);
-            foreach ($iterator as $fileInfo) {
-                if ($fileInfo->isDot() || $fileInfo->isFile()) {
-                    continue;
-                }
-                if ($fileInfo->isDir()) {
-                    //path of the processed album
-                    Registry::set(Registry::KEY_LIB_DIR, $fileInfo->getRealPath());
-                    if (!$levelCheck->check($fileInfo->getRealPath())) {
-                        $this->warning("Skip path <".$fileInfo->getRealPath().">".PHP_EOL."Use option --force to process.");
-                        continue;
-                    }
-
-                    $worker = new AlbumWorker($fileInfo->getRealPath());
-                    $worker->handle();
-                }
-            }
-            return;
+        foreach($albums as $album) {
+            (new AlbumProcessor())->process($album);
+            readline("Do you want to proceed? default y");
+            die;
         }
+
     }
 }

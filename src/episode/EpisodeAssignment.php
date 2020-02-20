@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace audioMan\episode;
 
+use audioMan\utils\SkipCollector;
+
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz

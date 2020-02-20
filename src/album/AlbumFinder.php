@@ -65,14 +65,11 @@ class AlbumFinder extends Messenger implements FileTypeInterface
             if (array_key_exists($albumPath, $albums)) {
                 continue;
             }
-            $this->comment("Working on album <".basename($albumPath).">");
+            $this->chat("Working on album <".basename($albumPath).">");
 
+            //create album
             $album = $this->albumCreator->create($allFiles, $albumPath);
-
-            var_dump($album);
-            die;
-
-            $albums[$albumPath]=$model;
+            $albums[$albumPath]=$album;
         }
 
         //this is not expected to happen!

@@ -22,7 +22,9 @@ declare(strict_types=1);
 namespace audioMan\analyse;
 
 use audioMan\album\AlbumFinder;
+use audioMan\album\AlbumProcessor;
 use audioMan\utils\Messenger;
+use audioMan\utils\Tools;
 
 
 /**
@@ -52,8 +54,10 @@ use audioMan\utils\Messenger;
  */
 class Checker extends Messenger
 {
-    final public function check(string $actualPath): void
+    final public function check(string $actualPath): array
     {
+        Tools::createDir('~/Musik/audioMan/');
+
         $this->info("Check for audio and cover files in <".$actualPath."> ...");
         $actualPath = getCwd();
 
@@ -77,7 +81,10 @@ class Checker extends Messenger
 
         //albums
         $albums = (new AlbumFinder($files, $actualPath))->check($albumLevel);
+        $this->info("Number of albums <".count($albums)."> found.");
 
-        $this->caution("Number of albums <".count($albums).">");
+        return $albums;
+
+
     }
 }

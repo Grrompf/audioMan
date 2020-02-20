@@ -52,13 +52,17 @@ class Tools
     /**
      * Create directory recursive
      */
-    public static function createDir(string $path): void
+    public static function createDir(string $path): string
     {
+        //important to resolve home directory
+        $path = str_replace('~', getenv('HOME'), $path);
         if ( !file_exists($path) && !is_dir($path) ) {
-            if (!mkdir( $path, 0755, true )) {
+           if (!mkdir( $path, 0755, true )) {
                 die(PHP_EOL."Cannot create output dir <".$path.">".PHP_EOL."Check your rights!".PHP_EOL."Exit".PHP_EOL);
             }
         }
+
+        return $path;
     }
 
     /**

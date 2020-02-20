@@ -33,6 +33,7 @@ class EpisodeModel
     public $normalizedFileName;
     public $audioFiles;
     public $cover;
+    public $isSkipped = false; //skip episode processing if true
 
     public function __construct(string $originalTitle, array $audioFiles)
     {

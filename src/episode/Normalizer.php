@@ -19,7 +19,7 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\analyse;
+namespace audioMan\episode;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License

@@ -54,6 +54,9 @@ class Scanner extends Messenger implements FileTypeInterface
             assert($file instanceof \SplFileInfo);
             $noFiles++;
 
+            //img type check
+            $isImg = in_array(strtolower($file->getExtension()), self::IMAGE_TYPES);
+
             //skip empty files
             if ($file->getSize() === 0) {
                 $msg = "File <".$file->getPathname()."> has no content. File skipped!";
@@ -64,10 +67,9 @@ class Scanner extends Messenger implements FileTypeInterface
                 continue;
             }
             //skip no mime typed image
-            $isImg = in_array(strtolower($file->getExtension()), self::IMAGE_TYPES);
             if ($isImg && !ImgCheck::isImage($file->getPathname())) {
                 $msg = "Image file <".$file->getPathname()."> is not an image!!! File skipped!";
-                $this->caution($msg);
+                $this->warning($msg);
                 $noSkippedFiles++;
                 SkipCollector::add($file->getPathname(), SkipCollector::TYPE_NOT_IMAGE);
 
@@ -78,14 +80,14 @@ class Scanner extends Messenger implements FileTypeInterface
                 $imgSize = round($file->getSize() / 1000, 1);
                 $msg = "Image file <".$file->getPathname(
                     )."> size <".$imgSize."> is larger than allowed size <".ImgCheck::MAX_FILE_SIZE." kB>. File skipped!";
-                $this->comment($msg);
+                $this->chat($msg);
                 $noSkippedFiles++;
                 continue;
             }
             //skip images that are no squares
             if ($isImg && !ImgCheck::hasSquareDimension($file->getPathname())) {
                 $msg = "Image file <".$file->getPathname()."> is not a square. File skipped!";
-                $this->comment($msg);
+                $this->chat($msg);
                 $noSkippedFiles++;
                 continue;
             }

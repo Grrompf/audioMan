@@ -32,7 +32,7 @@ use audioMan\model\EpisodeModel;
  */
 class CoverHelper
 {
-    public function assignCovers(AudioBookModel $album)
+    public function assignCovers(AudioBookModel $album): void
     {
         if (empty($album->albumImages)) {
             return;

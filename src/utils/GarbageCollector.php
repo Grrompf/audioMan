@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\utils;
 
-use audioMan\Registry;
-
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
@@ -31,25 +29,17 @@ use audioMan\Registry;
 class GarbageCollector extends Messenger
 {
     protected static $instance = null;
+    protected $tempFiles = [];
 
     /**
      * Add temporary files which are removed after processing
      */
     public static function add(string $file): void
     {
-        $tmpFiles = [];
-
-        //get the array of temporary files
-        if (Registry::get(Registry::KEY_TMP_FILES)) {
-            $tmpFiles = Registry::get(Registry::KEY_TMP_FILES);
+        //add file
+        if (!in_array($file, self::getInstance()->tempFiles)) {
+            self::getInstance()->tempFiles[] = $file;
         };
-
-        //making entry unique
-        $key = md5($file);
-        $tmpFiles[$key] = $file;
-
-        //set to registry
-        Registry::set(Registry::KEY_TMP_FILES, $tmpFiles);
 
         self::getInstance()->debug("Temporary file <".$file."> added.");
     }
@@ -59,15 +49,16 @@ class GarbageCollector extends Messenger
         self::getInstance()->comment("Removing temporary files");
 
         //get the array of temporary files
-        if ($tmpFiles = Registry::get(Registry::KEY_TMP_FILES)) {
-            self::getInstance()->debug("Found <".count($tmpFiles)."> temporary files.");
+        if (!empty(self::getInstance()->tempFiles)) {
+            self::getInstance()->debug("Found <".count(self::getInstance()->tempFiles)."> temporary files.");
 
-            $removedFiles =[];
+            $noRemoved=0;
             //cleaning
-            foreach ($tmpFiles as $fileToRemove) {
+            foreach (self::getInstance()->tempFiles as $key => $fileToRemove) {
 
                 //just one try to remove files. If fails it will just always fail.
-                $removedFiles[] = $fileToRemove;
+                $noRemoved++;
+                unset(self::getInstance()->tempFiles[$key]);
 
                 //skip
                 if(!file_exists($fileToRemove)) {
@@ -82,14 +73,10 @@ class GarbageCollector extends Messenger
                     );
                     continue;
                 }
-                self::getInstance()->debug("Removed <".$fileToRemove.">");
+                unset(self::getInstance()->tempFiles[$key]);
             }
 
             self::getInstance()->comment("Temporary files removed");
-
-            //we can also just set an empty array. but for future development...
-            $garbage = array_diff($tmpFiles, $removedFiles);
-            Registry::set(Registry::KEY_TMP_FILES, $garbage);
         };
     }
 

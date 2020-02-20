@@ -107,12 +107,14 @@ class DefaultCommand extends Command
         if (true === $input->hasParameterOption(['--out', '-o'], false)) {
 
             $outDir = $input->getOption('out');
-            //important to resolve home directory
-            $outDir = str_replace('~', getenv('HOME'), $outDir);
+
             Tools::createDir($outDir);
             Registry::set(Registry::KEY_OUTPUT, $outDir);
+        } else {
+            //output default: HOME/audioMan
+            $output = Tools::createDir("~/audioMan");
+            Registry::set(Registry::KEY_OUTPUT, $output);
         }
-
         Registry::set(Registry::KEY_FORCE, $force);
         Registry::set(Registry::KEY_VOLUMES, $volumes);
         Registry::set(Registry::KEY_NORMALIZE, $normalize);

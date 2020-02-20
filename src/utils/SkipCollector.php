@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\utils;
 
-use audioMan\Registry;
-
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
@@ -35,28 +33,39 @@ class SkipCollector extends Messenger
     public const TYPE_NOT_IMAGE  = 30;
 
     protected static $instance = null;
+    protected $skippedFiles = [];
 
     /**
      * Add skipped files
      */
     public static function add(string $file, int $type=self::TYPE_EPISODE): void
     {
-        $skipFiles = [];
-
-        //get the array of temporary files
-        if (Registry::get(Registry::KEY_SKIP_FILES)) {
-            $skipFiles = Registry::get(Registry::KEY_SKIP_FILES);
-        };
-
         //make new entry
-        if (!in_array($file, $skipFiles)) {
-            $skipFiles[$type] = $file;
+        if (!in_array($file, self::getInstance()->skippedFiles)) {
+            self::getInstance()->skippedFiles[$type][] = $file;
         }
 
-        //set to registry
-        Registry::set(Registry::KEY_SKIP_FILES, $skipFiles);
-
         self::getInstance()->debug("Skipped file <".$file."> added.");
+    }
+
+    /**
+     * get skipped files by type
+     */
+    public static function get(int $type=self::TYPE_EPISODE): array
+    {
+        if (!key_exists($type, self::getInstance()->skippedFiles)) {
+            self::getInstance()->skippedFiles[$type] = [];
+        }
+
+        return self::getInstance()->skippedFiles[$type];
+    }
+
+    /**
+     * get all skipped files
+     */
+    public static function getAll(): array
+    {
+        return self::getInstance()->skippedFiles;
     }
 
     protected static function getInstance(): self
