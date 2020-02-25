@@ -21,47 +21,40 @@ declare(strict_types=1);
 
 namespace audioMan\episode;
 
-use audioMan\utils\SkipCollector;
-
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class EpisodeAssignment
+class VolumeChecker
 {
-    private $episodeCreator;
+    private CONST _VOLUME_PATTERN = '#([0-9]+)$#';
 
-    public function __construct()
+    public function isVolume(array $files): bool
     {
-        $this->episodeCreator = new EpisodeCreator();
-    }
-
-    public function assign(array $files): array
-    {
-        $albumEpisodes=[];
-        $episodeFiles = $this->assignEpisodeFiles($files);
-
-        //transform date array to into array of models
-        $allTitles = array_keys($episodeFiles);
-        foreach ($allTitles as $originalTitle) {
-            //audio files of episode
-            $files = $episodeFiles[$originalTitle];
-            $albumEpisodes[] = $this->episodeCreator->create($originalTitle, $files);
+        //volume has more than one file
+        if (count($files) <= 1) {
+            return false;
         }
 
-        return $albumEpisodes;
-    }
-
-    private function assignEpisodeFiles(array $files): array
-    {
-        $rawEpisodes = [];
-        //array of files with key as title.
+        //test if volumes
+        $volumes = [];
         foreach ($files as $file) {
-            $title = pathinfo($file, PATHINFO_FILENAME);
-            $rawEpisodes[$title][] = $file;
+            $file = trim($file);
+
+            //remove appending number
+            $edited = preg_replace(self::_VOLUME_PATTERN, '', $file);
+            $edited = trim($edited);
+
+            //just in case
+            $edited = strtolower($edited);
+
+            if (!in_array($edited, $volumes)) {
+                $volumes[] = $edited;
+            }
         }
 
-        return $rawEpisodes;
+        //true if only one element found
+        return count($volumes) === 1;
     }
 }

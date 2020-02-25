@@ -44,7 +44,7 @@ class Tools
     /**
      * Get file size in MB
      */
-    public static function getMB(int $size): float
+    public static function getMB(float $size): float
     {
         return round($size/1000000, 1);
     }

@@ -26,6 +26,7 @@ use audioMan\analyse\level\Volume;
 use audioMan\analyse\TreeMaker;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
+use audioMan\model\EpisodeModel;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -35,12 +36,12 @@ use audioMan\model\AudioBookModel;
 class EpisodeFinder implements FileTypeInterface
 {
     private $treeMaker;
-    private $assignment;
+    private $creator;
 
     public function __construct()
     {
         $this->treeMaker  = new TreeMaker();
-        $this->assignment = new EpisodeAssignment();
+        $this->creator    = new EpisodeCreator();
     }
 
     final public function assign(AudioBookModel $album): void
@@ -50,6 +51,7 @@ class EpisodeFinder implements FileTypeInterface
         $tree = $this->treeMaker->makeAlbumTree($album);
         if (empty($tree)) {
             //todo: look for Radio Krimis NEU !!!
+            var_dump('EMPTY TREE');
             return;
         }
         $maxLevel = max(array_keys($tree));
@@ -58,8 +60,37 @@ class EpisodeFinder implements FileTypeInterface
         if ($maxLevel === 0) {
             //files on album root
             $files = $tree[$maxLevel];
-            $album->episodes = $this->assignment->assign($files);
-        } else {
+
+            //test if volumes
+            if ((new VolumeChecker())->isVolume($files)) {
+                $title = pathinfo($files[0], PATHINFO_FILENAME);
+                $album->episodes[] = $this->creator->create($title, [$files]);
+            } else {
+                //episodes are filenames
+                foreach ($files as $file) {
+                    $title = pathinfo($file, PATHINFO_FILENAME);
+                    $album->episodes[] = $this->creator->create($title, [$file]);
+                }
+            }
+        }
+        if ($maxLevel === 1) {
+            //files on next album level
+            $files = $tree[$maxLevel];
+
+            //get episode titles
+            $albumEpisodes=[];
+            foreach ($files as $file) {
+                $pathToEpisode = pathinfo($file, PATHINFO_DIRNAME);
+                $originalTitle = basename($pathToEpisode);
+                $albumEpisodes[$originalTitle][]=$file;
+            }
+            foreach ($albumEpisodes as $originalTitle => $files) {
+                $album->episodes[] = $this->creator->create($originalTitle, $files);
+            }
+        }
+
+
+        else {
             //check for volumes
             $names = [];
             foreach($tree[$maxLevel] as $path) {

@@ -37,11 +37,13 @@ class Main extends Messenger
     {
         $actualPath = getCwd();
         $albums = (new Checker())->check($actualPath);
+        $processor = new AlbumProcessor();
 
         foreach($albums as $album) {
-            (new AlbumProcessor())->process($album);
-            readline("Do you want to proceed? default y");
-            die;
+            if ('n' === readline("Do you want to proceed? Enter y or n (default: y)")) {
+                continue;
+            };
+            $processor->process($album);
         }
 
     }

@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace audioMan\episode;
 
-use audioMan\analyse\TreeMaker;
 use audioMan\model\AudioBookModel;
 use audioMan\model\EpisodeModel;
+use audioMan\utils\ImgCheck;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -32,6 +32,9 @@ use audioMan\model\EpisodeModel;
  */
 class CoverHelper
 {
+    //LOWER CASE ONLY!
+    private const _COVER_NAMING = ['cover', 'folder', 'front'];
+
     public function assignCovers(AudioBookModel $album): void
     {
         if (empty($album->albumImages)) {
@@ -42,7 +45,7 @@ class CoverHelper
         foreach ($album->episodes as $episode) {
            $this->assignEpisodeCover($episode, $album->albumImages, $album->albumPath);
         }
-    }
+     }
 
 
     private function assignEpisodeCover(EpisodeModel $episode, array $albumImages, string $albumPath): void
@@ -50,14 +53,21 @@ class CoverHelper
         //img in episode dir or below
         $episodeCovers = [];
         $albumCovers   = [];
+
         foreach ($albumImages as $fileName) {
+            $imgDir = pathinfo($fileName, PATHINFO_DIRNAME);
+            if (false !== strpos($imgDir, $episode->path)) {
+                $episodeCovers[] = $fileName;
+            }
             if (false !== strpos($fileName, $episode->title)) {
                 $episodeCovers[] = $fileName;
             }
             if ($albumPath === pathinfo($fileName, PATHINFO_DIRNAME)) {
                 $albumCovers[] = $fileName;
             }
+            //image path contains episode path
         }
+
         //episode level first
         if (!empty($episodeCovers)) {
             $episode->cover = $this->findBestMatch($episodeCovers);
@@ -70,30 +80,62 @@ class CoverHelper
 
     /**
      * Find best match of multiple files by file name.
+     * On first run large images and images with no square dimension are ignored to get the best suited image.
      */
     private function findBestMatch(array $files): string
     {
+        if (count($files) === 1) {
+            return array_shift($files);
+        }
+
+        $secondTry=[];
         foreach ($files as $file) {
 
-            $filename = pathinfo($file, PATHINFO_FILENAME);
-            //best match
-            if (stripos($filename, 'cover') !== false) {
+            //skip over sized images
+            if (round(filesize($file) / 1000, 1) > ImgCheck::MAX_FILE_SIZE) {
+                $secondTry[] = $file;
+                continue;
+            }
+
+            //skip over no square images
+            if (!ImgCheck::hasSquareDimension($file)) {
+                $secondTry[] = $file;
+                continue;
+            }
+
+            //matching naming convention
+            if ($this->isNamingMatch($file)) {
                 return $file;
             }
-            //second best
-            if (stripos($filename, 'folder') !== false) {
-                return $file;
-            }
-            //third best
-            if (stripos($filename, 'front') !== false) {
+
+            $secondTry[] = $file;
+        }
+
+        //better one than no cover
+        if (count($secondTry) === 1) {
+            return array_shift($secondTry);
+        }
+
+        //second run on naming convention
+       foreach ($secondTry as $file) {
+            //matching naming convention
+            if ($this->isNamingMatch($file)) {
                 return $file;
             }
         }
 
         //return random image
-        $max = count($files)-1;
+        $max = count($secondTry)-1;
         $key = rand(0, $max);
 
         return $files[$key];
+    }
+
+    private function isNamingMatch(string $file): bool
+    {
+        $filename = pathinfo($file, PATHINFO_FILENAME);
+        $filename = strtolower($filename);
+
+        return in_array($filename, self::_COVER_NAMING);
     }
 }

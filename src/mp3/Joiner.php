@@ -39,13 +39,15 @@ class Joiner extends Messenger implements FileTypeInterface
      */
     final public function merge(array $audioFiles, string $combinedFileName, string $newFileName): bool
     {
+        //todo: we need to do everything on episode Path.. edit. moving to another dir does not work
         GarbageCollector::add($combinedFileName);
 
-        $msg = "Join <".count($audioFiles)."> mp3 files.";
+        $msg = "Join <".count($audioFiles)."> audio files.";
         $this->comment($msg);
         $size = 0;
 
         //concatenating mp3 files
+        sort($audioFiles, SORT_DESC);
         foreach ($audioFiles as $file) {
 
             if (!file_exists($file)) {
@@ -55,8 +57,8 @@ class Joiner extends Messenger implements FileTypeInterface
                 return false;
             }
 
-            //file size in kB
-            $size += filesize($file)/1000;
+            //file size
+            $size += filesize($file);
 
             //merge cmd
             $cmd = "cat ".escapeshellarg($file)." >> ".escapeshellarg($combinedFileName).' 2> /dev/null';
@@ -68,10 +70,10 @@ class Joiner extends Messenger implements FileTypeInterface
             }
         }
 
-        $this->comment("Merged <".count($audioFiles)."> mp3 files.");
+        $this->comment("Merged <".count($audioFiles)."> audio files.");
 
         // size of merged product in kB
-        $mergedSize     = filesize($combinedFileName)/1000;
+        $mergedSize     = filesize($combinedFileName);
         $mergedSizeMB   = Tools::getMB($mergedSize);
         $expectedSizeMB = Tools::getMB($size);
 
@@ -93,11 +95,11 @@ class Joiner extends Messenger implements FileTypeInterface
     {
         //correcting using ffmpeg
         $this->comment("Correcting mp3 file time using ffmpeg library.");
-        $cmd = sprintf('ffmpeg -loglevel quiet -y -i %s -acodec copy %s', $mergedFile, $newFileName);
+        $cmd = sprintf('ffmpeg -loglevel quiet -y -i %s -acodec copy %s', escapeshellarg($mergedFile), escapeshellarg($newFileName));
 
         exec($cmd, $details, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while fixing file time. Details: ".implode($details));
+            $this->error("Error while fixing file time. Details: ".implode($details));die;
 
             return false;
         }

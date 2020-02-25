@@ -28,7 +28,7 @@ namespace audioMan\utils;
  */
 class ImgCheck
 {
-    public const MAX_FILE_SIZE = 1200; //800 kB
+    public const MAX_FILE_SIZE = 1200; //1200 kB
 
     /**
      * Checking if file is an image type, in detail jpg, jpeg or png
@@ -57,7 +57,7 @@ class ImgCheck
         }
         $ratio = round($size[0]/$size[1], 1);
 
-        return  ($ratio > 0.9 && $ratio < 1.1);
+        return  ($ratio > 0.8 && $ratio < 1.2);
     }
 
     /**

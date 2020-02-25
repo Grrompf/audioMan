@@ -62,8 +62,15 @@ class AlbumProcessor extends Messenger implements FileTypeInterface
 
         //create album path
         $albumPath = Registry::get(Registry::KEY_OUTPUT).Registry::get(Registry::KEY_PATH_SEPARATOR).$album->albumTitle;
+
+        if (empty($album->episodes)) {
+            $this->warning("Skipped Album <".$album->albumTitle.">. No Episodes found.");
+            return;
+        }
+
         Tools::createDir($albumPath);
 
+        $noEpisodes = 0;
         foreach ($album->episodes as $episode) {
             assert($episode instanceof EpisodeModel);
             if ($episode->isSkipped) {
@@ -95,6 +102,9 @@ class AlbumProcessor extends Messenger implements FileTypeInterface
 
             //remove temp files
             GarbageCollector::clean();
+            $noEpisodes++;
         }
+
+        $this->success("Album <".$album->albumTitle."> containing <".$noEpisodes."> episodes processed.");
     }
 }

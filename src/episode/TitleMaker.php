@@ -38,6 +38,7 @@ class TitleMaker
         //clean mistyping
         $originalTitle = str_replace('--', '-', $originalTitle);
         $originalTitle = str_replace('__', '_', $originalTitle);
+        $originalTitle = str_replace('  ', ' ', $originalTitle);
 
         //skip on normalized files eg 01_-_file_for_you.mp3
         if (false === strpos($originalTitle, ' ') && false !== strpos($originalTitle, '_')) {

@@ -34,6 +34,7 @@ class EpisodeModel
     public $audioFiles;
     public $cover;
     public $isSkipped = false; //skip episode processing if true
+    public $path;
 
     public function __construct(string $originalTitle, array $audioFiles)
     {
