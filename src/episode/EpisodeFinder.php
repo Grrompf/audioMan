@@ -63,8 +63,8 @@ class EpisodeFinder implements FileTypeInterface
 
             //test if volumes
             if ((new VolumeChecker())->isVolume($files)) {
-                $title = pathinfo($files[0], PATHINFO_FILENAME);
-                $album->episodes[] = $this->creator->create($title, [$files]);
+                $title = basename(pathinfo($files[0], PATHINFO_DIRNAME));
+                $album->episodes[] = $this->creator->create($title, $files);
             } else {
                 //episodes are filenames
                 foreach ($files as $file) {

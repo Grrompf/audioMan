@@ -28,7 +28,7 @@ namespace audioMan\episode;
  */
 class VolumeChecker
 {
-    private CONST _VOLUME_PATTERN = '#([0-9]+)$#';
+    private CONST _VOLUME_PATTERN = '#([0-9]+)#';
 
     public function isVolume(array $files): bool
     {
@@ -40,11 +40,11 @@ class VolumeChecker
         //test if volumes
         $volumes = [];
         foreach ($files as $file) {
-            $file = trim($file);
+            $fileName = pathinfo($file, PATHINFO_FILENAME);
+            $fileName = trim($fileName);
 
             //remove appending number
-            $edited = preg_replace(self::_VOLUME_PATTERN, '', $file);
-            $edited = trim($edited);
+            $edited = preg_replace(self::_VOLUME_PATTERN, '_', $fileName);
 
             //just in case
             $edited = strtolower($edited);

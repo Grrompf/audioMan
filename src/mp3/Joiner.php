@@ -99,7 +99,7 @@ class Joiner extends Messenger implements FileTypeInterface
 
         exec($cmd, $details, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while fixing file time. Details: ".implode($details));die;
+            $this->error("Error while fixing file time. Details: ".$cmd);die;
 
             return false;
         }

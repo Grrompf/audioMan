@@ -64,6 +64,7 @@ class EpisodeCreator implements FileTypeInterface
 
     private function hasEmptyFiles(array $files): bool
     {
+
         $found = array_intersect(SkipCollector::get(SkipCollector::TYPE_EMPTY_FILE), $files);
 
         return !empty($found);
