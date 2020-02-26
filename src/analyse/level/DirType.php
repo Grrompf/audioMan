@@ -44,11 +44,10 @@ class DirType extends Messenger implements DirTypeInterface
             $this->comment("Multiple sub directories found. Probably episodes or volumes");
             return (new Volume)->check($dirNames);
         }
-        $type = self::TYPE_TITLE;
-        $msg  = "Album with just one title <".array_shift($dirCollector)."> found.".PHP_EOL;
+        $msg  = "Album with <".$noDirNames."> episodes found.".PHP_EOL;
         $msg .= "If this is not correct use --level[number] to manually set the album level.";
         $this->warning($msg);
 
-        return $type;
+        return self::TYPE_TITLE;
     }
 }

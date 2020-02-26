@@ -25,6 +25,7 @@ use audioMan\analyse\AlbumImageFinder;
 use audioMan\episode\CoverHelper;
 use audioMan\episode\EpisodeFinder;
 use audioMan\episode\MergeHelper;
+use audioMan\episode\VolumeFixer;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\Registry;
@@ -40,6 +41,7 @@ class AlbumCreator implements FileTypeInterface
     private $imageFinder;
     private $coverHelper;
     private $mergeHelper;
+    private $volumeFixer;
 
     public function __construct()
     {
@@ -47,6 +49,7 @@ class AlbumCreator implements FileTypeInterface
         $this->imageFinder   = new AlbumImageFinder();
         $this->coverHelper   = new CoverHelper();
         $this->mergeHelper   = new MergeHelper();
+        $this->volumeFixer   = new VolumeFixer();
     }
 
     public function create(array &$allFiles, string $albumPath): AudioBookModel
@@ -68,8 +71,12 @@ class AlbumCreator implements FileTypeInterface
             //add episodes
             $this->episodeFinder->assign($album);
         }
+
         //add covers
         $this->coverHelper->assignCovers($album);
+
+        //fix volume titles
+        $this->volumeFixer->fixTitle($album);
 
         return $album;
     }
@@ -90,21 +97,5 @@ class AlbumCreator implements FileTypeInterface
         $allFiles = array_diff($allFiles, $albumFiles);
 
         return $albumFiles;
-    }
-
-    private function extractImages(array $allAlbumFiles): array
-    {
-        $albumImages = [];
-        foreach ($allAlbumFiles as $file) {
-
-            //skip audio files
-            $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
-            if (!in_array($fileExtension, self::IMAGE_TYPES)) {
-                continue;
-            };
-            $albumImages[] = $file;
-        }
-
-        return $albumImages;
     }
 }
