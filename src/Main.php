@@ -23,6 +23,7 @@ namespace audioMan;
 
 use audioMan\album\AlbumProcessor;
 use audioMan\analyse\Checker;
+use audioMan\model\AudioBookModel;
 use audioMan\utils\Messenger;
 
 /**
@@ -39,8 +40,11 @@ class Main extends Messenger
         $albums = (new Checker())->check($actualPath);
         $processor = new AlbumProcessor();
 
+        /** @var AudioBookModel $album */
         foreach($albums as $album) {
-            if ('n' === readline("Do you want to proceed? Enter y or n (default: y)")) {
+
+            $msg = sprintf("Next album <%s>. Do you want to proceed? Enter y or n (default: y)", $album->albumTitle);
+            if ('n' === readline($msg)) {
                 continue;
             };
             $processor->process($album);

@@ -31,17 +31,6 @@ use audioMan\Registry;
 class Tools
 {
     /**
-     * Get level depth of the sub directory compared to the root directory
-     */
-    public static function getLevel(string $path, string $rootPath): int
-    {
-        $subDirs  = explode('/', $path);
-        $rootDirs = explode('/', $rootPath);
-
-        return count($subDirs) - count($rootDirs);
-    }
-
-    /**
      * Get file size in MB
      */
     public static function getMB(float $size): float

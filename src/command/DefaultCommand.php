@@ -25,7 +25,6 @@ use audioMan\Main;
 use audioMan\Registry;
 use audioMan\registry\Separator;
 use audioMan\Requirements;
-use audioMan\utils\SimplifiedRegex;
 use audioMan\utils\Tools;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,17 +42,14 @@ class DefaultCommand extends Command
     {
         $this
             ->setName('audioMan')
-            ->addOption('force-merge', null, InputOption::VALUE_NONE, 'force merge of all episodes')
-            ->addOption('multiple', 'm', InputOption::VALUE_NONE, 'multiple audio books')
+            ->addOption('force-merge', 'm', InputOption::VALUE_NONE, 'force merge of all episodes')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'force processing on deep directory structures')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'custom file name format')
             ->addOption('out', 'o', InputOption::VALUE_REQUIRED, 'custom output directory')
-            ->addOption('volumes', null, InputOption::VALUE_NONE, 'force volumes')
             ->setHelp('Find more information in README.md')
             ->setDescription("Merges multiple audio files. Suited for audio books and radio play.".PHP_EOL.
                 "  Time issue of merged files are corrected. File size of is checked, too.".PHP_EOL.
-                "  Wma files are converted. If album art (cover) is found, it is tagged, next to title, album and genre.".PHP_EOL.
+                "  Other audio formats are converted. If album art (cover) is found, it is tagged, next to title, album and genre.".PHP_EOL.
                 "  Files are renamed in format <# - title.mp3> and finally normalized.")
         ;
     }
@@ -80,27 +76,9 @@ class DefaultCommand extends Command
             $normalize = false;
         }
 
-        //volumes
-        $volumes = false;
-        if (true === $input->hasParameterOption('--volumes', true)) {
-            $volumes = true;
-        }
-
-        //force
-        $force = false;
-        if (true === $input->hasParameterOption('--force', true)) {
-            $force = true;
-        }
-
-        //multiple
-        $multiple = false;
-        if (true === $input->hasParameterOption(['--multiple', '-m'], true)) {
-            $multiple = true;
-        }
-
         //merge
         $merge = false;
-        if (true === $input->hasParameterOption(['--force-merge'], true)) {
+        if (true === $input->hasParameterOption(['--force-merge', '-m'], true)) {
             $merge = true;
         }
 
@@ -122,11 +100,8 @@ class DefaultCommand extends Command
             $output = Tools::createDir("~/audioMan");
             Registry::set(Registry::KEY_OUTPUT, $output);
         }
-        Registry::set(Registry::KEY_FORCE, $force);
-        Registry::set(Registry::KEY_VOLUMES, $volumes);
         Registry::set(Registry::KEY_NORMALIZE, $normalize);
         Registry::set(Registry::KEY_VERBOSITY, $verbosity);
-        Registry::set(Registry::KEY_MULTIPLE, $multiple);
         Registry::set(Registry::KEY_FORCE_MERGE, $merge);
 
         (new Requirements())->check();
