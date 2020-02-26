@@ -41,6 +41,9 @@ class TagWriter extends Messenger
             return false;
         }
 
+        //fix write permission
+        chmod($fileName, 0644);
+
         $this->comment("Write tag to <".$fileName.">");
 
         //cover

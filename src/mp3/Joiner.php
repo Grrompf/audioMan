@@ -70,7 +70,7 @@ class Joiner extends Messenger implements FileTypeInterface
             }
         }
 
-        $this->comment("Merged <".count($audioFiles)."> audio files.");
+        $this->chat("Merged <".count($audioFiles)."> audio files.");
 
         // size of merged product in kB
         $mergedSize     = filesize($combinedFileName);
