@@ -38,7 +38,7 @@ class AlbumImageFinder implements FileTypeInterface
         foreach ($album->albumFiles as $file) {
 
             //skip audio files
-            $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
+            $fileExtension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
             if (!in_array($fileExtension, self::IMAGE_TYPES)) {
                 continue;
             };

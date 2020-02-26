@@ -24,8 +24,10 @@ namespace audioMan\album;
 use audioMan\analyse\AlbumImageFinder;
 use audioMan\episode\CoverHelper;
 use audioMan\episode\EpisodeFinder;
+use audioMan\episode\MergeHelper;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
+use audioMan\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -36,11 +38,15 @@ class AlbumCreator implements FileTypeInterface
 {
     private $episodeFinder;
     private $imageFinder;
+    private $coverHelper;
+    private $mergeHelper;
 
     public function __construct()
     {
         $this->episodeFinder = new EpisodeFinder();
         $this->imageFinder   = new AlbumImageFinder();
+        $this->coverHelper   = new CoverHelper();
+        $this->mergeHelper   = new MergeHelper();
     }
 
     public function create(array &$allFiles, string $albumPath): AudioBookModel
@@ -54,11 +60,16 @@ class AlbumCreator implements FileTypeInterface
         //add album images
         $this->imageFinder->assign($album);
 
-        //add episodes
-        $this->episodeFinder->assign($album);
-
+        //user option --force-merge
+        if(Registry::get(Registry::KEY_FORCE_MERGE)) {
+            //force merge all album files
+            $this->mergeHelper->merge($album);
+        } else {
+            //add episodes
+            $this->episodeFinder->assign($album);
+        }
         //add covers
-        (new CoverHelper())->assignCovers($album);
+        $this->coverHelper->assignCovers($album);
 
         return $album;
     }

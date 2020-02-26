@@ -22,51 +22,45 @@ declare(strict_types=1);
 namespace audioMan\episode;
 
 use audioMan\interfaces\FileTypeInterface;
-use audioMan\model\EpisodeModel;
-use audioMan\utils\SkipCollector;
+use audioMan\model\AudioBookModel;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class EpisodeCreator implements FileTypeInterface
+class MergeHelper implements FileTypeInterface
 {
-    private $titleMaker;
-    private $normalizer;
+    private $episodeCreator;
 
     public function __construct()
     {
-        $this->titleMaker = new TitleMaker();
-        $this->normalizer = new Normalizer();
+        $this->episodeCreator = new EpisodeCreator();
     }
 
-    public function create(string $originalTitle, array $audioFiles): EpisodeModel
+    /**
+     * Merges all audio files to one episode
+     */
+    public function merge(AudioBookModel $album): void
     {
-        $episode = new EpisodeModel($originalTitle, $audioFiles);
+        $audioFiles = [];
+        foreach($album->albumFiles as $file) {
 
-        //skip if empty files are found
-        $episode->isSkipped = $this->hasEmptyFiles($audioFiles);
+            //skip image files
+            $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if (in_array($ext, self::IMAGE_TYPES)) {
+                continue;
+            }
 
-        //path to episode
-        $episode->path = pathinfo($audioFiles[0], PATHINFO_DIRNAME);
+            //add audio file
+            $audioFiles[] = $file;
+        }
 
-        //reformat title for tagging
-        $title = $this->titleMaker->makeTitle($originalTitle);
-        $episode->title = $title;
+        //title is directory name
+        $originalTitle = basename(pathinfo($album->albumFiles[0], PATHINFO_DIRNAME));
 
-        //normalize file name for poor mp3 players
-        $episode->normalizedFileName = $this->normalizer->normalizeUtf8($title).self::DEFAULT_EXT;
-
-        return $episode;
-    }
-
-
-    private function hasEmptyFiles(array $files): bool
-    {
-
-        $found = array_intersect(SkipCollector::get(SkipCollector::TYPE_EMPTY_FILE), $files);
-
-        return !empty($found);
+        //just one episode
+        $episode = $this->episodeCreator->create($originalTitle, $audioFiles);
+        $album->episodes[] = $episode;
     }
 }

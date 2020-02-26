@@ -43,6 +43,7 @@ class DefaultCommand extends Command
     {
         $this
             ->setName('audioMan')
+            ->addOption('force-merge', null, InputOption::VALUE_NONE, 'force merge of all episodes')
             ->addOption('multiple', 'm', InputOption::VALUE_NONE, 'multiple audio books')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
             ->addOption('force', null, InputOption::VALUE_NONE, 'force processing on deep directory structures')
@@ -97,6 +98,12 @@ class DefaultCommand extends Command
             $multiple = true;
         }
 
+        //merge
+        $merge = false;
+        if (true === $input->hasParameterOption(['--force-merge'], true)) {
+            $merge = true;
+        }
+
         //format
         if (true === $input->hasParameterOption(['--format', '-f'], false)) {
             $simplifiedRegex = $input->getOption('format');
@@ -120,6 +127,7 @@ class DefaultCommand extends Command
         Registry::set(Registry::KEY_NORMALIZE, $normalize);
         Registry::set(Registry::KEY_VERBOSITY, $verbosity);
         Registry::set(Registry::KEY_MULTIPLE, $multiple);
+        Registry::set(Registry::KEY_FORCE_MERGE, $merge);
 
         (new Requirements())->check();
         (new Main())->handle();

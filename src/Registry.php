@@ -30,17 +30,18 @@ use audioMan\utils\Tools;
  */
 class Registry
 {
-    public const KEY_FORCE      = 'force';
-    public const KEY_FORMAT     = 'format';
-    public const KEY_LIB_DIR    = 'libDir'; //album dir
-    public const KEY_MULTIPLE   = 'multiple';
-    public const KEY_NORMALIZE  = 'normalize';
-    public const KEY_OUTPUT     = 'output';
+    public const KEY_FORCE       = 'force';
+    public const KEY_FORMAT      = 'format';
+    public const KEY_LIB_DIR     = 'libDir'; //album dir
+    public const KEY_MULTIPLE    = 'multiple';
+    public const KEY_NORMALIZE   = 'normalize';
+    public const KEY_OUTPUT      = 'output';
     public const KEY_PATH_SEPARATOR = 'path_separator'; //depending on OS
-    public const KEY_ROOT_DIR   = 'rootDir'; //start dir
-    public const KEY_SEPARATOR  = 'separator'; //format in title
-    public const KEY_VERBOSITY  = 'verbosity';
-    public const KEY_VOLUMES    = 'volumes';
+    public const KEY_ROOT_DIR    = 'rootDir'; //start dir
+    public const KEY_SEPARATOR   = 'separator'; //format in title
+    public const KEY_VERBOSITY   = 'verbosity';
+    public const KEY_VOLUMES     = 'volumes';
+    public const KEY_FORCE_MERGE = 'force_merge'; //forcing to merge all episodes
 
     protected static $instance = null;
     protected $values = [];
@@ -84,6 +85,9 @@ class Registry
             //output default: HOME/audioMan
             $output = Tools::createDir("~/audioMan");
             self::$instance::set(self::KEY_OUTPUT, $output);
+
+            //merge default: false
+            self::$instance::set(self::KEY_FORCE_MERGE, false);
         }
 
         return self::$instance;

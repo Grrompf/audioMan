@@ -39,7 +39,6 @@ class Joiner extends Messenger implements FileTypeInterface
      */
     final public function merge(array $audioFiles, string $combinedFileName, string $newFileName): bool
     {
-        //todo: we need to do everything on episode Path.. edit. moving to another dir does not work
         GarbageCollector::add($combinedFileName);
 
         $msg = "Join <".count($audioFiles)."> audio files.";
