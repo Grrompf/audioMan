@@ -35,6 +35,7 @@ class EpisodeModel
     public $cover;
     public $isSkipped = false; //skip episode processing if true
     public $path;
+    public $hasConvertible = false; //true on convertible audio files
 
     public function __construct(string $originalTitle, array $audioFiles)
     {

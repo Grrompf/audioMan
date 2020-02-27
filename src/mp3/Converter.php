@@ -36,7 +36,7 @@ class Converter extends Messenger implements FileTypeInterface
 {
     //config conversion
     private const _AUDIO_SAMPLING_FREQUENCY =  "44100"; //audio sampling frequency
-    private const _AUDIO_BIT_RATE           =  "192k";  //audio bit rate
+    private const _AUDIO_BIT_RATE           =  "192";  //audio bit rate
 
     /**
      * Converts other audio files to mp3 files. Expects full path of files to convert and the output path.
@@ -79,24 +79,18 @@ class Converter extends Messenger implements FileTypeInterface
     }
 
     /**
-     * - vn disable video
+     * - c:v copies meta infos including album art
      * - ar audio sampling frequency
      * - ac number of audio channels (2: stereo)
      * - b:a audio bitrate
      */
-    private function sampling(array $input, string $output): bool
+    private function sampling(string $input, string $output): bool
     {
         //conversion by using ffmpeg.
-        $cmd = sprintf("ffmpeg -i %s -vn -ar %s -ac 2 -b:a %sk %s",
-            $input,
-            self::_AUDIO_SAMPLING_FREQUENCY,
-            self::_AUDIO_BIT_RATE,
-            $output
-        );
-
+        $cmd = "ffmpeg -loglevel quiet -y -i ".escapeshellarg($input)." -c:v copy -ar ".self::_AUDIO_SAMPLING_FREQUENCY." -ac 2 -b:a ".self::_AUDIO_BIT_RATE."k -map_metadata 0:s:0 -id3v2_version 3 -write_id3v1 1 ".escapeshellarg($output);
         exec($cmd, $details, $retVal);
         if (0 !== $retVal) {
-            $this->error("Error while converting <".$input."> to mp3. Details: ".implode($details));
+            $this->error("Error while converting <".$input."> to <".$output.">. Details: ".$cmd);
             return false;
         }
         //temporary files will be removed

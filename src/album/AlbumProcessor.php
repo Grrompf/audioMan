@@ -78,14 +78,15 @@ class AlbumProcessor extends Messenger implements FileTypeInterface
                 $this->caution($msg);
             }
 
-            //todo: convert wma or other audio format files
             //merge file name and normalized filename
             $combinedFile = $albumPath.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CONCAT_FILE_NAME;
             $newFileName  = $albumPath.Registry::get(Registry::KEY_PATH_SEPARATOR).$episode->normalizedFileName;
             $filesToMerge = $episode->audioFiles;
 
             //convert files
-            //$filesToMerge = $this->converter->convert($filesToMerge, $albumPath);
+            if ($episode->hasConvertible) {
+                $filesToMerge = $this->converter->convert($filesToMerge, $albumPath);
+            }
 
             //merge and tagging
             if (count($filesToMerge) > 1) {

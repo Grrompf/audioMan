@@ -45,6 +45,10 @@ class EpisodeCreator implements FileTypeInterface
     {
         $episode = new EpisodeModel($originalTitle, $audioFiles);
 
+        //files to convert
+        $extension = pathinfo($audioFiles[0], PATHINFO_EXTENSION);
+        $episode->hasConvertible = in_array($extension, self::CONVERT_TYPES);
+
         //skip if empty files are found
         $episode->isSkipped = $this->hasEmptyFiles($audioFiles);
 
@@ -61,10 +65,8 @@ class EpisodeCreator implements FileTypeInterface
         return $episode;
     }
 
-
     private function hasEmptyFiles(array $files): bool
     {
-
         $found = array_intersect(SkipCollector::get(SkipCollector::TYPE_EMPTY_FILE), $files);
 
         return !empty($found);

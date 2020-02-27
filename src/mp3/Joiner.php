@@ -46,7 +46,7 @@ class Joiner extends Messenger implements FileTypeInterface
         $size = 0;
 
         //concatenating mp3 files
-        sort($audioFiles, SORT_DESC);
+        sort($audioFiles, SORT_DESC);//IMPORTANT!
         foreach ($audioFiles as $file) {
 
             if (!file_exists($file)) {

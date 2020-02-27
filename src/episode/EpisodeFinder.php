@@ -22,11 +22,9 @@ declare(strict_types=1);
 namespace audioMan\episode;
 
 
-use audioMan\analyse\level\Volume;
 use audioMan\analyse\TreeMaker;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
-use audioMan\model\EpisodeModel;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -55,11 +53,12 @@ class EpisodeFinder implements FileTypeInterface
             return;
         }
         $maxLevel = max(array_keys($tree));
+        $minLevel = min(array_keys($tree));
 
         //todo: what if there are also files on deeper levels
-        if ($maxLevel === 0) {
+        if (array_key_exists(0, $tree)) {
             //files on album root
-            $files = $tree[$maxLevel];
+            $files = $tree[0];
 
             //test if volumes
             if ((new VolumeChecker())->isVolume($files)) {
@@ -73,9 +72,9 @@ class EpisodeFinder implements FileTypeInterface
                 }
             }
         }
-        if ($maxLevel === 1) {
+        if (array_key_exists(1, $tree)) {
             //files on next album level
-            $files = $tree[$maxLevel];
+            $files = $tree[1];
 
             //get episode titles
             $albumEpisodes=[];
