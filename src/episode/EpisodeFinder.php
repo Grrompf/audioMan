@@ -87,6 +87,21 @@ class EpisodeFinder implements FileTypeInterface
                 $album->episodes[] = $this->creator->create($originalTitle, $files);
             }
         }
+        if (array_key_exists(2, $tree)) {
+            //files on next album level
+            $files = $tree[2];
+
+            //get episode titles
+            $albumEpisodes=[];
+            foreach ($files as $file) {
+                $pathToEpisode = pathinfo($file, PATHINFO_DIRNAME);
+                $originalTitle = basename($pathToEpisode);
+                $albumEpisodes[$originalTitle][]=$file;
+            }
+            foreach ($albumEpisodes as $originalTitle => $files) {
+                $album->episodes[] = $this->creator->create($originalTitle, $files);
+            }
+        }
 
 
         else {

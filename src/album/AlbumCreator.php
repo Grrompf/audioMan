@@ -21,11 +21,8 @@ declare(strict_types=1);
 
 namespace audioMan\album;
 
-use audioMan\analyse\AlbumImageFinder;
-use audioMan\episode\CoverHelper;
+use audioMan\album\helper\HelperFactory;
 use audioMan\episode\EpisodeFinder;
-use audioMan\episode\MergeHelper;
-use audioMan\episode\VolumeFixer;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\Registry;
@@ -38,18 +35,10 @@ use audioMan\Registry;
 class AlbumCreator implements FileTypeInterface
 {
     private $episodeFinder;
-    private $imageFinder;
-    private $coverHelper;
-    private $mergeHelper;
-    private $volumeFixer;
 
     public function __construct()
     {
         $this->episodeFinder = new EpisodeFinder();
-        $this->imageFinder   = new AlbumImageFinder();
-        $this->coverHelper   = new CoverHelper();
-        $this->mergeHelper   = new MergeHelper();
-        $this->volumeFixer   = new VolumeFixer();
     }
 
     public function create(array &$allFiles, string $albumPath): AudioBookModel
@@ -61,22 +50,22 @@ class AlbumCreator implements FileTypeInterface
         $album = new AudioBookModel($albumPath, $albumFiles);
 
         //add album images
-        $this->imageFinder->assign($album);
+        HelperFactory::get(HelperFactory::IMAGE_HELPER)->operate($album);
 
         //user option --force-merge
         if(Registry::get(Registry::KEY_FORCE_MERGE)) {
             //force merge all album files
-            $this->mergeHelper->merge($album);
+            HelperFactory::get(HelperFactory::MERGE_HELPER)->operate($album);
         } else {
             //add episodes
             $this->episodeFinder->assign($album);
         }
 
         //add covers
-        $this->coverHelper->assignCovers($album);
+        HelperFactory::get(HelperFactory::COVER_HELPER)->operate($album);
 
         //fix volume titles
-        $this->volumeFixer->fixTitle($album);
+        HelperFactory::get(HelperFactory::VOLUME_HELPER)->operate($album);
 
         return $album;
     }

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * @license MIT License <https://opensource.org/licenses/MIT>
  *
@@ -19,38 +18,15 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\model;
+namespace audioMan\episode\helper;
+
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
- * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
+ * @copyright   Copyright (C) - 2019 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AudioBookModel
+interface EpisodeHelperInterface
 {
-    public $albumPath;
-    public $albumTitle;
-    public $episodes = [];
-    public $albumFiles;
-    public $albumImages;
-
-    public function __construct(string $albumPath, array $albumFiles)
-    {
-        $this->albumPath = $albumPath;
-        $this->albumTitle = basename($albumPath);
-        $this->albumFiles = $albumFiles;
-    }
-
-    public function getAllTitles(): array
-    {
-        $titles = [];
-
-        foreach ($this->episodes as $episode) {
-            assert($episode instanceof EpisodeModel);
-            $titles[] = $episode->title;
-        }
-
-        return $titles;
-    }
-
+    public function process(string $title): string;
 }

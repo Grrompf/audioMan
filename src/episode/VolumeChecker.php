@@ -30,6 +30,10 @@ class VolumeChecker
 {
     private CONST _VOLUME_PATTERN = '#([0-9]+)#';
 
+    /**
+     * True if filename is a volume. This is used for nest level 0 episodes where the
+     * volume name is the file name.
+     */
     public function isVolume(array $files): bool
     {
         //volume has more than one file

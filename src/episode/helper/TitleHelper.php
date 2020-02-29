@@ -19,7 +19,7 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\episode;
+namespace audioMan\episode\helper;
 
 use audioMan\Registry;
 
@@ -28,50 +28,50 @@ use audioMan\Registry;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class TitleMaker
+class TitleHelper implements EpisodeHelperInterface
 {
     /**
      * Replacing dots for a dash resulting in file format "01 - File.mp3".
      */
-    final public function makeTitle(string $originalTitle): string
+    final public function process(string $title): string
     {
         //clean mistyping
-        $originalTitle = str_replace('--', '-', $originalTitle);
-        $originalTitle = str_replace('__', '_', $originalTitle);
-        $originalTitle = str_replace('  ', ' ', $originalTitle);
+        $title = str_replace('--', '-', $title);
+        $title = str_replace('__', '_', $title);
+        $title = str_replace('  ', ' ', $title);
 
         //skip on normalized files eg 01_-_file_for_you.mp3
-        if (false === strpos($originalTitle, ' ') && false !== strpos($originalTitle, '_')) {
-            return $originalTitle;
+        if (false === strpos($title, ' ') && false !== strpos($title, '_')) {
+            return $title;
         };
 
         //remove whitespaces
-        $originalTitle = trim($originalTitle);
+        $title = trim($title);
 
         //default: '1. file', '01 - file', '(07).file', '07 file', '07-file', '(07).file',
         $pattern = '#([A-z].*)$#';;
-        if (1 !== preg_match($pattern, $originalTitle, $matches)) {
+        if (1 !== preg_match($pattern, $title, $matches)) {
             //no chars in title!
-            return $originalTitle;
+            return $title;
         }
-        $title = $matches[1];
+        $newTitle = $matches[1];
 
         //get number
-        $extract = str_replace($title, '', $originalTitle);
+        $extract = str_replace($newTitle, '', $title);
         $numberPattern = '#(\d+).*$#';
         if (1 !== preg_match($numberPattern, $extract, $matches)) {
             //no number!
-            return $originalTitle;
+            return $title;
         }
         $number = $matches[1];
 
         //bad format: fronting eg AFD 07 - get me.mp3
-        if (strlen($title) === strlen($originalTitle)) {
+        if (strlen($newTitle) === strlen($title)) {
             $frontingPattern = '#^[A-z]+[-\.\s]*[0-9]+[-\.\s]*(.*)$#';
-            if (1 === preg_match($frontingPattern, $originalTitle, $matches)) {
-                $title  = $matches[1];
+            if (1 === preg_match($frontingPattern, $title, $matches)) {
+                $newTitle  = $matches[1];
             } else {
-                return $originalTitle;
+                return $title;
             }
         }
 
@@ -80,6 +80,6 @@ class TitleMaker
             $number = '0'.$number;
         }
 
-        return $number.Registry::get(Registry::KEY_SEPARATOR).$title;
+        return $number.Registry::get(Registry::KEY_SEPARATOR).$newTitle;
     }
 }

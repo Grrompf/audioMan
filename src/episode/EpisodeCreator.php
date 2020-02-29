@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace audioMan\episode;
 
+use audioMan\episode\helper\NormalizeHelper;
+use audioMan\episode\helper\TitleHelper;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\EpisodeModel;
 use audioMan\utils\SkipCollector;
@@ -32,13 +34,13 @@ use audioMan\utils\SkipCollector;
  */
 class EpisodeCreator implements FileTypeInterface
 {
-    private $titleMaker;
+    private $titleHelper;
     private $normalizer;
 
     public function __construct()
     {
-        $this->titleMaker = new TitleMaker();
-        $this->normalizer = new Normalizer();
+        $this->titleHelper = new TitleHelper();
+        $this->normalizer  = new NormalizeHelper();
     }
 
     public function create(string $originalTitle, array $audioFiles): EpisodeModel
@@ -56,11 +58,11 @@ class EpisodeCreator implements FileTypeInterface
         $episode->path = pathinfo($audioFiles[0], PATHINFO_DIRNAME);
 
         //reformat title for tagging
-        $title = $this->titleMaker->makeTitle($originalTitle);
+        $title = $this->titleHelper->process($originalTitle);
         $episode->title = $title;
 
         //normalize file name for poor mp3 players
-        $episode->normalizedFileName = $this->normalizer->normalizeUtf8($title).self::DEFAULT_EXT;
+        $episode->normalizedFileName = $this->normalizer->process($title).self::DEFAULT_EXT;
 
         return $episode;
     }

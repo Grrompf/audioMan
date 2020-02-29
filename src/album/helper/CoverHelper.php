@@ -19,7 +19,7 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\episode;
+namespace audioMan\album\helper;
 
 use audioMan\model\AudioBookModel;
 use audioMan\model\EpisodeModel;
@@ -30,12 +30,12 @@ use audioMan\utils\ImgCheck;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class CoverHelper
+class CoverHelper implements AlbumHelperInterface
 {
     //LOWER CASE ONLY!
     private const _COVER_NAMING = ['cover', 'folder', 'front'];
 
-    public function assignCovers(AudioBookModel $album): void
+    public function operate(AudioBookModel $album): void
     {
         if (empty($album->albumImages)) {
             return;

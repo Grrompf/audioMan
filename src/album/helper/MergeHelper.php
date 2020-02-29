@@ -19,9 +19,9 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\analyse;
+namespace audioMan\album\helper;
 
-
+use audioMan\episode\EpisodeCreator;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 
@@ -30,21 +30,38 @@ use audioMan\model\AudioBookModel;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumImageFinder implements FileTypeInterface
+class MergeHelper implements AlbumHelperInterface, FileTypeInterface
 {
-    public function assign(AudioBookModel $album): void
-    {
-        $albumImages = [];
-        foreach ($album->albumFiles as $file) {
+    private $episodeCreator;
 
-            //skip audio files
-            $fileExtension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (!in_array($fileExtension, self::IMAGE_TYPES)) {
+    public function __construct(EpisodeCreator $episodeCreator)
+    {
+        $this->episodeCreator = $episodeCreator;
+    }
+
+    /**
+     * Merges all audio files to one episode
+     */
+    public function operate(AudioBookModel $album): void
+    {
+        $audioFiles = [];
+        foreach($album->albumFiles as $file) {
+
+            //skip image files
+            $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if (in_array($ext, self::IMAGE_TYPES)) {
                 continue;
-            };
-            $albumImages[] = $file;
+            }
+
+            //add audio file
+            $audioFiles[] = $file;
         }
 
-        $album->albumImages = $albumImages;
+        //title is directory name
+        $originalTitle = basename(pathinfo($album->albumFiles[0], PATHINFO_DIRNAME));
+
+        //just one episode
+        $episode = $this->episodeCreator->create($originalTitle, $audioFiles);
+        $album->episodes[] = $episode;
     }
 }
