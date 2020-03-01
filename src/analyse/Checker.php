@@ -56,8 +56,6 @@ class Checker extends Messenger
 {
     final public function check(string $actualPath): array
     {
-        Tools::createDir('~/Musik/audioMan/');
-
         $this->info("Check for audio and cover files in <".$actualPath."> ...");
         $actualPath = getCwd();
 

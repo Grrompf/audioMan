@@ -107,10 +107,7 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
         $countedValues  = array_count_values($noNumberTitle);
 
         //callback makes an filtered array of doubles
-        $filtered = array_filter($countedValues, function($value) { return $value > 1; } );
-
-        //value is now fragment to search for
-        $volumeFragments = array_flip($filtered);
+        $volumeFragments = array_filter($countedValues, function($value) { return $value > 1; } );
 
         return $volumeFragments;
     }
@@ -121,14 +118,14 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
     private function findVolumeTitles(array $volumeFragments, AudioBookModel $album): array
     {
         $found=[];
-        foreach ($volumeFragments as $count => $fragment) {
+        foreach ($volumeFragments as $fragment => $count) {
             $pattern = sprintf('#^%s[0-9]+$#i', $fragment);
             $titles = [];
             foreach($album->getAllTitles() as $title) {
                 if (1 === preg_match($pattern, $title)) {
                     $titles[] = $title;
                 }
-            }//todo: episode title  ; do not collect titles, collect episodes!
+            }
 
             //proof if matched is the same as counted
             if (count($titles) !== $count) {
