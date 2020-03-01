@@ -30,7 +30,7 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumFinder extends Messenger implements FileTypeInterface
+class AlbumComposer extends Messenger implements FileTypeInterface
 {
     private $files;
     private $rootLevel;
@@ -43,7 +43,7 @@ class AlbumFinder extends Messenger implements FileTypeInterface
         $this->albumCreator = new AlbumCreator();
     }
 
-    final public function check(int $albumLevel): array
+    final public function bind(int $albumLevel): array
     {
         $this->info("Assemble files for albums ...");
         $totalLevel = $albumLevel + $this->rootLevel;

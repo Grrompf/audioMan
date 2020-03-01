@@ -23,6 +23,7 @@ namespace audioMan\album\helper;
 
 
 use audioMan\episode\helper\NormalizeHelper;
+use audioMan\episode\helper\TitleHelper;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\model\EpisodeModel;
@@ -36,11 +37,14 @@ use audioMan\utils\Messenger;
 class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeInterface
 {
     private CONST _VOLUME_PATTERN = '#([0-9]+)$#';
-    private $normalizer;
 
-    public function __construct(NormalizeHelper $normalizer)
+    private $normalizer;
+    private $titleHelper;
+
+    public function __construct(NormalizeHelper $normalizer, TitleHelper $titleHelper)
     {
         $this->normalizer = $normalizer;
+        $this->titleHelper = $titleHelper;
     }
 
     /**
@@ -62,7 +66,6 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
 
         //array of titles
         $volumeTitles = $this->findVolumeTitles($fragments, $album);
-
         $number = 0;
         foreach($album->episodes as $episode) {
             assert($episode instanceof EpisodeModel);
@@ -73,7 +76,6 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
             }
 
             $title = basename(dirname($episode->path));
-
             //get appending number
             $number++;
             if (false !== preg_match(self::_VOLUME_PATTERN, $episode->title, $matches)) {
@@ -81,7 +83,7 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
             }
 
             //new title
-            $episode->title = $title." ".$number;
+            $episode->title = $this->titleHelper->process($title." ".$number);
             $episode->normalizedFileName = $this->normalizer->process($episode->title).self::DEFAULT_EXT;
 
             $this->chat("Set new episode volume title <".$episode->title.">");
@@ -126,7 +128,7 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
                 if (1 === preg_match($pattern, $title)) {
                     $titles[] = $title;
                 }
-            }
+            }//todo: episode title  ; do not collect titles, collect episodes!
 
             //proof if matched is the same as counted
             if (count($titles) !== $count) {

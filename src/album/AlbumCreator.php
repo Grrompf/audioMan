@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace audioMan\album;
 
 use audioMan\album\helper\HelperFactory;
-use audioMan\episode\EpisodeFinder;
+use audioMan\episode\EpisodeComposer;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\Registry;
@@ -34,11 +34,11 @@ use audioMan\Registry;
  */
 class AlbumCreator implements FileTypeInterface
 {
-    private $episodeFinder;
+    private $episodeComposer;
 
     public function __construct()
     {
-        $this->episodeFinder = new EpisodeFinder();
+        $this->episodeComposer = new EpisodeComposer();
     }
 
     public function create(array &$allFiles, string $albumPath): AudioBookModel
@@ -58,7 +58,7 @@ class AlbumCreator implements FileTypeInterface
             HelperFactory::get(HelperFactory::MERGE_HELPER)->operate($album);
         } else {
             //add episodes
-            $this->episodeFinder->assign($album);
+            $this->episodeComposer->bind($album);
         }
 
         //add covers

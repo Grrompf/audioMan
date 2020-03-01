@@ -23,7 +23,7 @@ namespace audioMan\album\helper;
 
 use audioMan\episode\EpisodeCreator;
 use audioMan\episode\helper\NormalizeHelper;
-use audioMan\Registry;
+use audioMan\episode\helper\TitleHelper;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -55,7 +55,7 @@ class HelperFactory
                 break;
             case self::MERGE_HELPER: $helper = new MergeHelper(new EpisodeCreator());
                 break;
-            case self::VOLUME_HELPER: $helper = new VolumeHelper(new NormalizeHelper());
+            case self::VOLUME_HELPER: $helper = new VolumeHelper(new NormalizeHelper(), new TitleHelper());
                 break;
             default:
                 throw new \LogicException('Requested type <'.$type.'> not found.');

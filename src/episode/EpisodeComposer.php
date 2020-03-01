@@ -25,13 +25,14 @@ namespace audioMan\episode;
 use audioMan\analyse\TreeMaker;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
+use audioMan\utils\Messenger;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class EpisodeFinder implements FileTypeInterface
+class EpisodeComposer extends Messenger implements FileTypeInterface
 {
     private $treeMaker;
     private $creator;
@@ -42,7 +43,7 @@ class EpisodeFinder implements FileTypeInterface
         $this->creator    = new EpisodeCreator();
     }
 
-    final public function assign(AudioBookModel $album): void
+    final public function bind(AudioBookModel $album): void
     {
         //todo: complete other cases
         //todo: origin path (deeper nested album) or by album correction
@@ -77,32 +78,15 @@ class EpisodeFinder implements FileTypeInterface
             $files = $tree[1];
 
             //get episode titles
-            $albumEpisodes=[];
-            foreach ($files as $file) {
-                $pathToEpisode = pathinfo($file, PATHINFO_DIRNAME);
-                $originalTitle = basename($pathToEpisode);
-                $albumEpisodes[$originalTitle][]=$file;
-            }
-            foreach ($albumEpisodes as $originalTitle => $files) {
-                $album->episodes[] = $this->creator->create($originalTitle, $files);
-            }
+            $this->assignEpisodes($files, $album);
         }
         if (array_key_exists(2, $tree)) {
             //files on next album level
             $files = $tree[2];
 
             //get episode titles
-            $albumEpisodes=[];
-            foreach ($files as $file) {
-                $pathToEpisode = pathinfo($file, PATHINFO_DIRNAME);
-                $originalTitle = basename($pathToEpisode);
-                $albumEpisodes[$originalTitle][]=$file;
-            }
-            foreach ($albumEpisodes as $originalTitle => $files) {
-                $album->episodes[] = $this->creator->create($originalTitle, $files);
-            }
+            $this->assignEpisodes($files, $album);
         }
-
 
         else {
             //check for volumes
@@ -110,7 +94,25 @@ class EpisodeFinder implements FileTypeInterface
             foreach($tree[$maxLevel] as $path) {
                 $names[] = basename(dirname($path));
             }
-            //var_dump((new Volume())->check($names));
+            var_dump('MORE');
         }
+
+        $this->info("Found <".count($album->episodes)."> episodes in album <".$album->albumTitle.">.");
+    }
+
+    private function assignEpisodes(array $files, AudioBookModel $album): void
+    {
+        //filter all episodes
+        $albumEpisodes=[];
+        foreach ($files as $file) {
+            $pathToEpisode = pathinfo($file, PATHINFO_DIRNAME);
+            $albumEpisodes[$pathToEpisode][]=$file;
+        }
+        //assign episodes
+        foreach ($albumEpisodes as $pathToEpisode => $files) {
+            $originalTitle = basename($pathToEpisode);
+            $album->episodes[] = $this->creator->create($originalTitle, $files);
+        }
+
     }
 }

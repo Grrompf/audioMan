@@ -40,9 +40,9 @@ class Main extends Messenger
         $albums = (new Checker())->check($actualPath);
         $processor = new AlbumProcessor();
 
-        /** @var AudioBookModel $album */
+        sort($albums);
         foreach($albums as $album) {
-
+            assert($album instanceof AudioBookModel);
             $msg = sprintf("Next album <%s>. Do you want to proceed? Enter y or n (default: y)", $album->albumTitle);
             if ('n' === readline($msg)) {
                 continue;

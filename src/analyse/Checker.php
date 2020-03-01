@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
-use audioMan\album\AlbumFinder;
+use audioMan\album\AlbumComposer;
 use audioMan\album\AlbumProcessor;
 use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
@@ -80,7 +80,7 @@ class Checker extends Messenger
         $this->info("Evaluated album level is <".$albumLevel.">");
 
         //albums
-        $albums = (new AlbumFinder($files, $actualPath))->check($albumLevel);
+        $albums = (new AlbumComposer($files, $actualPath))->bind($albumLevel);
         $this->info("Number of albums <".count($albums)."> found.");
 
         return $albums;
