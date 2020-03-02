@@ -31,8 +31,10 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class SortingDirHelper extends Messenger implements AlbumHelperInterface
+class SortingDirHelper implements AlbumHelperInterface
 {
+    use Messenger;
+
     public function operate(AudioBookModel $album): void
     {
         foreach ($album->episodes as $episode) {

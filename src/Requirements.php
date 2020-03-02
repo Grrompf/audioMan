@@ -23,8 +23,9 @@ namespace audioMan;
 
 use audioMan\utils\Messenger;
 
-class Requirements extends Messenger
+class Requirements
 {
+    use Messenger;
     private $isChecked = true;
 
     final public function check(): void

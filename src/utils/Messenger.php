@@ -21,14 +21,14 @@ declare(strict_types=1);
 
 namespace audioMan\utils;
 
-use audioMan\Registry;
+use audioMan\registry\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Messenger
+trait Messenger
 {
     final public function debug(string $message): void
     {

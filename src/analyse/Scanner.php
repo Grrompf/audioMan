@@ -32,8 +32,10 @@ use audioMan\utils\SkipCollector;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Scanner extends Messenger implements FileTypeInterface
+class Scanner implements FileTypeInterface
 {
+    use Messenger;
+
     private $iterator;
 
     public function __construct(string $actualPath)

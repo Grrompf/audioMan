@@ -28,7 +28,7 @@ use audioMan\mp3\Converter;
 use audioMan\mp3\Joiner;
 use audioMan\mp3\Mover;
 use audioMan\mp3\TagWriter;
-use audioMan\Registry;
+use audioMan\registry\Registry;
 use audioMan\utils\GarbageCollector;
 use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
@@ -38,8 +38,10 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumProcessor extends Messenger implements FileTypeInterface
+class AlbumProcessor implements FileTypeInterface
 {
+    use Messenger;
+
     private $converter;
     private $joiner;
     private $mover;

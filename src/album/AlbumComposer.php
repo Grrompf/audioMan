@@ -30,8 +30,10 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumComposer extends Messenger implements FileTypeInterface
+class AlbumComposer implements FileTypeInterface
 {
+    use Messenger;
+
     private $files;
     private $rootLevel;
     private $albumCreator;

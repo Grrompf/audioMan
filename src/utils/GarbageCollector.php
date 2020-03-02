@@ -26,8 +26,10 @@ namespace audioMan\utils;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class GarbageCollector extends Messenger
+class GarbageCollector
 {
+    use Messenger;
+
     protected static $instance = null;
     protected $tempFiles = [];
 

@@ -30,8 +30,10 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Volume extends Messenger implements DirTypeInterface
+class Volume implements DirTypeInterface
 {
+    use Messenger;
+
     /**
      * Check names of current dir after removing numbers. If many different, these are titles.
      * If just one, its a volume!

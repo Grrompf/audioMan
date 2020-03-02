@@ -52,8 +52,10 @@ use audioMan\utils\Tools;
 * collection level (up to 3 nesting level)
   * - contains album(s)
  */
-class Checker extends Messenger
+class Checker
 {
+    use Messenger;
+
     final public function check(string $actualPath): array
     {
         $this->info("Check for audio and cover files in <".$actualPath."> ...");

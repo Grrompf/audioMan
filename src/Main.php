@@ -31,8 +31,10 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Main extends Messenger
+class Main
 {
+    use Messenger;
+
     //todo: manifest for update
     final public function handle(): void
     {

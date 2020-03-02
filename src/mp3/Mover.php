@@ -31,8 +31,10 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mover extends Messenger implements FileTypeInterface
+class Mover implements FileTypeInterface
 {
+    use Messenger;
+
     /**
      * Rename joined mp3 file after correction to normalized.
      */

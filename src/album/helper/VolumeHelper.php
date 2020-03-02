@@ -34,8 +34,10 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeInterface
+class VolumeHelper implements AlbumHelperInterface, FileTypeInterface
 {
+    use Messenger;
+
     private CONST _VOLUME_PATTERN = '#([0-9]+)$#';
 
     private $normalizer;

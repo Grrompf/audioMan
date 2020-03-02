@@ -30,14 +30,9 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class DirType extends Messenger implements DirTypeInterface
+class DirType implements DirTypeInterface
 {
-    private $volume;
-
-    public function __construct()
-    {
-        $this->volume = new Volume();
-    }
+    use Messenger;
 
     /**
      * Determines directory names and its diversity
@@ -49,7 +44,7 @@ class DirType extends Messenger implements DirTypeInterface
 
         if ($noDirNames > 1) {
             $this->comment("Multiple sub directories found. Probably episodes or volumes");
-            return $this->volume->check($dirNames);
+            return (new Volume())->check($dirNames);
         }
         $msg  = "Album with <".$noDirNames."> episodes found.".PHP_EOL;
         $msg .= "If this is not correct use --level[number] to manually set the album level.";

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace audioMan\mp3;
 
 use audioMan\interfaces\FileTypeInterface;
-use audioMan\Registry;
+use audioMan\registry\Registry;
 use audioMan\utils\GarbageCollector;
 use audioMan\utils\Messenger;
 use audioMan\utils\SkipCollector;
@@ -32,8 +32,10 @@ use audioMan\utils\SkipCollector;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Converter extends Messenger implements FileTypeInterface
+class Converter implements FileTypeInterface
 {
+    use Messenger;
+
     //config conversion
     private const _AUDIO_SAMPLING_FREQUENCY =  "44100"; //audio sampling frequency
     private const _AUDIO_BIT_RATE           =  "192";  //audio bit rate

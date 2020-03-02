@@ -32,8 +32,10 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class EpisodeComposer extends Messenger implements FileTypeInterface
+class EpisodeComposer implements FileTypeInterface
 {
+    use Messenger;
+
     private $treeMaker;
     private $creator;
     private $volCheck;

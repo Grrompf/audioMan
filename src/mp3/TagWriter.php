@@ -28,8 +28,10 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class TagWriter extends Messenger
+class TagWriter
 {
+    use Messenger;
+
     /**
      * Rewriting title and album of the mp3 file
      */

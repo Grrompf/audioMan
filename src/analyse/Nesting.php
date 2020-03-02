@@ -30,8 +30,10 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Nesting extends Messenger implements FileTypeInterface
+class Nesting implements FileTypeInterface
 {
+    use Messenger;
+
     private $rootLevel;
 
     public function __construct(string $actualDir)

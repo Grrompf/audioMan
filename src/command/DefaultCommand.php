@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace audioMan\command;
 
 use audioMan\Main;
-use audioMan\Registry;
+use audioMan\registry\Registry;
 use audioMan\registry\Separator;
 use audioMan\Requirements;
 use audioMan\utils\Tools;

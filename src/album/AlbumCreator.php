@@ -25,7 +25,7 @@ use audioMan\album\helper\HelperFactory;
 use audioMan\episode\EpisodeComposer;
 use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
-use audioMan\Registry;
+use audioMan\registry\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License

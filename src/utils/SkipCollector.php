@@ -26,8 +26,10 @@ namespace audioMan\utils;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class SkipCollector extends Messenger
+class SkipCollector
 {
+    use Messenger;
+
     public const TYPE_EPISODE    = 10;
     public const TYPE_EMPTY_FILE = 20;
     public const TYPE_NOT_IMAGE  = 30;

@@ -31,8 +31,10 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Level extends Messenger
+class Level
 {
+    use Messenger;
+
     private $dirType;
 
     public function __construct()

@@ -32,8 +32,10 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Joiner extends Messenger implements FileTypeInterface
+class Joiner implements FileTypeInterface
 {
+    use Messenger;
+
     /**
      * Merges all mp3 files to one. Merged file is given a temporary name.
      */

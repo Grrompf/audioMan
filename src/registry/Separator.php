@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\registry;
 
-use audioMan\Registry;
 use audioMan\utils\Messenger;
 
 /**
@@ -29,8 +28,10 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Separator extends Messenger
+class Separator
 {
+    use Messenger;
+
     const TXT_SEPARATOR = "Separator";
     const TXT_SPACE     = "Space";
     const REGEX_DOT     = ".";
