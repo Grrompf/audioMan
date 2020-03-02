@@ -67,6 +67,9 @@ class AlbumCreator implements FileTypeInterface
         //fix volume titles
         HelperFactory::get(HelperFactory::VOLUME_HELPER)->operate($album);
 
+        //get sorting dir
+        HelperFactory::get(HelperFactory::SORTING_HELPER)->operate($album);
+
         return $album;
     }
 

@@ -60,14 +60,14 @@ class AlbumProcessor extends Messenger implements FileTypeInterface
     {
         $this->comment("Processing album <".$album->albumTitle.">");
 
-        //create album path
+        //album path
         $albumPath = Registry::get(Registry::KEY_OUTPUT).Registry::get(Registry::KEY_PATH_SEPARATOR).$album->albumTitle;
 
         if (empty($album->episodes)) {
             $this->warning("Skipped Album <".$album->albumTitle.">. No Episodes found.");
             return;
         }
-
+        //create album path
         Tools::createDir($albumPath);
 
         $noEpisodes = 0;
@@ -78,14 +78,21 @@ class AlbumProcessor extends Messenger implements FileTypeInterface
                 $this->caution($msg);
             }
 
+            //create sorting path
+            $path = $albumPath;
+            if ($episode->sortingDir) {
+                $path = $albumPath.Registry::get(Registry::KEY_PATH_SEPARATOR).$episode->sortingDir;
+                Tools::createDir($path);
+            }
+
             //merge file name and normalized filename
-            $combinedFile = $albumPath.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CONCAT_FILE_NAME;
-            $newFileName  = $albumPath.Registry::get(Registry::KEY_PATH_SEPARATOR).$episode->normalizedFileName;
+            $combinedFile = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CONCAT_FILE_NAME;
+            $newFileName  = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).$episode->normalizedFileName;
             $filesToMerge = $episode->audioFiles;
 
             //convert files
             if ($episode->hasConvertible) {
-                $filesToMerge = $this->converter->convert($filesToMerge, $albumPath);
+                $filesToMerge = $this->converter->convert($filesToMerge, $path);
             }
 
             //merge and tagging

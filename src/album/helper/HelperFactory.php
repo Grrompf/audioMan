@@ -32,10 +32,12 @@ use audioMan\episode\helper\TitleHelper;
  */
 class HelperFactory
 {
-    const COVER_HELPER  = 10;
-    const IMAGE_HELPER  = 20;
-    const MERGE_HELPER  = 30;
-    const VOLUME_HELPER = 40;
+    const COVER_HELPER   = 10;
+    const IMAGE_HELPER   = 20;
+    const MERGE_HELPER   = 30;
+    const SORTING_HELPER = 40;
+    const VOLUME_HELPER  = 50;
+
 
     private static $instance;
     private $helper = [];
@@ -54,6 +56,8 @@ class HelperFactory
             case self::IMAGE_HELPER: $helper = new AlbumImageHelper();
                 break;
             case self::MERGE_HELPER: $helper = new MergeHelper(new EpisodeCreator());
+                break;
+            case self::SORTING_HELPER: $helper = new SortingDirHelper();
                 break;
             case self::VOLUME_HELPER: $helper = new VolumeHelper(new NormalizeHelper(), new TitleHelper());
                 break;

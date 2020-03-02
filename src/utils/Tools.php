@@ -62,6 +62,12 @@ class Tools
         return substr_count(realpath($filePath),Registry::get(Registry::KEY_PATH_SEPARATOR));
     }
 
+    public static function getRelativeLevel(string $fileName, string $rootDir): int
+    {
+        $filePath = pathinfo($fileName, PATHINFO_DIRNAME);
+        return abs(self::getNestLevel($rootDir) - self::getNestLevel($filePath));
+    }
+
     /**
      * Create array of directory names on deepest level. Used for volumes or episodes check
      */

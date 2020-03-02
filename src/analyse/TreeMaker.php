@@ -48,38 +48,10 @@ class TreeMaker implements FileTypeInterface
                 continue;
             }
 
-            $lvl = $this->calcLevel($file, $album->albumPath);
+            $lvl = Tools::getRelativeLevel($file, $album->albumPath);
             $tree[$lvl][]=$file;
         }
 
         return $tree;
-    }
-
-    /**
-     * Tree of the working dir. Sub dir level is the key.
-     * Audio files are skipped.
-     */
-    final public function makeImageTree(AudioBookModel $album): array
-    {
-        $tree =[];
-        foreach ($album->albumFiles as $file) {
-
-            //skip image files
-            $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (in_array($ext, self::AUDIO_TYPES)) {
-                continue;
-            }
-
-            $lvl = $this->calcLevel($file, $album->albumPath);
-            $tree[$lvl][]=$file;
-        }
-
-        return $tree;
-    }
-
-    private function calcLevel(string $fileName, string $rootDir): int
-    {
-        $filePath = pathinfo($fileName, PATHINFO_DIRNAME);
-        return abs(Tools::getNestLevel($rootDir) - Tools::getNestLevel($filePath));
     }
 }

@@ -36,71 +36,55 @@ class EpisodeComposer extends Messenger implements FileTypeInterface
 {
     private $treeMaker;
     private $creator;
+    private $volCheck;
 
     public function __construct()
     {
         $this->treeMaker  = new TreeMaker();
         $this->creator    = new EpisodeCreator();
+        $this->volCheck   = new VolumeChecker();
     }
 
     final public function bind(AudioBookModel $album): void
     {
-        //todo: complete other cases
-        //todo: origin path (deeper nested album) or by album correction
         $tree = $this->treeMaker->makeAlbumTree($album);
         if (empty($tree)) {
             //todo: look for Radio Krimis NEU !!!
             var_dump('EMPTY TREE');
             return;
         }
-        $maxLevel = max(array_keys($tree));
-        $minLevel = min(array_keys($tree));
+        //needed for find sorting directory
+        $album->maxLevel = max(array_keys($tree));
 
-        //todo: what if there are also files on deeper levels
-        if (array_key_exists(0, $tree)) {
-            //files on album root
-            $files = $tree[0];
-
-            //test if volumes
-            if ((new VolumeChecker())->isVolume($files)) {
-                $title = basename(pathinfo($files[0], PATHINFO_DIRNAME));
-                $album->episodes[] = $this->creator->create($title, $files);
-            } else {
-                //episodes are filenames
-                foreach ($files as $file) {
-                    $title = pathinfo($file, PATHINFO_FILENAME);
-                    $album->episodes[] = $this->creator->create($title, [$file]);
-                }
+        foreach ($tree as $nestLevel => $files) {
+            if ($nestLevel === 0) {
+                $this->assignRootLevelEpisodes($files, $album);
+                continue;
             }
-        }
-        if (array_key_exists(1, $tree)) {
-            //files on next album level
-            $files = $tree[1];
-
-            //get episode titles
-            $this->assignEpisodes($files, $album);
-        }
-        if (array_key_exists(2, $tree)) {
-            //files on next album level
-            $files = $tree[2];
-
-            //get episode titles
-            $this->assignEpisodes($files, $album);
-        }
-
-        else {
-            //check for volumes
-            $names = [];
-            foreach($tree[$maxLevel] as $path) {
-                $names[] = basename(dirname($path));
-            }
-            var_dump('MORE');
+            //get episode titles on deeper level
+            $this->assignEpisodes($nestLevel, $files, $album);
         }
 
         $this->info("Found <".count($album->episodes)."> episodes in album <".$album->albumTitle.">.");
     }
 
-    private function assignEpisodes(array $files, AudioBookModel $album): void
+    private function assignRootLevelEpisodes(array $files, AudioBookModel $album): void
+    {
+        //test if volumes
+        if ($this->volCheck->isVolume($files)) {
+            $title = basename(pathinfo($files[0], PATHINFO_DIRNAME));
+            $album->episodes[] = $this->creator->create($title, $files);
+            return;
+        }
+
+        //episodes are filenames
+        foreach ($files as $file) {
+            $title = pathinfo($file, PATHINFO_FILENAME);
+            $album->episodes[] = $this->creator->create($title, [$file]);
+        }
+    }
+
+    private function assignEpisodes(int $nestingLevel, array $files, AudioBookModel $album): void
     {
         //filter all episodes
         $albumEpisodes=[];
@@ -111,7 +95,10 @@ class EpisodeComposer extends Messenger implements FileTypeInterface
         //assign episodes
         foreach ($albumEpisodes as $pathToEpisode => $files) {
             $originalTitle = basename($pathToEpisode);
-            $album->episodes[] = $this->creator->create($originalTitle, $files);
+            $episode = $this->creator->create($originalTitle, $files);
+            $episode->nestLevel = $nestingLevel;
+
+            $album->episodes[] = $episode;
         }
 
     }

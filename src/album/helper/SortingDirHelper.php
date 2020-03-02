@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @license MIT License <https://opensource.org/licenses/MIT>
  *
@@ -18,21 +19,37 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\interfaces;
+namespace audioMan\album\helper;
 
+use audioMan\model\AudioBookModel;
+use audioMan\model\EpisodeModel;
+use audioMan\utils\Messenger;
+use audioMan\utils\Tools;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
- * @copyright   Copyright (C) - 2019 Dr. Holger Maerz
+ * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-interface FileTypeInterface
+class SortingDirHelper extends Messenger implements AlbumHelperInterface
 {
-    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'wma', 'wav', 'ogg'];
-    const CONVERT_TYPES = ['ac3', 'acc', 'wma', 'wav', 'ogg'];
-    const IMAGE_TYPES   = ['jpg', 'jpeg', 'png'];
-    const DEFAULT_EXT   = '.mp3';
+    public function operate(AudioBookModel $album): void
+    {
+        foreach ($album->episodes as $episode) {
+            assert($episode instanceof EpisodeModel);
 
-    //temporary filenames for merge and correction
-    const CONCAT_FILE_NAME    = 'kombiniert.mp3';
+            //todo: deeper nesting logic
+            if ($episode->nestLevel < 2) {
+                continue;
+            }
+            if( $episode->isVolume) {
+                continue;
+            }
+
+            $fileName = $episode->audioFiles[0];
+            $nestLevel = Tools::getRelativeLevel($fileName, $album->albumPath);
+            $episode->sortingDir = basename(dirname($fileName, $nestLevel));
+        }
+
+    }
 }

@@ -85,6 +85,7 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
             //new title
             $episode->title = $this->titleHelper->process($title." ".$number);
             $episode->normalizedFileName = $this->normalizer->process($episode->title).self::DEFAULT_EXT;
+            $episode->isVolume = true; //important for sorting dir
 
             $this->chat("Set new episode volume title <".$episode->title.">");
         }

@@ -34,8 +34,11 @@ class EpisodeModel
     public $audioFiles;
     public $cover;
     public $isSkipped = false; //skip episode processing if true
-    public $path;
+    public $path; //for cover helper
     public $hasConvertible = false; //true on convertible audio files
+    public $isVolume  = false;
+    public $nestLevel = 0;
+    public $sortingDir; //to preserve sorting dir
 
     public function __construct(string $originalTitle, array $audioFiles)
     {
