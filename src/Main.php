@@ -35,6 +35,13 @@ class Main
 {
     use Messenger;
 
+    //todo: remove leading chars using user input
+    //todo: option for automatic yes
+    //todo: option to convert to custom audio format
+    //todo: default audio conversion
+    //todo: refactoring FileTypeInterface
+    //todo: fix check for deeper level
+    //todo: option for level setting
     //todo: manifest for update
     final public function handle(): void
     {
@@ -51,6 +58,5 @@ class Main
             };
             $processor->process($album);
         }
-
     }
 }

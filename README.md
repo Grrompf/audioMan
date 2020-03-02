@@ -3,7 +3,8 @@ audioMan
 
 Merges multiple audio files. Suited for audio books and radio play.
 Time issue of merged files are corrected. File size of is checked, too.
-Wma files are converted. If album art (cover) is found, it is tagged, next to title, album and genre.
+Other audio formats are converted to default (mp3) or optional custom audio formats.
+If album art (cover) is found, it is tagged, next to title, album and genre.
 Files are renamed in format <# - title.mp3> and finally normalized.
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=plastic)](https://php.net/)
@@ -56,8 +57,9 @@ Description
 Usually audio book files are ordered in sub dirs by chapters or CDs. Multiple books of one topic will content multiple
 sub dirs containing multiple sub dirs by CDs.   
 AudioMan will scan all sub dirs and will assign cover and audio files to albums and its episodes. 
-By default, you will be asked for each album to proceed. Other audio formats (wma, ogg, ac3, acc, wav) are converted to
-mp3, merged, fixed and finally tagged. The resulting file size is checked as all other sub procedures.
+By default, you will be asked for each album to proceed. Other audio formats (wma, ogg, ac3, acc, wav, m4a) are 
+converted to mp3 (default), merged, fixed and finally tagged. Other audio format conversion is optional. 
+The resulting file size is checked as all other sub procedures.
 Empty files are checked and will result to skip the episode. Images are always checked of its mime type (jpeg, png), its
 dimension and its size. If there are more than one cover image to choose, the best guess is taken.
 Volume files (i.e. CD1, CD2) are renamed and get an appending number. 
