@@ -3,7 +3,7 @@ audioMan
 
 Merges multiple audio files. Suited for audio books and radio play.
 Time issue of merged files are corrected. File size of is checked, too.
-Other audio formats are converted to default (mp3) or optional custom audio formats.
+Other audio formats are converted to mp3 by default or optional custom audio formats.
 If album art (cover) is found, it is tagged, next to title, album and genre.
 Files are renamed in format <# - title.mp3> and finally normalized.
 
