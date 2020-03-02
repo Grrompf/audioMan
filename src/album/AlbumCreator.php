@@ -78,10 +78,12 @@ class AlbumCreator implements FileTypeInterface
      */
     private function extractAlbumFiles(array &$allFiles, string $albumPath): array
     {
+        //add slash to distinguish albums with similar path, eg. myAlbum and myAlbumNew
+        $needle = $albumPath.Registry::get(Registry::KEY_PATH_SEPARATOR);
         $albumFiles=[];
         foreach ($allFiles as $file) {
             //file path contain album path
-            if (false !== strpos($file, $albumPath)) {
+            if (false !== strpos($file, $needle)) {
                 $albumFiles[] = $file;
             }
         }

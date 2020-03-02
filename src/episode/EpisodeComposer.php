@@ -49,8 +49,7 @@ class EpisodeComposer extends Messenger implements FileTypeInterface
     {
         $tree = $this->treeMaker->makeAlbumTree($album);
         if (empty($tree)) {
-            //todo: look for Radio Krimis NEU !!!
-            var_dump('EMPTY TREE');
+            $this->caution("Empty album <".$album->albumTitle."> found.");
             return;
         }
         //needed for find sorting directory
