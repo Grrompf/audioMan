@@ -48,7 +48,7 @@ class EpisodeCreator implements FileTypeInterface
         $episode = new EpisodeModel($originalTitle, $audioFiles);
 
         //files to convert
-        $extension = pathinfo($audioFiles[0], PATHINFO_EXTENSION);
+        $extension = strtolower(pathinfo($audioFiles[0], PATHINFO_EXTENSION));
         $episode->hasConvertible = in_array($extension, self::CONVERT_TYPES);
 
         //skip if empty files are found

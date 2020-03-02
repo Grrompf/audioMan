@@ -119,7 +119,7 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
     private function findVolumeTitles(array $volumeFragments, AudioBookModel $album): array
     {
         $found=[];
-        
+
         foreach ($volumeFragments as $fragment => $count) {
             $pattern = sprintf('#^%s\s?[0-9]+$#i', trim($fragment));
             $titles = [];
@@ -127,11 +127,6 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
                 if (1 === preg_match($pattern, $title)) {
                     $titles[] = $title;
                 }
-            }
-
-            //proof if matched is the same as counted
-            if (count($titles) !== $count) {
-                $this->error("Volume count is not as expected. Album <".$album->albumTitle.">.");
             }
             $found = array_merge($found, $titles);
         }

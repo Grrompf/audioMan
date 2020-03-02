@@ -85,7 +85,7 @@ class AlbumProcessor extends Messenger implements FileTypeInterface
                 Tools::createDir($path);
             }
 
-            //merge file name and normalized filename
+            //FILENAMES merge file and normalized
             $combinedFile = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).self::CONCAT_FILE_NAME;
             $newFileName  = $path.Registry::get(Registry::KEY_PATH_SEPARATOR).$episode->normalizedFileName;
             $filesToMerge = $episode->audioFiles;
