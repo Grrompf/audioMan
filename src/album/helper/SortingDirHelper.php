@@ -42,7 +42,7 @@ class SortingDirHelper extends Messenger implements AlbumHelperInterface
             if ($episode->nestLevel < 2) {
                 continue;
             }
-            if( $episode->isVolume) {
+            if($episode->isVolume && $episode->nestLevel === 2 ) {
                 continue;
             }
 

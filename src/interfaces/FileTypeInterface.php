@@ -28,8 +28,8 @@ namespace audioMan\interfaces;
  */
 interface FileTypeInterface
 {
-    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'wma', 'wav', 'ogg'];
-    const CONVERT_TYPES = ['ac3', 'acc', 'wma', 'wav', 'ogg'];
+    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'm4a', 'wma', 'wav', 'ogg'];
+    const CONVERT_TYPES = ['ac3', 'acc', 'wma', 'wav', 'ogg', 'm4a'];
     const IMAGE_TYPES   = ['jpg', 'jpeg', 'png'];
     const DEFAULT_EXT   = '.mp3';
 

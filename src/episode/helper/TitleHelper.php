@@ -49,7 +49,7 @@ class TitleHelper implements EpisodeHelperInterface
         $title = trim($title);
 
         //default: '1. file', '01 - file', '(07).file', '07 file', '07-file', '(07).file',
-        $pattern = '#([A-z].*)$#';;
+        $pattern = '#(\p{L}+.*)$#u'; //pattern for umlaut
         if (1 !== preg_match($pattern, $title, $matches)) {
             //no chars in title!
             return $title;

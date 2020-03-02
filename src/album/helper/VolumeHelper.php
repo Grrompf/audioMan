@@ -119,8 +119,9 @@ class VolumeHelper extends Messenger implements AlbumHelperInterface, FileTypeIn
     private function findVolumeTitles(array $volumeFragments, AudioBookModel $album): array
     {
         $found=[];
+        
         foreach ($volumeFragments as $fragment => $count) {
-            $pattern = sprintf('#^%s[0-9]+$#i', $fragment);
+            $pattern = sprintf('#^%s\s?[0-9]+$#i', trim($fragment));
             $titles = [];
             foreach($album->getAllTitles() as $title) {
                 if (1 === preg_match($pattern, $title)) {
