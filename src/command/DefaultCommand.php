@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace audioMan\command;
 
+use audioMan\interfaces\FileTypeInterface;
 use audioMan\Main;
 use audioMan\registry\Registry;
 use audioMan\registry\Separator;
 use audioMan\Requirements;
-use audioMan\utils\Tools;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -36,13 +36,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class DefaultCommand extends Command
+class DefaultCommand extends Command implements FileTypeInterface
 {
     final protected function configure(): void
     {
         $this
             ->setName('audioMan')
-            ->addOption('force-merge', 'm', InputOption::VALUE_NONE, 'force merge of all episodes')
+            ->addOption('audio', 'a', InputOption::VALUE_REQUIRED, 'custom audio format ('.implode(', ', self::AUDIO_TYPES).')')
+            ->addOption('level', 'l', InputOption::VALUE_REQUIRED, 'set album nesting level')
+            ->addOption('no-interaction', 'y', InputOption::VALUE_NONE, 'force answer always yes')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'custom file name format')
             ->addOption('out', 'o', InputOption::VALUE_REQUIRED, 'custom output directory')
@@ -69,17 +71,27 @@ class DefaultCommand extends Command
                 $verbosity = 1;
             }
         }
+        Registry::set(Registry::KEY_VERBOSITY, $verbosity);
 
-        //normalization
-        $normalize = true;
-        if (true === $input->hasParameterOption(['--no-normalize', '-N'], true)) {
-            $normalize = false;
+        //audio
+        if (true === $input->hasParameterOption(['--audio', '-a'], true)) {
+            $audio = strtolower($input->getOption('audio'));
+            if (!in_array($audio, self::AUDIO_TYPES)) {
+                $msg = sprintf("Audio type <%s> unknown. Allowed audio types: %s", $audio, implode(', ', self::AUDIO_TYPES));
+                throw new \InvalidArgumentException($msg);
+            }
+
+            Registry::set(Registry::KEY_AUDIO, $audio);
         }
 
-        //merge
-        $merge = false;
-        if (true === $input->hasParameterOption(['--force-merge', '-m'], true)) {
-            $merge = true;
+        //normalization
+        if (true === $input->hasParameterOption(['--no-normalize', '-N'], true)) {
+            Registry::set(Registry::KEY_NORMALIZE, false);
+        }
+
+        //no-interaction
+        if (true === $input->hasParameterOption(['--no-interaction', '-y'], true)) {
+            Registry::set(Registry::KEY_NO_INTERACTION, true);
         }
 
         //format
@@ -90,19 +102,9 @@ class DefaultCommand extends Command
 
         //output
         if (true === $input->hasParameterOption(['--out', '-o'], false)) {
-
             $outDir = $input->getOption('out');
-
-            Tools::createDir($outDir);
             Registry::set(Registry::KEY_OUTPUT, $outDir);
-        } else {
-            //output default: HOME/audioMan
-            $output = Tools::createDir("~/audioMan");
-            Registry::set(Registry::KEY_OUTPUT, $output);
         }
-        Registry::set(Registry::KEY_NORMALIZE, $normalize);
-        Registry::set(Registry::KEY_VERBOSITY, $verbosity);
-        Registry::set(Registry::KEY_FORCE_MERGE, $merge);
 
         (new Requirements())->check();
         (new Main())->handle();

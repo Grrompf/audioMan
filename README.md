@@ -46,8 +46,10 @@ Options
 * __--version__ | -V
 * __--quiet__ | -q
 * __--verbose__  | -v / -vv / -vvv
-* __--no-normalize__ | __-N__   
-* __--force-merge__ | -m 
+* __--audio__  | __-a__ <#Your custom audio format#>
+* __--level__ | __-l__ 
+* __--no-interaction__| __-y__
+* __--no-normalize__ | __-N__ 
 * __--format__ | __-f__ <#Your File Name Format#>  
 * __--out__ | __-o__ <#PATH TO YOUR OUTPUT DIR#>  
 

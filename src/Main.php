@@ -24,7 +24,9 @@ namespace audioMan;
 use audioMan\album\AlbumProcessor;
 use audioMan\analyse\Checker;
 use audioMan\model\AudioBookModel;
+use audioMan\registry\Registry;
 use audioMan\utils\Messenger;
+use audioMan\utils\Tools;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
@@ -36,7 +38,6 @@ class Main
     use Messenger;
 
     //todo: remove leading chars using user input
-    //todo: option for automatic yes
     //todo: option to convert to custom audio format
     //todo: default audio conversion
     //todo: refactoring FileTypeInterface
@@ -45,6 +46,11 @@ class Main
     //todo: manifest for update
     final public function handle(): void
     {
+        //Create output dir
+        /** @var string $outDir */
+        $outDir = Registry::get(Registry::KEY_OUTPUT);
+        Tools::createDir($outDir);
+
         $actualPath = getCwd();
         $albums = (new Checker())->check($actualPath);
         $processor = new AlbumProcessor();
@@ -52,10 +58,13 @@ class Main
         sort($albums);
         foreach($albums as $album) {
             assert($album instanceof AudioBookModel);
-            $msg = sprintf("Next album <%s>. Do you want to proceed? Enter y or n (default: y)", $album->albumTitle);
-            if ('n' === readline($msg)) {
-                continue;
-            };
+            if (!Registry::get(Registry::KEY_NO_INTERACTION)) {
+                $msg = sprintf("Next album <%s>. Do you want to proceed? Enter y or n (default: y)", $album->albumTitle);
+                if ('n' === readline($msg)) {
+                    continue;
+                };
+            }
+
             $processor->process($album);
         }
     }

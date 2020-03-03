@@ -52,14 +52,8 @@ class AlbumCreator implements FileTypeInterface
         //add album images
         HelperFactory::get(HelperFactory::IMAGE_HELPER)->operate($album);
 
-        //user option --force-merge
-        if(Registry::get(Registry::KEY_FORCE_MERGE)) {
-            //force merge all album files
-            HelperFactory::get(HelperFactory::MERGE_HELPER)->operate($album);
-        } else {
-            //add episodes
-            $this->episodeComposer->bind($album);
-        }
+        //add episodes
+        $this->episodeComposer->bind($album);
 
         //add covers
         HelperFactory::get(HelperFactory::COVER_HELPER)->operate($album);
