@@ -57,7 +57,6 @@ class VolumeChecker
                 $volumes[] = $edited;
             }
         }
-
         //true if only one element found
         return count($volumes) === 1;
     }

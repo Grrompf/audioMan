@@ -42,11 +42,6 @@ class Main
     //todo: manifest for update
     final public function handle(): void
     {
-        //Create output dir
-        /** @var string $outDir */
-        $outDir = Registry::get(Registry::KEY_OUTPUT);
-        Tools::createDir($outDir);
-
         $actualPath = getCwd();
         $albums = (new Checker())->check($actualPath);
         $processor = new AlbumProcessor();

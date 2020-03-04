@@ -42,7 +42,7 @@ class AlbumProcessor
     use Messenger;
 
     //temporary filenames for merge and correction
-    const CONCAT_FILE_NAME    = 'combinedFile.mp3';
+    const CONCAT_FILE_NAME    = 'combined.mp3';
 
     private $converter;
     private $joiner;

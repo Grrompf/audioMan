@@ -47,8 +47,8 @@ class DefaultCommand extends Command
             ->addOption('level', 'l', InputOption::VALUE_REQUIRED, 'set album nesting level')
             ->addOption('no-interaction', 'y', InputOption::VALUE_NONE, 'force answer always yes')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
+            ->addOption('force-merge', null, InputOption::VALUE_NONE, 'force merging')
             ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'custom file name format')
-            ->addOption('out', 'o', InputOption::VALUE_REQUIRED, 'custom output directory')
             ->setHelp('Find more information in README.md')
             ->setDescription("Merges multiple audio files. Suited for audio books and radio play.".PHP_EOL.
                 "  Time issue of merged files are corrected. File size of is checked, too.".PHP_EOL.
@@ -97,6 +97,11 @@ class DefaultCommand extends Command
             Registry::set(Registry::KEY_NORMALIZE, false);
         }
 
+        //force-merge
+        if (true === $input->hasParameterOption('--force-merge', true)) {
+            Registry::set(Registry::KEY_FORCE_MERGE, true);
+        }
+
         //no-interaction
         if (true === $input->hasParameterOption(['--no-interaction', '-y'], true)) {
             Registry::set(Registry::KEY_NO_INTERACTION, true);
@@ -106,12 +111,6 @@ class DefaultCommand extends Command
         if (true === $input->hasParameterOption(['--format', '-f'], false)) {
             $simplifiedRegex = $input->getOption('format');
             (new Separator())->setCustomSeparator($simplifiedRegex);
-        }
-
-        //output
-        if (true === $input->hasParameterOption(['--out', '-o'], false)) {
-            $outDir = $input->getOption('out');
-            Registry::set(Registry::KEY_OUTPUT, $outDir);
         }
 
         (new Requirements())->check();

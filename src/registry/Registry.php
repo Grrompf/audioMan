@@ -35,6 +35,7 @@ class Registry
 
     //registry keys
     public const KEY_AUDIO          = 'audio'; //audio format
+    public const KEY_FORCE_MERGE    = 'force-merge';
     public const KEY_LEVEL          = 'level'; //nesting level
     public const KEY_NORMALIZE      = 'normalize';
     public const KEY_OUTPUT         = 'output';
@@ -83,8 +84,8 @@ class Registry
             self::$instance::set(self::KEY_SEPARATOR, ' - ');
 
             //output default: HOME/audioMan
-            $output = Tools::createDir("~/audioMan");
-            self::$instance::set(self::KEY_OUTPUT, $output);
+            $outDir = Tools::createDir("~/audioMan"); //tool resolves path
+            self::$instance::set(self::KEY_OUTPUT, $outDir);
 
             //no-interaction default: false
             self::$instance::set(self::KEY_NO_INTERACTION, false);
@@ -97,6 +98,9 @@ class Registry
 
             //normalise default: true
             self::$instance::set(self::KEY_NORMALIZE, true);
+
+            //force-merge default: false
+            self::$instance::set(self::KEY_FORCE_MERGE, false);
         }
 
         return self::$instance;
