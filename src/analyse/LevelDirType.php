@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @license MIT License <https://opensource.org/licenses/MIT>
  *
@@ -18,16 +19,43 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\interfaces;
+namespace audioMan\analyse;
 
+use audioMan\utils\Messenger;
+use audioMan\utils\Tools;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
- * @copyright   Copyright (C) - 2019 Dr. Holger Maerz
+ * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-interface DirTypeInterface
+class LevelDirType implements LevelDirTypeInterface
 {
-    public const TYPE_TITLE        = 10;
-    public const TYPE_VOLUME       = 20;
+    use Messenger;
+
+    private $levelVolume;
+
+    public function __construct()
+    {
+        $this->levelVolume = new LevelVolume();
+    }
+
+    /**
+     * Determines directory names and its diversity
+     */
+    final public function check(array $files): int
+    {
+        $dirNames = Tools::assembleDirNames($files);
+        $noDirNames = count($dirNames);
+
+        if ($noDirNames > 1) {
+            $this->comment("Multiple sub directories found. Probably episodes or volumes");
+            return $this->levelVolme->check($dirNames);
+        }
+        $msg  = "Album with <".$noDirNames."> episodes found.".PHP_EOL;
+        $msg .= "If this is not correct use --level[number] to manually set the album level.";
+        $this->warning($msg);
+
+        return self::TYPE_TITLE;
+    }
 }

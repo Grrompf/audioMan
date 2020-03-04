@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\album;
 
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\model\EpisodeModel;
 use audioMan\mp3\Converter;
@@ -38,9 +37,12 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumProcessor implements FileTypeInterface
+class AlbumProcessor
 {
     use Messenger;
+
+    //temporary filenames for merge and correction
+    const CONCAT_FILE_NAME    = 'combinedFile.mp3';
 
     private $converter;
     private $joiner;

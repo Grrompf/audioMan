@@ -23,8 +23,8 @@ namespace audioMan\episode;
 
 use audioMan\episode\helper\NormalizeHelper;
 use audioMan\episode\helper\TitleHelper;
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\EpisodeModel;
+use audioMan\registry\Registry;
 use audioMan\utils\SkipCollector;
 
 /**
@@ -32,7 +32,7 @@ use audioMan\utils\SkipCollector;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class EpisodeCreator implements FileTypeInterface
+class EpisodeCreator
 {
     private $titleHelper;
     private $normalizer;
@@ -49,7 +49,13 @@ class EpisodeCreator implements FileTypeInterface
 
         //files to convert
         $extension = strtolower(pathinfo($audioFiles[0], PATHINFO_EXTENSION));
-        $episode->hasConvertible = in_array($extension, self::CONVERT_TYPES);
+
+        //remove wanted audio format from all supported audio types
+        $convertAudioTypes = Registry::AUDIO_TYPES;
+        if (($key = array_search(Registry::get(Registry::KEY_AUDIO), $convertAudioTypes)) !== false) {
+            unset($convertAudioTypes[$key]);
+        }
+        $episode->hasConvertible = in_array($extension, $convertAudioTypes);
 
         //skip if empty files are found
         $episode->isSkipped = $this->hasEmptyFiles($audioFiles);
@@ -62,7 +68,7 @@ class EpisodeCreator implements FileTypeInterface
         $episode->title = $title;
 
         //normalize file name for poor mp3 players
-        $episode->normalizedFileName = $this->normalizer->process($title).self::DEFAULT_EXT;
+        $episode->normalizedFileName = $this->normalizer->process($title).'.'.Registry::get(Registry::KEY_AUDIO);
 
         return $episode;
     }

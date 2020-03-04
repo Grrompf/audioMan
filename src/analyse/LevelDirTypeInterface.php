@@ -18,7 +18,7 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\interfaces;
+namespace audioMan\analyse;
 
 
 /**
@@ -26,13 +26,10 @@ namespace audioMan\interfaces;
  * @copyright   Copyright (C) - 2019 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-interface FileTypeInterface
+interface LevelDirTypeInterface
 {
-    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'm4a', 'wma', 'wav', 'ogg'];
-    const CONVERT_TYPES = ['ac3', 'acc', 'wma', 'wav', 'ogg', 'm4a'];
-    const IMAGE_TYPES   = ['jpg', 'jpeg', 'png'];
-    const DEFAULT_EXT   = '.mp3';
+    public const TYPE_TITLE        = 10;
+    public const TYPE_VOLUME       = 20;
 
-    //temporary filenames for merge and correction
-    const CONCAT_FILE_NAME    = 'kombiniert.mp3';
+    public function check(array $search): int;
 }

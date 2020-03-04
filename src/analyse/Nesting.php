@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
-use audioMan\interfaces\FileTypeInterface;
+use audioMan\registry\Registry;
 use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
 
@@ -30,7 +30,7 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Nesting implements FileTypeInterface
+class Nesting
 {
     use Messenger;
 
@@ -53,7 +53,7 @@ class Nesting implements FileTypeInterface
             $path = pathinfo($file, PATHINFO_DIRNAME);
             $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
             //skip img
-            if (in_array($ext, self::IMAGE_TYPES)) {
+            if (in_array($ext, Registry::IMAGE_TYPES)) {
                 continue;
             }
 

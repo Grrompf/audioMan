@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan\command;
 
-use audioMan\interfaces\FileTypeInterface;
+
 use audioMan\Main;
 use audioMan\registry\Registry;
 use audioMan\registry\Separator;
@@ -36,7 +36,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class DefaultCommand extends Command implements FileTypeInterface
+class DefaultCommand extends Command
 {
     const MAX_LEVEL = 5;
 
@@ -44,7 +44,7 @@ class DefaultCommand extends Command implements FileTypeInterface
     {
         $this
             ->setName('audioMan')
-            ->addOption('audio', 'a', InputOption::VALUE_REQUIRED, 'custom audio format ('.implode(', ', self::AUDIO_TYPES).')')
+            ->addOption('audio', 'a', InputOption::VALUE_REQUIRED, 'custom audio format ('.implode(', ', Registry::AUDIO_TYPES).')')
             ->addOption('level', 'l', InputOption::VALUE_REQUIRED, 'set album nesting level')
             ->addOption('no-interaction', 'y', InputOption::VALUE_NONE, 'force answer always yes')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
@@ -78,8 +78,8 @@ class DefaultCommand extends Command implements FileTypeInterface
         //audio
         if (true === $input->hasParameterOption(['--audio', '-a'], true)) {
             $audio = strtolower($input->getOption('audio'));
-            if (!in_array($audio, self::AUDIO_TYPES)) {
-                $msg = sprintf("Audio type <%s> unknown. Allowed audio types: %s", $audio, implode(', ', self::AUDIO_TYPES));
+            if (!in_array($audio, Registry::AUDIO_TYPES)) {
+                $msg = sprintf("Audio type <%s> unknown. Allowed audio types: %s", $audio, implode(', ', Registry::AUDIO_TYPES));
                 throw new \InvalidArgumentException($msg);
             }
 

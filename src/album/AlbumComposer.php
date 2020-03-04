@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\album;
 
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
 
@@ -30,7 +29,7 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumComposer implements FileTypeInterface
+class AlbumComposer
 {
     use Messenger;
 

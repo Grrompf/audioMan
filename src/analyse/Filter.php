@@ -21,14 +21,14 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
-use audioMan\interfaces\FileTypeInterface;
+use audioMan\registry\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Filter implements FileTypeInterface
+class Filter
 {
     private $allowedTypes;
     private $dirIterator;
@@ -38,7 +38,7 @@ class Filter implements FileTypeInterface
         $this->dirIterator = $dirIterator;
 
         // all allowed audio and image types
-        $this->allowedTypes = array_merge(self::AUDIO_TYPES, self::IMAGE_TYPES);
+        $this->allowedTypes = array_merge(Registry::AUDIO_TYPES, Registry::IMAGE_TYPES);
     }
 
     /**

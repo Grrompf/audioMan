@@ -21,9 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
-
-use audioMan\analyse\level\DirType;
-use audioMan\analyse\level\Volume;
 use audioMan\utils\Messenger;
 
 /**
@@ -39,7 +36,7 @@ class Level
 
     public function __construct()
     {
-        $this->dirType = new DirType();
+        $this->dirType = new LevelDirType();
     }
 
     final public function check(array $nesting): int
@@ -60,10 +57,10 @@ class Level
             $fileNames = $nesting[$lvl];
             $this->debug("Nesting level is <".$lvl.">");
             $type = $this->dirType->check($fileNames);
-            if (Volume::TYPE_TITLE === $type) {
+            if (LevelDirTypeInterface::TYPE_TITLE === $type) {
                 return $lvl;
             };
-            if (Volume::TYPE_VOLUME === $type) {
+            if (LevelDirTypeInterface::TYPE_VOLUME === $type) {
                 $albumLevel = $lvl-2;
             };
 

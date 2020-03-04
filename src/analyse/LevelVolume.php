@@ -19,9 +19,8 @@ declare(strict_types=1);
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace audioMan\analyse\level;
+namespace audioMan\analyse;
 
-use audioMan\interfaces\DirTypeInterface;
 use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
 
@@ -30,7 +29,7 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Volume implements DirTypeInterface
+class LevelVolume implements LevelDirTypeInterface
 {
     use Messenger;
 

@@ -23,7 +23,6 @@ namespace audioMan\episode;
 
 
 use audioMan\analyse\TreeMaker;
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\utils\Messenger;
 
@@ -32,7 +31,7 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class EpisodeComposer implements FileTypeInterface
+class EpisodeComposer
 {
     use Messenger;
 

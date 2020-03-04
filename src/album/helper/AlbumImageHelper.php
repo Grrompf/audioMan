@@ -22,15 +22,15 @@ declare(strict_types=1);
 namespace audioMan\album\helper;
 
 
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
+use audioMan\registry\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumImageHelper implements AlbumHelperInterface, FileTypeInterface
+class AlbumImageHelper implements AlbumHelperInterface
 {
     public function operate(AudioBookModel $album): void
     {
@@ -39,7 +39,7 @@ class AlbumImageHelper implements AlbumHelperInterface, FileTypeInterface
 
             //skip audio files
             $fileExtension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (!in_array($fileExtension, self::IMAGE_TYPES)) {
+            if (!in_array($fileExtension, Registry::IMAGE_TYPES)) {
                 continue;
             };
             $albumImages[] = $file;

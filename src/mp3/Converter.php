@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace audioMan\mp3;
 
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\registry\Registry;
 use audioMan\utils\GarbageCollector;
 use audioMan\utils\Messenger;
@@ -32,7 +31,7 @@ use audioMan\utils\SkipCollector;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Converter implements FileTypeInterface
+class Converter
 {
     use Messenger;
 
@@ -63,7 +62,7 @@ class Converter implements FileTypeInterface
             };
 
             $fileName = pathinfo($fileToConvert, PATHINFO_FILENAME);
-            $newFile  = $pathToMove.Registry::get(Registry::KEY_PATH_SEPARATOR).$fileName.self::DEFAULT_EXT;
+            $newFile  = $pathToMove.Registry::get(Registry::KEY_PATH_SEPARATOR).$fileName.'.'.Registry::get(Registry::KEY_AUDIO);
 
             //sampling
             if ($this->sampling($fileToConvert, $newFile)) {

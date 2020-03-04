@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace audioMan\analyse;
 
 
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
+use audioMan\registry\Registry;
 use audioMan\utils\Tools;
 
 /**
@@ -31,7 +31,7 @@ use audioMan\utils\Tools;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class TreeMaker implements FileTypeInterface
+class TreeMaker
 {
     /**
      * Tree of the working dir. Sub dir level is the key.
@@ -44,7 +44,7 @@ class TreeMaker implements FileTypeInterface
 
             //skip image files
             $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (in_array($ext, self::IMAGE_TYPES)) {
+            if (in_array($ext, Registry::IMAGE_TYPES)) {
                 continue;
             }
 

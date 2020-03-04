@@ -23,7 +23,6 @@ namespace audioMan\album;
 
 use audioMan\album\helper\HelperFactory;
 use audioMan\episode\EpisodeComposer;
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\registry\Registry;
 
@@ -32,7 +31,7 @@ use audioMan\registry\Registry;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class AlbumCreator implements FileTypeInterface
+class AlbumCreator
 {
     private $episodeComposer;
 

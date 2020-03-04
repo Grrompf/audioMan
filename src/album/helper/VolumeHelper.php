@@ -24,9 +24,9 @@ namespace audioMan\album\helper;
 
 use audioMan\episode\helper\NormalizeHelper;
 use audioMan\episode\helper\TitleHelper;
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
 use audioMan\model\EpisodeModel;
+use audioMan\registry\Registry;
 use audioMan\utils\Messenger;
 
 /**
@@ -34,7 +34,7 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class VolumeHelper implements AlbumHelperInterface, FileTypeInterface
+class VolumeHelper implements AlbumHelperInterface
 {
     use Messenger;
 
@@ -86,7 +86,7 @@ class VolumeHelper implements AlbumHelperInterface, FileTypeInterface
 
             //new title
             $episode->title = $this->titleHelper->process($title." ".$number);
-            $episode->normalizedFileName = $this->normalizer->process($episode->title).self::DEFAULT_EXT;
+            $episode->normalizedFileName = $this->normalizer->process($episode->title).'.'.Registry::get(Registry::KEY_AUDIO);
             $episode->isVolume = true; //important for sorting dir
 
             $this->chat("Set new episode volume title <".$episode->title.">");

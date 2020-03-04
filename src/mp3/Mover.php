@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace audioMan\mp3;
 
 
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\utils\GarbageCollector;
 use audioMan\utils\Messenger;
 
@@ -31,7 +30,7 @@ use audioMan\utils\Messenger;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Mover implements FileTypeInterface
+class Mover
 {
     use Messenger;
 

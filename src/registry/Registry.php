@@ -30,14 +30,15 @@ use audioMan\utils\Tools;
  */
 class Registry
 {
-    public const KEY_FORMAT         = 'format';
-    public const KEY_LIB_DIR        = 'libDir'; //album dir
+    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'm4a', 'wma', 'wav', 'ogg'];
+    const IMAGE_TYPES   = ['jpg', 'jpeg', 'png'];
+
+    //registry keys
     public const KEY_AUDIO          = 'audio'; //audio format
     public const KEY_LEVEL          = 'level'; //nesting level
     public const KEY_NORMALIZE      = 'normalize';
     public const KEY_OUTPUT         = 'output';
     public const KEY_PATH_SEPARATOR = 'path_separator'; //depending on OS
-    public const KEY_ROOT_DIR       = 'rootDir'; //start dir
     public const KEY_SEPARATOR      = 'separator'; //format in title
     public const KEY_VERBOSITY      = 'verbosity';
     public const KEY_NO_INTERACTION = 'no-interaction'; //forcing yes as answer

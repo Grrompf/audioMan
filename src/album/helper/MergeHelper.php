@@ -22,15 +22,15 @@ declare(strict_types=1);
 namespace audioMan\album\helper;
 
 use audioMan\episode\EpisodeCreator;
-use audioMan\interfaces\FileTypeInterface;
 use audioMan\model\AudioBookModel;
+use audioMan\registry\Registry;
 
 /**
  * @license http://www.opensource.org/licenses/mit-license.html  MIT License
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class MergeHelper implements AlbumHelperInterface, FileTypeInterface
+class MergeHelper implements AlbumHelperInterface
 {
     private $episodeCreator;
 
@@ -49,7 +49,7 @@ class MergeHelper implements AlbumHelperInterface, FileTypeInterface
 
             //skip image files
             $ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (in_array($ext, self::IMAGE_TYPES)) {
+            if (in_array($ext, Registry::IMAGE_TYPES)) {
                 continue;
             }
 

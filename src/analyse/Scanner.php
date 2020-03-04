@@ -21,8 +21,7 @@ declare(strict_types=1);
 
 namespace audioMan\analyse;
 
-
-use audioMan\interfaces\FileTypeInterface;
+use audioMan\registry\Registry;
 use audioMan\utils\ImgCheck;
 use audioMan\utils\Messenger;
 use audioMan\utils\SkipCollector;
@@ -32,7 +31,7 @@ use audioMan\utils\SkipCollector;
  * @copyright   Copyright (C) - 2020 Dr. Holger Maerz
  * @author Dr. H.Maerz <holger@nakade.de>
  */
-class Scanner implements FileTypeInterface
+class Scanner
 {
     use Messenger;
 
@@ -57,7 +56,7 @@ class Scanner implements FileTypeInterface
             $noFiles++;
 
             //img type check
-            $isImg = in_array(strtolower($file->getExtension()), self::IMAGE_TYPES);
+            $isImg = in_array(strtolower($file->getExtension()), Registry::IMAGE_TYPES);
 
             //skip empty files
             if ($file->getSize() === 0) {
