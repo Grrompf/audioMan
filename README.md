@@ -38,6 +38,8 @@ By default audioMan always scans recursive sub directories of the current direct
 It will not remove or alter existing files. Processed files are copied to an output directory (default: ~/audioMan).
 Temporary files are removed instantly.
 
+Make audioMan accessible by moving the phar to your user bin: **download/audioMan.phar /usr/local/bin/audioMan**
+
 * audioMan 
 
 Options
