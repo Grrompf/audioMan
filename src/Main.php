@@ -38,8 +38,6 @@ class Main
     use Messenger;
 
     //todo: remove leading chars using user input
-    //todo: option to convert to custom audio format
-    //todo: default audio conversion
     //todo: fix check for deeper level
     //todo: manifest for update
     final public function handle(): void

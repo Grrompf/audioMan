@@ -50,7 +50,7 @@ class LevelDirType implements LevelDirTypeInterface
 
         if ($noDirNames > 1) {
             $this->comment("Multiple sub directories found. Probably episodes or volumes");
-            return $this->levelVolme->check($dirNames);
+            return $this->levelVolume->check($dirNames);
         }
         $msg  = "Album with <".$noDirNames."> episodes found.".PHP_EOL;
         $msg .= "If this is not correct use --level[number] to manually set the album level.";
