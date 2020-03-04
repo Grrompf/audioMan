@@ -42,7 +42,6 @@ class Main
     //todo: default audio conversion
     //todo: refactoring FileTypeInterface
     //todo: fix check for deeper level
-    //todo: option for level setting
     //todo: manifest for update
     final public function handle(): void
     {

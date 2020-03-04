@@ -38,6 +38,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DefaultCommand extends Command implements FileTypeInterface
 {
+    const MAX_LEVEL = 5;
+
     final protected function configure(): void
     {
         $this
@@ -82,6 +84,24 @@ class DefaultCommand extends Command implements FileTypeInterface
             }
 
             Registry::set(Registry::KEY_AUDIO, $audio);
+        }
+
+        //level
+        if (true === $input->hasParameterOption(['--level', '-l'], true)) {
+            $userInput = $input->getOption('level');
+
+            if (!is_numeric($userInput)) {
+                $msg = sprintf("Invalid level type <%s>. Allowed values: 0-%s.", $userInput, self::MAX_LEVEL);
+                throw new \InvalidArgumentException($msg);
+            }
+
+            $level = (int) $userInput;
+            if ($level < 0 || $level > self::MAX_LEVEL) {
+                $msg = sprintf("Nesting level <%s> invalid. Allowed values: 0-%s.", $level, self::MAX_LEVEL);
+                throw new \InvalidArgumentException($msg);
+            }
+
+            Registry::set(Registry::KEY_LEVEL, $level);
         }
 
         //normalization

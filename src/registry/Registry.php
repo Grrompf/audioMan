@@ -33,6 +33,7 @@ class Registry
     public const KEY_FORMAT         = 'format';
     public const KEY_LIB_DIR        = 'libDir'; //album dir
     public const KEY_AUDIO          = 'audio'; //audio format
+    public const KEY_LEVEL          = 'level'; //nesting level
     public const KEY_NORMALIZE      = 'normalize';
     public const KEY_OUTPUT         = 'output';
     public const KEY_PATH_SEPARATOR = 'path_separator'; //depending on OS
@@ -89,6 +90,9 @@ class Registry
 
             //audio default: mp3
             self::$instance::set(self::KEY_AUDIO, 'mp3');
+
+            //init level
+            self::$instance::set(self::KEY_LEVEL, null);
 
             //normalise default: true
             self::$instance::set(self::KEY_NORMALIZE, true);

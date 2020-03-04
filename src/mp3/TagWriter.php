@@ -46,7 +46,7 @@ class TagWriter
         //fix write permission
         chmod($fileName, 0644);
 
-        $this->comment("Write tag to <".$fileName.">");
+        $this->debug("Write tag to <".$fileName.">");
 
         //cover
         $coverCmd='';

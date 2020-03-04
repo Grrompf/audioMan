@@ -23,6 +23,7 @@ namespace audioMan\analyse;
 
 use audioMan\album\AlbumComposer;
 use audioMan\album\AlbumProcessor;
+use audioMan\registry\Registry;
 use audioMan\utils\Messenger;
 use audioMan\utils\Tools;
 
@@ -65,7 +66,7 @@ class Checker
         $files = (new Scanner($actualPath))->scan();
 
         //exit condition: no files
-        if (count($files) === 0) {
+        if (empty($files) === 0) {
             $msg = "No files, no work! Try another directory...";
             $this->warning($msg);
             exit(PHP_EOL.'EXIT'.PHP_EOL);
@@ -76,8 +77,12 @@ class Checker
         $nesting = (new Nesting($actualPath))->arrange($files);
 
         //album level
-        $albumLevel = (new Level())->check($nesting);
-        $this->info("Evaluated album level is <".$albumLevel.">");
+        if (null !== $albumLevel = Registry::get(Registry::KEY_LEVEL)) {
+            $this->info("Album level is forced to <".$albumLevel.">");
+        } else {
+            $albumLevel = (new Level())->check($nesting);
+            $this->info("Evaluated album level is <".$albumLevel.">");
+        }
 
         //albums
         $albums = (new AlbumComposer($files, $actualPath))->bind($albumLevel);

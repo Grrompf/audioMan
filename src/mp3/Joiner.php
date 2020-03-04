@@ -44,7 +44,7 @@ class Joiner implements FileTypeInterface
         GarbageCollector::add($combinedFileName);
 
         $msg = "Join <".count($audioFiles)."> audio files.";
-        $this->comment($msg);
+        $this->info($msg);
         $size = 0;
 
         //concatenating mp3 files
@@ -95,7 +95,7 @@ class Joiner implements FileTypeInterface
     private function fixMp3Length(string $mergedFile, string $newFileName): bool
     {
         //correcting using ffmpeg
-        $this->comment("Correcting mp3 file time using ffmpeg library.");
+        $this->chat("Correcting mp3 file time using ffmpeg library.");
         $cmd = sprintf('ffmpeg -loglevel quiet -y -i %s -acodec copy %s', escapeshellarg($mergedFile), escapeshellarg($newFileName));
 
         exec($cmd, $details, $retVal);

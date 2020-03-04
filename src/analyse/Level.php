@@ -44,6 +44,10 @@ class Level
 
     final public function check(array $nesting): int
     {
+        if (empty($nesting)) {
+            throw new \InvalidArgumentException("No audio files found.");
+        }
+
         $lvl = min(array_keys($nesting));
 
         if ($lvl === 0) {

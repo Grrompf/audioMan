@@ -48,7 +48,7 @@ class GarbageCollector
 
     public static function clean(): void
     {
-        self::getInstance()->comment("Removing temporary files");
+        self::getInstance()->debug("Removing temporary files");
 
         //get the array of temporary files
         if (!empty(self::getInstance()->tempFiles)) {
@@ -78,7 +78,7 @@ class GarbageCollector
                 unset(self::getInstance()->tempFiles[$key]);
             }
 
-            self::getInstance()->comment("Temporary files removed");
+            self::getInstance()->debug("Temporary files removed");
         };
     }
 
