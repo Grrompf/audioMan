@@ -50,7 +50,7 @@ class Converter
         }
 
         $noFiles = count($files);
-        $msg = "Found <".$noFiles."> audio files which are not mp3. Start to convert...";
+        $msg = "Found <".$noFiles."> audio files which are not <".Registry::get(Registry::KEY_AUDIO).">. Start to convert...";
         $this->comment($msg);
 
         foreach ($files as $fileToConvert) {
@@ -74,7 +74,7 @@ class Converter
                 return [];
             }
         }
-        $this->success("Audio files are converted to mp3.");
+        $this->success("Audio files are converted to <".Registry::get(Registry::KEY_AUDIO).">.");
 
         return $converted;
     }

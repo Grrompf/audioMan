@@ -44,7 +44,6 @@ class DefaultCommand extends Command
     {
         $this
             ->setName('audioMan')
-            ->addOption('audio', 'a', InputOption::VALUE_REQUIRED, 'custom audio format ('.implode(', ', Registry::AUDIO_TYPES).')')
             ->addOption('level', 'l', InputOption::VALUE_REQUIRED, 'set album nesting level')
             ->addOption('no-interaction', 'y', InputOption::VALUE_NONE, 'force answer always yes')
             ->addOption('no-normalize', 'N', InputOption::VALUE_NONE, 'force not normalizing file names')
@@ -74,17 +73,6 @@ class DefaultCommand extends Command
             }
         }
         Registry::set(Registry::KEY_VERBOSITY, $verbosity);
-
-        //audio
-        if (true === $input->hasParameterOption(['--audio', '-a'], true)) {
-            $audio = strtolower($input->getOption('audio'));
-            if (!in_array($audio, Registry::AUDIO_TYPES)) {
-                $msg = sprintf("Audio type <%s> unknown. Allowed audio types: %s", $audio, implode(', ', Registry::AUDIO_TYPES));
-                throw new \InvalidArgumentException($msg);
-            }
-
-            Registry::set(Registry::KEY_AUDIO, $audio);
-        }
 
         //level
         if (true === $input->hasParameterOption(['--level', '-l'], true)) {
