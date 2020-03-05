@@ -26,21 +26,31 @@ INSTALLATION
 Ubuntu 18.04
 ------------
 
+**Requirements**
+
 * sudo apt-get update && apt-get upgrade
 * sudo apt-get install php
 * sudo apt-get install ffmpeg
 * sudo apt-get install python-mutagen
 
 
+**Install audioMan**
+* Download audioMan from github  "https://github.com/Grrompf/audioMan.git" OR 
+
+  use phive "phive install grrompf/audioMan" (details on phive https://phar.io/)
+
+
 USAGE
-=====
+===
 By default audioMan always scans recursive sub directories of the current directory (root).
 It will not remove or alter existing files. Processed files are copied to an output directory (default: ~/audioMan).
 Temporary files are removed instantly.
 
-Make audioMan accessible by moving the phar to your user bin: **download/audioMan.phar /usr/local/bin/audioMan**
+**HINT:** Make audioMan accessible everywhere by moving the phar to your user bin: **PATH/audioMan.phar /usr/local/bin/audioMan**
+          OR create a symbolic link in /usr/local/bin/audioMan.
 
-* audioMan 
+audioMan
+=== 
 
 Options
 -------
