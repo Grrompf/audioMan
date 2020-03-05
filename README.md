@@ -63,13 +63,14 @@ AudioMan will scan all sub dirs and will assign cover and audio files to albums 
 Therefore, you have to change to the directory containing the audio files. If you have many different audio books to process,
 move them into a parent dir.
 
-    `
-       ---SF books
-          ---book 1
-               ---files     
-          ---book 2
-               ---files
-    `
+>    
+>       ---SF books
+>         ---book 1
+>               ---files     
+>          ---book 2
+>               ---files
+>
+
 SF books is the parent directory containing many books (albums). You can change also directly to the album directory but
 in most cases you have to force merging in this case (use option --force-merge). If the filename is always the same apart from
 an increasing number, files will be merged automatically.    
