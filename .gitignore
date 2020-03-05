@@ -8,3 +8,6 @@
 *.phar
 ###< project files ###
 
+.travis/phar-private.pem
+/.travis/holger_maerz.pub
+/audioMan.phar.asc

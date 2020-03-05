@@ -73,7 +73,6 @@ move them into a parent dir.
 SF books is the parent directory containing many books (albums). You can change also directly to the album directory but
 in most cases you have to force merging in this case (use option --force-merge). If the filename is always the same apart from
 an increasing number, files will be merged automatically.    
-
 ---
 audioMan will analyse the nesting level to identify the album level automatically. You may bypass analysis by providing
 a level by yourself (use option -l, eg. audioMan -l2).  
@@ -82,7 +81,7 @@ Albums (books) and its episodes (chapters) are detected automatically. If an epi
 names, audioMan identifies these as volumes (eg. CD1, CD1 or Chapter 1, Chapter 2). Volumes are preserved. The parent
 dir becomes title and filename with an appending number.
    
-CAUTION: For volume detection suitable dir names are mandatory. Chapter A cannot identified as an volume. In this case
+**CAUTION:** For volume detection suitable dir names are mandatory. Chapter A cannot identified as an volume. In this case
 consider renaming:        
 --- 
 Other audio formats (wma, ogg, ac3, acc, wav, m4a) are detected and converted to mp3. Due to the merge process and 
@@ -119,7 +118,7 @@ HINT: Please double-check files always on sorting dirs.
 ---
 All processed files can be found in the audioMan directory of your home dir (~/audioMan). This default directory
 is created automatically. 
-***
+---
 
 __IMPORTANT!__
 Change to the directory, you want to process. __AudioMan__ will always start processing on the actual directory. If you
