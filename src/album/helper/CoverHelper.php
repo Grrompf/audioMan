@@ -65,6 +65,10 @@ class CoverHelper implements AlbumHelperInterface
             if ($albumPath === pathinfo($fileName, PATHINFO_DIRNAME)) {
                 $albumCovers[] = $fileName;
             }
+            //finds images in parent dir
+            if (false !== strpos($episode->path, $imgDir)) {
+                $albumCovers[] = $fileName;
+            }
             //image path contains episode path
         }
 
@@ -73,7 +77,7 @@ class CoverHelper implements AlbumHelperInterface
             $episode->cover = $this->findBestMatch($episodeCovers);
         }
         //album level last
-        if (!empty($albumCovers)) {
+        if (!empty($albumCovers) && empty($episode->cover)) {
             $episode->cover =  $this->findBestMatch($albumCovers);
         }
     }

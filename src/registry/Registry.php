@@ -30,7 +30,7 @@ use audioMan\utils\Tools;
  */
 class Registry
 {
-    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'm4a', 'wma', 'wav', 'ogg'];
+    const AUDIO_TYPES   = ['ac3', 'acc', 'mp3', 'm4a', 'wma', 'wav', 'ogg', 'mp4'];
     const IMAGE_TYPES   = ['jpg', 'jpeg', 'png'];
 
     //registry keys
