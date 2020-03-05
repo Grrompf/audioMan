@@ -64,61 +64,84 @@ Therefore, you have to change to the directory containing the audio files. If yo
 move them into a parent dir.
 
 >    
->       ---SF books
->         ---book 1
+>       -SF books
+>          --book 1
 >               ---files     
->          ---book 2
+>          --book 2
 >               ---files
 >
 
 SF books is the parent directory containing many books (albums). You can change also directly to the album directory but
 in most cases you have to force merging in this case (use option --force-merge). If the filename is always the same apart from
-an increasing number, files will be merged automatically.    
+an increasing number, files will be merged automatically.
+    
 ---
+
 audioMan will analyse the nesting level to identify the album level automatically. You may bypass analysis by providing
-a level by yourself (use option -l, eg. audioMan -l2).  
+a level by yourself (use option -l, eg. audioMan -l2).
+  
 ---
+
 Albums (books) and its episodes (chapters) are detected automatically. If an episode contains multiple sub dirs with similar
 names, audioMan identifies these as volumes (eg. CD1, CD1 or Chapter 1, Chapter 2). Volumes are preserved. The parent
 dir becomes title and filename with an appending number.
    
 **CAUTION:** For volume detection suitable dir names are mandatory. Chapter A cannot identified as an volume. In this case
-consider renaming:        
---- 
+consider renaming!
+        
+---
+ 
 Other audio formats (wma, ogg, ac3, acc, wav, m4a) are detected and converted to mp3. Due to the merge process and 
 tagging this is necessary.
+
 ---
+
 By default, you will be asked for each album to proceed. So you can control the processed files before going on. We hardly
 recommend to take your time to control and read the output. Anyway, if your files are all well formatted and named,
 you can ignore interaction by using the option -y (yes to all).
----    
+
+---
+    
 There are several verbose level. In most cases option -v is good enough. In need for more verbosity, use -vv or -vvv (debug).
 General verbose output (success, error, warnings) is provided even without using the verbose option. If you want no
-output at all use the option -q (quiet)   
+output at all use the option -q (quiet)
+   
 ---
+
 Files are processed album wise. Steps are conversion, merge, time fix, tagging and normalizing. The time fix is 
 mandatory for concatenated audio files. Otherwise, the time length shown in most players will not match real time length.
 The resulting file size is proven and shown on verbose level -v. 
-Empty files are checked and will result to skip the episode. Skipped episodes are another good verbose info for you :-) 
+Empty files are checked and will result to skip the episode. Skipped episodes are another good verbose info for you :-)
+ 
 ---
+
 Album art are automatically detected and assigned to episodes or albums. Empty images are excluded, so are images without
 correct mime-type. For multiple images, audioMan will select the best matching album art concerning dimension, file size and
 filename. If files already contain album art, this is preserved even in a conversion or merge process. Existing album art is
-not exchanged!    
+not exchanged!
+    
 ---
+
 The file name is normalized. Therefore, all empty spaces are replaced by underlines. Any kind of umlauts are replaced, too.
 So your files become compatible to older players, especially in cars.  You can stop normalizing using the option --no-normalize.
 The well-formatted filename is preserved in the tag.
+
 ---
+
 Tagging is performed for album art, title, album and type (always Other). Title is taken from the episode, volume or book.
 If titles contain a leading number as i.e. episodes, you can customize the separator (using option -f).   
-By default, the number is separated by a dash surrounded by spaces.  
+By default, the number is separated by a dash surrounded by spaces.
+  
 ---
+
 If sorting dirs are found below album level, they are preserved. This works for first-level sorting dirs only. 
 HINT: Please double-check files always on sorting dirs.
+
 ---
+
 All processed files can be found in the audioMan directory of your home dir (~/audioMan). This default directory
-is created automatically. 
+is created automatically.
+ 
 ---
 
 __IMPORTANT!__
