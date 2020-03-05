@@ -58,7 +58,7 @@ Options
 * __--version__ | -V
 * __--quiet__ | -q
 * __--verbose__  | -v / -vv / -vvv
-* __--force-merge__
+* __--force-merge__  
 * __--level__ | __-l__ 
 * __--no-interaction__| __-y__
 * __--no-normalize__ | __-N__ 
