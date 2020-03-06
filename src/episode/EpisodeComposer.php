@@ -46,8 +46,7 @@ class EpisodeComposer
         $this->volCheck   = new VolumeChecker();
     }
 
-    final public function
-    bind(AudioBookModel $album): void
+    final public function bind(AudioBookModel $album): void
     {
         $tree = $this->treeMaker->makeAlbumTree($album);
         if (empty($tree)) {

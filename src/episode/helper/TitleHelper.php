@@ -40,10 +40,8 @@ class TitleHelper implements EpisodeHelperInterface
         $title = str_replace('__', '_', $title);
         $title = str_replace('  ', ' ', $title);
 
-        //skip on normalized files eg 01_-_file_for_you.mp3
-        if (false === strpos($title, ' ') && false !== strpos($title, '_')) {
-            return $title;
-        };
+        //remove underlines of normalized files eg 01_-_file_for_you.mp3
+        $title = str_replace('_', ' ', $title);
 
         //remove whitespaces
         $title = trim($title);
@@ -58,7 +56,7 @@ class TitleHelper implements EpisodeHelperInterface
 
         //reformat UPPERCASE except something like U.N.C.L.E
         if ($newTitle == strtoupper($newTitle) && false === strpos($newTitle, '.')) {
-            $newTitle = ucfirst(strtolower($newTitle));
+            $newTitle = ucwords(strtolower($newTitle));
         }
 
         //get number
