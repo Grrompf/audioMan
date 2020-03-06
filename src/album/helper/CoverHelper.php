@@ -140,6 +140,17 @@ class CoverHelper implements AlbumHelperInterface
         $filename = pathinfo($file, PATHINFO_FILENAME);
         $filename = strtolower($filename);
 
-        return in_array($filename, self::_COVER_NAMING);
+        //best match
+        if (false !== stripos($filename, 'folder')) {
+            return true;
+        }
+        if (false !== stripos($filename, 'front')) {
+            return true;
+        }
+        if (false !== stripos($filename, 'cover')) {
+            return true;
+        }
+
+        return false;
     }
 }

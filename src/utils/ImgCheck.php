@@ -57,7 +57,7 @@ class ImgCheck
         }
         $ratio = round($size[0]/$size[1], 1);
 
-        return  ($ratio > 0.8 && $ratio < 1.2);
+        return  ($ratio > 0.9 && $ratio < 1.1);
     }
 
     /**

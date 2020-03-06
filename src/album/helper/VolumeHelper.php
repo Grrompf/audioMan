@@ -100,10 +100,9 @@ class VolumeHelper implements AlbumHelperInterface
     {
         $noNumberTitle=[];
         foreach($album->getAllTitles() as $title) {
-
             //remove appending number
-            $edited = preg_replace(self::_VOLUME_PATTERN, '', trim($title));
-            $noNumberTitle[] = strtolower($edited);
+            $edited = preg_replace(self::_VOLUME_PATTERN, '', $title);
+            $noNumberTitle[] = strtolower(trim($edited));
         }
 
         //key becomes value, value is amount

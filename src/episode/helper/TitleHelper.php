@@ -57,13 +57,13 @@ class TitleHelper implements EpisodeHelperInterface
         $newTitle = $matches[1];
 
         //reformat UPPERCASE except something like U.N.C.L.E
-        if ($newTitle == strtoupper($newTitle) && false ===strpos($newTitle, '.')) {
+        if ($newTitle == strtoupper($newTitle) && false === strpos($newTitle, '.')) {
             $newTitle = ucfirst(strtolower($newTitle));
         }
 
         //get number
         $extract = str_replace($newTitle, '', $title);
-        $numberPattern = '#(\d+).*$#';
+        $numberPattern = '#^(\d+).*$#';
         if (1 !== preg_match($numberPattern, $extract, $matches)) {
             //no number!
             return $title;
@@ -79,8 +79,6 @@ class TitleHelper implements EpisodeHelperInterface
                 return $title;
             }
         }
-
-
 
         //always leading number on single digits
         if (strlen($number) == 1) {
