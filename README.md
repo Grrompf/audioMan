@@ -101,7 +101,7 @@ consider renaming!
         
 ---
  
-Other audio formats (wma, ogg, ac3, acc, wav, m4a) are detected and converted to mp3. Due to the merge process and 
+Other audio formats (wma, ogg, ac3, acc, wav, m4a, mp4) are detected and converted to mp3. Due to the merge process and 
 tagging this is necessary.
 
 ---
