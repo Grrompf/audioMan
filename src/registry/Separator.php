@@ -81,7 +81,7 @@ class Separator
         }
 
         //other signs not allowed
-        $test = str_replace(self::REGEX_SPACE, '', $test);
+        $test = str_replace(self::REGEX_SPACE, '', $simplifiedRegex);
         $test = str_replace(self::REGEX_DOT, '', $test);
         $test = str_replace(self::REGEX_DASH, '', $test);
 

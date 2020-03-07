@@ -64,7 +64,7 @@ class TitleHelper implements EpisodeHelperInterface
         $numberPattern = '#^(\d+).*$#';
         if (1 !== preg_match($numberPattern, $extract, $matches)) {
             //no number!
-            return $title;
+            return $newTitle;
         }
         $number = $matches[1];
 
