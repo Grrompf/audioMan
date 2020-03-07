@@ -11,3 +11,4 @@
 .travis/phar-private.pem
 /.travis/holger_maerz.pub
 /audioMan.phar.asc
+/build.sh
