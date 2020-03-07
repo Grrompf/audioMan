@@ -47,6 +47,11 @@ class Level
 
         $lvl = min(array_keys($nesting));
 
+        //Just information
+        if ($lvl === max(array_keys($nesting))) {
+            $this->warning('Just one level found. If you are not happy with the result consider using option --level | -l.');
+        }
+
         if ($lvl === 0) {
             $this->success('Album and title identified...');
 
